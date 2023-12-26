@@ -43,7 +43,7 @@
   </SubModules>
 	<Xmls>
 		<XmlNode>
-			<XmlName id="Factions" path="spclans"/>
+			<XmlName id="Factions" path="deserter_clan"/>
 			<IncludedGameTypes>
 				<GameType value = "Campaign"/>
 				<GameType value = "CampaignStoryMode"/>

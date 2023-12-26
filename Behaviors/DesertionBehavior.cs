@@ -96,10 +96,6 @@ namespace BasicOverhaul.Behaviors
 
                 foreach (var party in deserterParties)
                     CreateDeserterParty(party, defeatedSide.LeaderParty.MobileParty);
-
-                TextObject textObject = new TextObject("{=bo_deserters_log}Deserters created near {SETTLEMENT}");
-                textObject.SetTextVariable("SETTLEMENT", Utils.GetClosestObject(deserterParties[0], Settlement.All).Name);
-                InformationManager.DisplayMessage(new InformationMessage(textObject.ToString()));
             }
         }
         private void CreateDeserterParty(MobileParty party, MobileParty leaveParty)

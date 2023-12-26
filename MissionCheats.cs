@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem;
@@ -13,27 +14,28 @@ using TaleWorlds.MountAndBlade;
 using TaleWorlds.ObjectSystem;
 using FaceGen = TaleWorlds.Core.FaceGen;
 using TaleWorlds.CampaignSystem.Encounters;
+using TaleWorlds.CampaignSystem.Inventory;
+using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.Engine;
+using TaleWorlds.Localization;
+using TaleWorlds.MountAndBlade.CustomBattle.CustomBattle;
+// ReSharper disable All
 
 namespace BasicOverhaul
 {
     internal sealed class MissionCheats
     {
-        
-        [BasicCheat("Increase player speed", new []{ "Speed amount" })]
+        public static bool SpeedOnCheat;
+        [BasicCheat("Set player speed", new []{ "Speed amount" })]
         [CommandLineFunctionality.CommandLineArgumentFunction("increase_player_speed", "bo_misson")]
         [UsedImplicitly]
-        private static string IncreasePlayerSpeed(List<string> strings)
+        private static string SetPlayerSpeed(List<string> strings)
         {
-            if (!CampaignCheats.CheckCheatUsage(ref CampaignCheats.ErrorType))
-                return CampaignCheats.ErrorType;
-
-
             if (!CampaignCheats.CheckParameters(strings, 1) || CampaignCheats.CheckHelp(strings))
-                return "Format uses 1 parameter: bo_misson.increase_player_stat [Amount]";
+                return "Format uses 1 parameter: bo_misson.increase_player_speed [Amount]";
 
-            if (Mission.Current == null)
-                return "You must be in a mission!";
+            if (Mission.Current == null || Agent.Main == null)
+                return "You must be in a mission and your character must be alive!";
 
             bool isNumber = int.TryParse(strings[0], out int amount);
 
@@ -43,39 +45,157 @@ namespace BasicOverhaul
             if (Agent.Main != null)
             {
                 Agent main = Agent.Main;
-                main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.MaxSpeedMultiplier, main.GetAgentDrivenPropertyValue(DrivenProperty.MaxSpeedMultiplier) + amount);
-                main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.CombatMaxSpeedMultiplier, main.GetAgentDrivenPropertyValue(DrivenProperty.CombatMaxSpeedMultiplier) + amount);
+                main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.MaxSpeedMultiplier, amount);
+                main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.CombatMaxSpeedMultiplier, amount);
                 main.UpdateCustomDrivenProperties();
+                SpeedOnCheat = true;
             }
             
             return "Done!";
         }
         
-        [BasicCheat("Spawn character", new []{ "Character ID" })]
+        [BasicCheat("Increase mount speed", new []{ "Speed amount" })]
+        [CommandLineFunctionality.CommandLineArgumentFunction("increase_mount_speed", "bo_misson")]
+        [UsedImplicitly]
+        private static string IncreaseMountSpeed(List<string> strings)
+        {
+            if (!CampaignCheats.CheckParameters(strings, 1) || CampaignCheats.CheckHelp(strings))
+                return "Format uses 1 parameter: bo_misson.increase_mount_speed [Amount]";
+
+            if (Mission.Current == null || Agent.Main == null)
+                return "You must be in a mission and your character must be alive!";
+
+            if (Agent.Main.MountAgent == null)
+                return "You must be mounting a horse!";
+
+            bool isNumber = int.TryParse(strings[0], out int amount);
+
+            if (!isNumber)
+                return "Amount parameter must be a number!";
+
+            Agent horseAgent = Agent.Main.MountAgent;
+            horseAgent.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.MountSpeed, horseAgent.GetAgentDrivenPropertyValue(DrivenProperty.MountSpeed) + amount);
+            horseAgent.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.TopSpeedReachDuration, horseAgent.GetAgentDrivenPropertyValue(DrivenProperty.TopSpeedReachDuration) + amount);
+            horseAgent.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.MountDashAccelerationMultiplier, horseAgent.GetAgentDrivenPropertyValue(DrivenProperty.MountDashAccelerationMultiplier) + amount);
+            horseAgent.UpdateCustomDrivenProperties();
+
+            return "Done!";
+        }
+        
+        [BasicCheat("Make mount invincible")]
+        [CommandLineFunctionality.CommandLineArgumentFunction("make_mount_invincible", "bo_misson")]
+        [UsedImplicitly]
+        private static string MakeHorseInvincible(List<string> strings)
+        {
+            if (Mission.Current == null || Agent.Main == null)
+                return "You must be in a mission and your character must be alive!";
+
+            if (Agent.Main.MountAgent == null)
+                return "You must be mounting a horse!";
+
+            Agent horseAgent = Agent.Main.MountAgent;
+            horseAgent.OnAgentHealthChanged += (agent, health, newHealth) =>
+            {
+                agent.Health = agent.HealthLimit;
+            };
+
+            return "Done!";
+        }
+        
+        [BasicCheat("Spawn character")]
         [CommandLineFunctionality.CommandLineArgumentFunction("spawn_character", "bo_misson")]
         [UsedImplicitly]
         private static string SpawnCharacter(List<string> strings)
         {
-            if (!CampaignCheats.CheckCheatUsage(ref CampaignCheats.ErrorType))
-                return CampaignCheats.ErrorType;
-
-            string formatError = "Format uses 2 parameters: bo_misson.spawn_character [CharacterId] [ally | enemy]";
-            if (!CampaignCheats.CheckParameters(strings, 2) || CampaignCheats.CheckHelp(strings))
-                return formatError;
-
+            if (Agent.Main == null)
+                return "You must be in a mission and your hero must be alive.";
+            
+            List<InquiryElement> characterElements = MBObjectManager.Instance.GetObjectTypeList<BasicCharacterObject>()
+                .Where(x=>x.IsSoldier && !x.IsObsolete)
+                .Select(x=>new InquiryElement(x, x.Name.ToString(), new ImageIdentifier(CharacterCode.CreateFrom(x))))
+                .OrderBy(x=>x.Title).ToList();
+            
+            MBInformationManager.ShowMultiSelectionInquiry(
+                new MultiSelectionInquiryData("Characters", "", characterElements, true, 0, 1,
+                    "Select", "", elements =>
+                    {
+                        if (Agent.Main == null)
+                            return;
+                        
+                        BasicCharacterObject characterObject = (BasicCharacterObject)elements[0].Identifier;
+                        InformationManager.ShowTextInquiry(new TextInquiryData("Amount", "", true, false, "Next",
+                            "", s =>
+                            {
+                                if (int.TryParse(s, out int number))
+                                {
+                                    InformationManager.ShowTextInquiry(new TextInquiryData("Ally or Enemy ?", "", true, false, "Spawn",
+                                        "", s =>
+                                        {
+                                            s = s.ToLower();
+                                            if(s == "ally" || s == "enemy")
+                                                for (int i = 0; i < number; i++)
+                                                    SpawnCharacterAgent(characterObject, s == "ally");
+                                            else
+                                                InformationManager.DisplayMessage(new InformationMessage("Value must be 'ally' or 'enemy'."));
+                                            
+                                        }, null));
+                                }
+                            }, null));
+                    }, null));
+            return "Done!";
+        }
+        
+        [BasicCheat("Spawn weapon")]
+        [CommandLineFunctionality.CommandLineArgumentFunction("spawn_weapon", "bo_misson")]
+        [UsedImplicitly]
+        private static string SpawnWeapon(List<string> strings)
+        {
             if (Agent.Main == null)
                 return "You must be in a mission and your hero must be alive.";
 
-            CharacterObject characterObject = CharacterObject.Find(strings[0]);
-            if (characterObject == null)
-                return "Character doens't exist.";
+            List<InquiryElement> weaponElements = MBObjectManager.Instance.GetObjectTypeList<ItemObject>()
+                .Where(x=>x.HasWeaponComponent)
+                .Select(x=>new InquiryElement(x, x.Name.ToString(), new ImageIdentifier(x)))
+                .OrderBy(x=>x.Title).ToList();
+            
+            MBInformationManager.ShowMultiSelectionInquiry(
+                new MultiSelectionInquiryData("Weapons", "", weaponElements, true, 0, 1,
+                    "Spawn", "", elements =>
+                    {
+                        if (Agent.Main == null)
+                            return;
+                        ItemObject itemObject = (ItemObject)elements[0].Identifier;
+                        MissionWeapon missionWeapon = new MissionWeapon(itemObject, new ItemModifier(), Banner.CreateOneColoredEmptyBanner(1));
+                        MatrixFrame frame = Agent.Main.Frame;
+                        Mission.Current?.SpawnWeaponWithNewEntityAux(missionWeapon, Mission.WeaponSpawnFlags.WithPhysics, frame, 0, null, false);
+                    }, null));
+            
+            return "Done!";
+        }
+        
+        [BasicCheat("Open inventory (campaign only)")]
+        [CommandLineFunctionality.CommandLineArgumentFunction("open_inventory", "bo_misson")]
+        [UsedImplicitly]
+        private static string OpenInventory(List<string> strings)
+        {
+            if (Campaign.Current == null)
+                return "You must be in a campaign!";
+            
+            if (Agent.Main == null)
+                return "You must be in a mission and your hero must be alive.";
 
-            string team = strings[1];
-            if (team != "ally" && team != "enemy")
-                return formatError;
-
-            SpawnCharacterAgent(characterObject, team == "ally");
-
+            List<ItemObject> itemObjects = MBObjectManager.Instance.GetObjectTypeList<ItemObject>();
+            ItemRoster itemRoster = new ItemRoster();
+            
+            foreach (var item in itemObjects)
+                itemRoster.AddToCounts(item,
+                    BasicOverhaulConfig.Instance.CheatItemCount > 0 ? BasicOverhaulConfig.Instance.CheatItemCount : 10);
+            
+            InventoryManager.OpenScreenAsReceiveItems(itemRoster, new TextObject("All Items"), () =>
+            {
+                Agent.Main?.UpdateSpawnEquipmentAndRefreshVisuals(Agent.Main.Character.Equipment);
+            });
+            
             return "Done!";
         }
         
@@ -84,9 +204,6 @@ namespace BasicOverhaul
         [UsedImplicitly]
         private static string DisableAi(List<string> strings)
         {
-            if (!CampaignCheats.CheckCheatUsage(ref CampaignCheats.ErrorType))
-                return CampaignCheats.ErrorType;
-
             string formatError = "Format uses 1 parameter: bo_misson.spawn_character [0 | 1]";
             if (!CampaignCheats.CheckParameters(strings, 1) || CampaignCheats.CheckHelp(strings))
                 return formatError;
@@ -154,15 +271,21 @@ namespace BasicOverhaul
         }*/
 
 
-        private static void SpawnCharacterAgent(CharacterObject character, bool isAlly)
+        private static void SpawnCharacterAgent(BasicCharacterObject character, bool isAlly)
         {
             Monster monsterWithSuffix = FaceGen.GetMonsterWithSuffix(character.Race, FaceGen.MonsterSuffixSettlement);
 
             Equipment randomEquipmentElements = Equipment.GetRandomEquipmentElements(character, true);
 
-            PartyBase enemyParty = PlayerEncounter.EncounteredParty != null ? PlayerEncounter.EncounteredParty : PartyBase.MainParty;
-
-            AgentBuildData agentBuildData = new AgentBuildData(new PartyAgentOrigin(isAlly ? PartyBase.MainParty : enemyParty, character)).Equipment(randomEquipmentElements).Monster(monsterWithSuffix).Team(isAlly ? Mission.Current.PlayerTeam : Mission.Current.PlayerEnemyTeam).Formation(Mission.Current.DefenderTeam.GetFormation(character.GetFormationClass()));
+            PartyBase enemyParty = null;
+            if(Campaign.Current != null)
+                enemyParty = PlayerEncounter.EncounteredParty != null ? PlayerEncounter.EncounteredParty : PartyBase.MainParty;
+            
+            IAgentOriginBase originBase = Campaign.Current != null
+                ? new PartyAgentOrigin(isAlly ? PartyBase.MainParty : enemyParty, character as CharacterObject)
+                : new BasicBattleAgentOrigin(character);
+                
+            AgentBuildData agentBuildData = new AgentBuildData(originBase).Equipment(randomEquipmentElements).Monster(monsterWithSuffix).Team(isAlly ? Mission.Current.PlayerTeam : Mission.Current.PlayerEnemyTeam).Formation(Mission.Current.DefenderTeam.GetFormation(character.GetFormationClass()));
 
             Agent agent = Mission.Current.SpawnAgent(agentBuildData, true);
             agent.TeleportToPosition(Agent.Main.Position);

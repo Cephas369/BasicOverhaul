@@ -24,6 +24,7 @@ namespace BasicOverhaul
         public static readonly List<(BasicCheat? Properties, MethodInfo Method)> CampaignCheats = new();
         public static readonly List<(BasicCheat? Properties, MethodInfo Method)> MissionCheats = new();
         private static List<string> _currentParameters = new();
+        private bool isMenuOpened = false;
         
         protected override void OnSubModuleLoad()
         {
@@ -40,14 +41,16 @@ namespace BasicOverhaul
                     MissionCheats.Add((cheatAttribute, method));
         }
 
+        private void MakeMenuFalse() => isMenuOpened = false;
         private void ApplyCheat(List<InquiryElement> inquiryElements)
         {
             InquiryElement inquiry = inquiryElements[0];
-            var cheatTuple = CampaignCheats[(int)inquiry.Identifier];
+            var cheatTuple = Mission.Current != null ? MissionCheats[(int)inquiry.Identifier] : CampaignCheats[(int)inquiry.Identifier];
             string[]? parameters = cheatTuple.Properties!.Parameters;
 
             if (parameters == null)
             {
+                MakeMenuFalse();
                 InformationManager.DisplayMessage(new InformationMessage((string)cheatTuple.Method.Invoke(null, new object[]{ null })));
                 return;
             }
@@ -69,6 +72,7 @@ namespace BasicOverhaul
                 if (i == parameters.Length - 1)
                     currentAction += input =>
                     {
+                        MakeMenuFalse();
                         InformationManager.DisplayMessage(new InformationMessage((string)cheatTuple.Method.Invoke(null, new object[] { _currentParameters })));
                         _currentParameters.Clear();
                     };
@@ -90,13 +94,13 @@ namespace BasicOverhaul
         protected override void OnApplicationTick(float dt)
         {
             base.OnApplicationTick(dt);
-            if (!MBCommon.IsPaused && Input.IsKeyReleased(InputKey.H) && Mission.Current?.IsInPhotoMode != true && !CampaignCheats.IsEmpty())
+            if (!MBCommon.IsPaused && Input.IsKeyReleased(InputKey.Q) && Mission.Current?.IsInPhotoMode != true && !CampaignCheats.IsEmpty() && !isMenuOpened)
             {
                 List<InquiryElement> inquiryElements = new();
                 
                 if(Mission.Current != null)
                     for (int i = 0; i < MissionCheats.Count; i++)
-                        inquiryElements.Add(new InquiryElement(i, CampaignCheats[i].Properties?.Description, null));
+                        inquiryElements.Add(new InquiryElement(i, MissionCheats[i].Properties?.Description, null));
                 else if (Campaign.Current != null)
                     for (int i = 0; i < CampaignCheats.Count; i++)
                         inquiryElements.Add(new InquiryElement(i, CampaignCheats[i].Properties?.Description, null));
@@ -105,16 +109,19 @@ namespace BasicOverhaul
 
                 MultiSelectionInquiryData inquiryData = new("Cheats", "Select a cheat to apply.", 
                     inquiryElements, true, 0,1, "Done", "Cancel",
-                    ApplyCheat, null);
+                    ApplyCheat, elements => isMenuOpened = false);
                 
-                MBInformationManager.ShowMultiSelectionInquiry(inquiryData);
+                MBInformationManager.ShowMultiSelectionInquiry(inquiryData, true);
+                isMenuOpened = true;
             }
         }
 
         public override void OnMissionBehaviorInitialize(Mission mission)
         {
             base.OnMissionBehaviorInitialize(mission);
+            BasicOverhaul.MissionCheats.SpeedOnCheat = false;
             mission.AddMissionBehavior(new WeaponryOrderMissionBehavior());
+            mission.AddMissionBehavior(new HorseCallMissionLogic());
         }
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
         {
@@ -137,19 +144,20 @@ namespace BasicOverhaul
                 campaignGameStarter.AddModel(new BOPartyModel());
                 campaignGameStarter.AddModel(new BOBattleRewardModel());
                 campaignGameStarter.AddModel(new BOVolunteerModel());
+                
+                campaignGameStarter.AddModel(new BOAgentStatCalculateModel());
+            }
+            else
+            {
+                try
+                {
+                    gameStarterObject.AddModel(new BOCustomAgentStatCalculateModel());
+                }
+                catch (Exception){}
             }
             
         }
     }
-    public static class Utils
-    {
-        public static List<Kingdom> GetEnemyKingdoms(IFaction faction) => Kingdom.All.FindAll(x => x.IsAtWarWith(faction));
-        public static TObject GetClosestObject<TTarget, TObject>(TTarget target, IEnumerable<TObject> positions) where TTarget : IMapPoint where TObject : IMapPoint
-        {
-            return positions.OrderBy(p => p.Position2D.DistanceSquared(target.Position2D)).First();
-        }
-    }
-
     public class BasicOverhaulSaveSystem : SaveableTypeDefiner
     {
         public BasicOverhaulSaveSystem() : base(63643_4241) { }

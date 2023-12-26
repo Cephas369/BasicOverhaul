@@ -30,7 +30,7 @@ namespace BasicOverhaul
     }
     internal sealed class Cheats
     {
-        [BasicCheat("Maximize kingdom", new []{ "Kingdom Name" })]
+        [BasicCheat("Maximize all kingdom stats", new []{ "Kingdom Name" })]
         [CommandLineFunctionality.CommandLineArgumentFunction("maximize_kingdom", "bo")]
         [UsedImplicitly]
         private static string AddKingdomMoney(List<string> strings)
@@ -135,7 +135,7 @@ namespace BasicOverhaul
             return "Done!";
         }
         
-        [BasicCheat("Maximize player")]
+        [BasicCheat("Maximize player stats")]
         [CommandLineFunctionality.CommandLineArgumentFunction("maximize_player", "bo")]
         [UsedImplicitly]
         public static string MaximizePlayer(List<string> strings)
@@ -212,9 +212,8 @@ namespace BasicOverhaul
         [UsedImplicitly]
         public static string DestroyDeserterParties(List<string> strings)
         {
-            if (!CampaignCheats.CheckCheatUsage(ref CampaignCheats.ErrorType))
-                return CampaignCheats.ErrorType;
-
+            if (Campaign.Current == null)
+                return "Campaign was not started.";
 
             foreach (MobileParty mobileParty in MobileParty.All.Where(x=>x.StringId.Contains("deserter")))
             {
@@ -241,5 +240,6 @@ namespace BasicOverhaul
 
             return "Done!";
         }
+        
     }
 }

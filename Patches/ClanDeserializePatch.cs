@@ -1,17 +1,19 @@
-﻿using System.Xml;
+﻿using System;
+using System.Collections.Generic;
+using System.Xml;
 using HarmonyLib;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.ModuleManager;
 using TaleWorlds.ObjectSystem;
 
 namespace BasicOverhaul.Patches;
 
-[HarmonyPatch(typeof(Clan), "Deserialize")]
-public class ClanDeserializePatch
+[HarmonyPatch(typeof(ModuleHelper), "GetXmlPath")]
+public static class LoadXMLPatch
 {
-    public static bool Prefix(MBObjectManager objectManager, XmlNode node)
+    public static void Prefix(string moduleId, string xmlName, ref string __result)
     {
-        if (BasicOverhaulConfig.Instance?.EnableDeserterParties == false && node.Attributes?["id"].Value == "deserters")
-            return false;
-        return true;
+        if (BasicOverhaulConfig.Instance?.EnableDeserterParties == false && moduleId == "BasicOverhaul" && xmlName == "deserter_clan")
+            __result = "";
     }
 }
