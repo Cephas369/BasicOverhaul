@@ -5,17 +5,22 @@ using System.Linq;
 using System.Reflection;
 using BasicOverhaul.Behaviors;
 using BasicOverhaul.Models;
+using BasicOverhaul.Patches;
+using SandBox.GauntletUI;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Map;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 using TaleWorlds.Core;
+using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.ObjectSystem;
 using TaleWorlds.SaveSystem;
+using TaleWorlds.ScreenSystem;
 
 namespace BasicOverhaul
 {
@@ -25,13 +30,14 @@ namespace BasicOverhaul
         public static readonly List<(BasicCheat? Properties, MethodInfo Method)> MissionCheats = new();
         private static List<string> _currentParameters = new();
         private bool isMenuOpened = false;
+        public static Harmony Harmony;
         
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
-            new Harmony("com.basic_overhaul").PatchAll();
-            
-            
+            Harmony = new Harmony("com.basic_overhaul");
+            Harmony.PatchAll();
+
             foreach (var method in AccessTools.GetDeclaredMethods(typeof(Cheats)))
                 if(Attribute.GetCustomAttribute(method, typeof(BasicCheat)) is BasicCheat cheatAttribute)
                     CampaignCheats.Add((cheatAttribute, method));
@@ -39,6 +45,16 @@ namespace BasicOverhaul
             foreach (var method in AccessTools.GetDeclaredMethods(typeof(MissionCheats)))
                 if(Attribute.GetCustomAttribute(method, typeof(BasicCheat)) is BasicCheat cheatAttribute)
                     MissionCheats.Add((cheatAttribute, method));
+        }
+
+        public override void OnAfterGameInitializationFinished(Game game, object starterObject)
+        {
+            base.OnAfterGameInitializationFinished(game, starterObject);
+            if (BasicOverhaulConfig.Instance?.EnablePartyScreenFilters == true)
+            {
+                Harmony.Patch(AccessTools.Method(typeof(ScreenBase), "AddLayer"), postfix: AccessTools.Method(typeof(PartyGUIPatch), "Postfix"));
+                Harmony.Patch(AccessTools.Method(typeof(PartyVM), "OnFinalize"), postfix: AccessTools.Method(typeof(PartyGUIPatch), "OnPartyVMFinalize"));
+            }
         }
 
         private void MakeMenuFalse() => isMenuOpened = false;
@@ -94,7 +110,7 @@ namespace BasicOverhaul
         protected override void OnApplicationTick(float dt)
         {
             base.OnApplicationTick(dt);
-            if (!MBCommon.IsPaused && Input.IsKeyReleased(InputKey.Q) && Mission.Current?.IsInPhotoMode != true && !CampaignCheats.IsEmpty() && !isMenuOpened)
+            if (!MBCommon.IsPaused && Input.IsKeyDown(InputKey.LeftControl) && Input.IsKeyReleased(InputKey.C) && Mission.Current?.IsInPhotoMode != true && !CampaignCheats.IsEmpty() && !isMenuOpened)
             {
                 List<InquiryElement> inquiryElements = new();
                 

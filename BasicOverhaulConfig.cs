@@ -35,6 +35,10 @@ namespace BasicOverhaul
         [SettingPropertyInteger("Count for each item on the cheat inventory screen", minValue:0, maxValue: 2000, HintText = "Leave 0 for the default game count.", RequireRestart = false, Order = 4)]
         public int CheatItemCount { get; set; } = 0;
         
+        [SettingPropertyGroup("General", GroupOrder = 1)]
+        [SettingPropertyBool("Enable filter on cheat party screen", RequireRestart = true, Order = 5)]
+        public bool EnablePartyScreenFilters { get; set; } = true;
+        
         
         [SettingPropertyInteger("Party Size Limit Multiplier", minValue: 0, maxValue: 20, "#0x", Order = 1,
             RequireRestart = false, HintText = "Leave 0 for the default game chance.")]

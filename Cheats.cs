@@ -30,64 +30,62 @@ namespace BasicOverhaul
     }
     internal sealed class Cheats
     {
-        [BasicCheat("Maximize all kingdom stats", new []{ "Kingdom Name" })]
-        [CommandLineFunctionality.CommandLineArgumentFunction("maximize_kingdom", "bo")]
+        [BasicCheat("Set campaign speed", new []{ "speed" })]
+        [CommandLineFunctionality.CommandLineArgumentFunction("set_campaign_speed", "bo")]
         [UsedImplicitly]
-        private static string AddKingdomMoney(List<string> strings)
+        public static string SetCampaignSpeed(List<string> strings)
+        {
+            string result = "Format is bo.set_campaign_speed [positive speedUp multiplier].";
+            if (!CampaignCheats.CheckCheatUsage(ref CampaignCheats.ErrorType))
+            {
+                return CampaignCheats.ErrorType;
+            }
+            if (!CampaignCheats.CheckParameters(strings, 1) || CampaignCheats.CheckHelp(strings))
+            {
+                return result;
+            }
+            float num;
+            if (!float.TryParse(strings[0], out num) || num <= 0f)
+            {
+                return result;
+            }
+            Campaign.Current.SpeedUpMultiplier = num;
+            return "Done!";
+        }
+        
+        [BasicCheat("Know all heroes")]
+        [CommandLineFunctionality.CommandLineArgumentFunction("know_all_heroes", "bo")]
+        [UsedImplicitly]
+        public static string KnowAllHeroes(List<string> strings)
         {
             if (!CampaignCheats.CheckCheatUsage(ref CampaignCheats.ErrorType))
                 return CampaignCheats.ErrorType;
 
 
-            if (!CampaignCheats.CheckParameters(strings, 1) || CampaignCheats.CheckHelp(strings))
-                return "Format uses 1 kingdom ID parameter: overhaul.maximize_kingdom [Kingdom]";
-
-            var b1 = strings[0].ToLower();
-
-            Kingdom? kingdom = null;
-
-            foreach (var k in Kingdom.All)
+            foreach (Hero hero in Hero.AllAliveHeroes)
             {
-                var id = k.Name.ToString().ToLower().Replace(" ", "");
-
-                if (id == b1)
-                    kingdom = k;
-            }
-
-            if (kingdom is null)
-                return "Could not find either required kingdom!";
-
-            foreach(Hero hero in kingdom.Heroes)
-            {
-                hero.ChangeHeroGold(99999999);
-                hero.Clan.Influence = 99999;
-                foreach (SkillObject skill in Game.Current.ObjectManager.GetObjectTypeList<SkillObject>())
-                {
-                    hero.SetSkillValue(skill, 300);
-                }
-                foreach (CharacterAttribute characterAttribute in MBObjectManager.Instance.GetObjectTypeList<CharacterAttribute>())
-                {
-                    AccessTools.Method(typeof(Hero), "SetAttributeValueInternal").Invoke(hero, new object[] { characterAttribute, 10 });
-                }
-
-            }
-            foreach(Settlement settlement in kingdom.Settlements)
-            {
-                if (settlement.IsTown || settlement.IsCastle)
-                {
-                    settlement.Town.Prosperity = 99999f;
-                    settlement.Town.Security = 9999f;
-                }
-                    
-            }
-            foreach (Village village in kingdom.Villages)
-            {
-                village.Hearth = 99999f;
+                hero.SetHasMet();
             }
 
             return "Done!";
         }
         
+        [BasicCheat("Destroy deserter parties")]
+        [CommandLineFunctionality.CommandLineArgumentFunction("destroy_deserter_parties", "bo")]
+        [UsedImplicitly]
+        public static string DestroyDeserterParties(List<string> strings)
+        {
+            if (Campaign.Current == null)
+                return "Campaign was not started.";
+
+            foreach (MobileParty mobileParty in MobileParty.All.Where(x=>x.StringId.Contains("deserter")))
+            {
+                DestroyPartyAction.Apply(PartyBase.MainParty, mobileParty);
+            }
+
+            return "Done!";
+        }
+
         [BasicCheat("Maximize settlement walls", new []{ "Settlement name", "Level" })]
         [CommandLineFunctionality.CommandLineArgumentFunction("maximize_settlement_levels", "bo")]
         [UsedImplicitly]
@@ -167,62 +165,63 @@ namespace BasicOverhaul
             return "Done!";
         }
         
-        [BasicCheat("Set campaign speed", new []{ "speed" })]
-        [CommandLineFunctionality.CommandLineArgumentFunction("set_campaign_speed", "bo")]
+        [BasicCheat("Maximize all kingdom stats", new []{ "Kingdom Name" })]
+        [CommandLineFunctionality.CommandLineArgumentFunction("maximize_kingdom", "bo")]
         [UsedImplicitly]
-        public static string SetCampaignSpeed(List<string> strings)
+        private static string AddKingdomMoney(List<string> strings)
         {
-            string result = "Format is bo.set_campaign_speed [positive speedUp multiplier].";
             if (!CampaignCheats.CheckCheatUsage(ref CampaignCheats.ErrorType))
-            {
                 return CampaignCheats.ErrorType;
-            }
+            
             if (!CampaignCheats.CheckParameters(strings, 1) || CampaignCheats.CheckHelp(strings))
+                return "Format uses 1 kingdom ID parameter: overhaul.maximize_kingdom [Kingdom]";
+
+            var b1 = strings[0].ToLower();
+
+            Kingdom? kingdom = null;
+
+            foreach (var k in Kingdom.All)
             {
-                return result;
+                var id = k.Name.ToString().ToLower().Replace(" ", "");
+
+                if (id == b1)
+                    kingdom = k;
             }
-            float num;
-            if (!float.TryParse(strings[0], out num) || num <= 0f)
+
+            if (kingdom is null)
+                return "Could not find either required kingdom!";
+
+            foreach(Hero hero in kingdom.Heroes)
             {
-                return result;
+                hero.ChangeHeroGold(99999999);
+                hero.Clan.Influence = 99999;
+                foreach (SkillObject skill in Game.Current.ObjectManager.GetObjectTypeList<SkillObject>())
+                {
+                    hero.SetSkillValue(skill, 300);
+                }
+                foreach (CharacterAttribute characterAttribute in MBObjectManager.Instance.GetObjectTypeList<CharacterAttribute>())
+                {
+                    AccessTools.Method(typeof(Hero), "SetAttributeValueInternal").Invoke(hero, new object[] { characterAttribute, 10 });
+                }
+
             }
-            Campaign.Current.SpeedUpMultiplier = num;
+            foreach(Settlement settlement in kingdom.Settlements)
+            {
+                if (settlement.IsTown || settlement.IsCastle)
+                {
+                    settlement.Town.Prosperity = 99999f;
+                    settlement.Town.Security = 9999f;
+                }
+                    
+            }
+            foreach (Village village in kingdom.Villages)
+            {
+                village.Hearth = 99999f;
+            }
+
             return "Done!";
         }
         
-        [BasicCheat("Met all heroes")]
-        [CommandLineFunctionality.CommandLineArgumentFunction("know_all_heroes", "bo")]
-        [UsedImplicitly]
-        public static string KnowAllHeroes(List<string> strings)
-        {
-            if (!CampaignCheats.CheckCheatUsage(ref CampaignCheats.ErrorType))
-                return CampaignCheats.ErrorType;
-
-
-            foreach (Hero hero in Hero.AllAliveHeroes)
-            {
-                hero.SetHasMet();
-            }
-
-            return "Done!";
-        }
-        
-        [BasicCheat("Destroy deserter parties")]
-        [CommandLineFunctionality.CommandLineArgumentFunction("destroy_deserter_parties", "bo")]
-        [UsedImplicitly]
-        public static string DestroyDeserterParties(List<string> strings)
-        {
-            if (Campaign.Current == null)
-                return "Campaign was not started.";
-
-            foreach (MobileParty mobileParty in MobileParty.All.Where(x=>x.StringId.Contains("deserter")))
-            {
-                DestroyPartyAction.Apply(PartyBase.MainParty, mobileParty);
-            }
-
-            return "Done!";
-        }
-    
         [BasicCheat("Clear player's party")]
         [CommandLineFunctionality.CommandLineArgumentFunction("clear_main_party", "bo")]
         [UsedImplicitly]
@@ -240,6 +239,5 @@ namespace BasicOverhaul
 
             return "Done!";
         }
-        
     }
 }
