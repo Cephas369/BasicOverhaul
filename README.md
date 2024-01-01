@@ -1,1 +1,1 @@
-Bannerlord C# Mod Made from scratch.
+Bannerlord C# Mod made from scratch.
