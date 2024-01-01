@@ -158,6 +158,12 @@ namespace BasicOverhaul.Behaviors
                         args.Tooltip = new TextObject("{=bo_not_enough_money}You don't have enough money");
                     }
 
+                    if (Hero.MainHero?.Clan?.Tier < 3)
+                    {
+                        args.IsEnabled = false;
+                        args.Tooltip = new TextObject("{=bo_not_enough_money}Your clan tier must be at least 3.");
+                    }
+
                     return IsBuildSlaveryPossible;
                 }, args =>
                 {
