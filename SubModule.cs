@@ -107,10 +107,13 @@ namespace BasicOverhaul
             InformationManager.ShowTextInquiry(new TextInquiryData(cheatTuple.Properties.Parameters?[0], null, true, false, 
                 "Ok", null, affirmativeActions[0], null));
         }
+
+        private bool isHotKeyPressed => (Input.IsKeyDown(InputKey.LeftControl) && Input.IsKeyReleased(InputKey.C)) ||
+                                        (Input.IsKeyReleased(InputKey.LeftControl) && Input.IsKeyDown(InputKey.C));
         protected override void OnApplicationTick(float dt)
         {
             base.OnApplicationTick(dt);
-            if (!MBCommon.IsPaused && Input.IsKeyDown(InputKey.LeftControl) && Input.IsKeyReleased(InputKey.C) && Mission.Current?.IsInPhotoMode != true && !CampaignCheats.IsEmpty() && !isMenuOpened)
+            if (!MBCommon.IsPaused && isHotKeyPressed && Mission.Current?.IsInPhotoMode != true && !CampaignCheats.IsEmpty() && !isMenuOpened)
             {
                 List<InquiryElement> inquiryElements = new();
                 
