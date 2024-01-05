@@ -148,7 +148,7 @@ namespace BasicOverhaul.Behaviors
         private void SessionLaunched(CampaignGameStarter campaignGameStarter)
         {
             campaignGameStarter.AddGameMenuOption("town", "town_build_slave",
-                "{=bo_introduce_slavery}Introduce slavery ({COST}{GOLD_ICON})", args =>
+                "{=bo_introduce_slavery}Build slave plantation ({COST}{GOLD_ICON})", args =>
                 {
                     MBTextManager.SetTextVariable("COST", string.Format("{0:n0}", _slavePlantationCost));
                     args.optionLeaveType = GameMenuOption.LeaveType.Submenu;
@@ -176,7 +176,7 @@ namespace BasicOverhaul.Behaviors
                 TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithBoth,
                 GameMenu.MenuFlags.None, this);
 
-            campaignGameStarter.AddGameMenuOption("town", "town_manage_slavery", "{=bo_manage_slavery}Manage slavery",
+            campaignGameStarter.AddGameMenuOption("town", "town_manage_slavery", "{=bo_manage_slavery}Manage plantation",
                 args =>
                 {
                     args.optionLeaveType = GameMenuOption.LeaveType.Submenu;
@@ -190,6 +190,7 @@ namespace BasicOverhaul.Behaviors
                     args.optionLeaveType = GameMenuOption.LeaveType.DonatePrisoners;
                     return true;
                 }, OpenManageSlave);
+
 
             campaignGameStarter.AddGameMenuOption("town_manage_slavery", "profit_allocation",
                 "{=bo_profit_allocation}Profit allocation", args =>
@@ -208,7 +209,7 @@ namespace BasicOverhaul.Behaviors
                             new TextObject("{=bo_town_prosperity}Town Prosperity").ToString(), null),
 
                         new(DestinationTypes.Construction,
-                            new TextObject("{=bo_construction}Construction").ToString(), null)
+                            new TextObject("{=bo_construction}Town Constructions").ToString(), null)
                     };
 
                     MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData(
@@ -225,7 +226,7 @@ namespace BasicOverhaul.Behaviors
                 }, false);
 
             campaignGameStarter.AddGameMenuOption("town_manage_slavery", "remove_slavery",
-                "{=bo_remove_slavery}Remove slavery", args =>
+                "{=bo_remove_slavery}Destroy plantation", args =>
                 {
                     args.optionLeaveType = GameMenuOption.LeaveType.ForceToGiveGoods;
                     return true;

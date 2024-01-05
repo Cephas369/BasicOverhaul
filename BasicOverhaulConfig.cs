@@ -36,9 +36,12 @@ namespace BasicOverhaul
         public int CheatItemCount { get; set; } = 0;
         
         [SettingPropertyGroup("General", GroupOrder = 1)]
-        [SettingPropertyBool("Enable filter on cheat party screen", RequireRestart = true, Order = 5)]
+        [SettingPropertyBool("Enable filters on cheat party screen", RequireRestart = true, Order = 5)]
         public bool EnablePartyScreenFilters { get; set; } = true;
         
+        [SettingPropertyGroup("General", GroupOrder = 1)]
+        [SettingPropertyBool("Enable more filters on inventory screen", RequireRestart = false, Order = 6)]
+        public bool EnableInventoryScreenFilters { get; set; } = true;
         
         [SettingPropertyInteger("Party Size Limit Multiplier", minValue: 0, maxValue: 20, "#0x", Order = 1,
             RequireRestart = false, HintText = "Leave 0 for the default game chance.")]
@@ -70,9 +73,17 @@ namespace BasicOverhaul
         public bool DisableAllyCollision { get; set; } = true;
         
         [SettingPropertyGroup("In Battle", GroupOrder = 3)]
-        [SettingPropertyInteger("Horse call required riding skill (Key X)", minValue: -1, maxValue: 300, Order = 2, RequireRestart = false, HintText = "Leave 0 to disable it.")]
-        public int HorseCallSkill { get; set; } = 200;
+        [SettingPropertyInteger("Horse call required riding skill (Key X)", minValue: -1, maxValue: 300, Order = 2, RequireRestart = false, HintText = "If you're using another mod that have this mechanic just leave it 0 to disable it.")]
+        public int HorseCallSkill { get; set; } = 0;
         
+        [SettingPropertyGroup("In Battle", GroupOrder = 4)]
+        [SettingPropertyBool("Disable boundaries crossing for player", Order = 3, RequireRestart = false)]
+        public bool DisableMissionBoundaries { get; set; } = false;
+        
+        [SettingPropertyGroup("In Battle", GroupOrder = 4)]
+        [SettingPropertyBool("Enable spawn pack animal in battles for accessing inventory", HintText = "Campaign only.", Order = 4, RequireRestart = false)]
+        public bool EnablePackMule { get; set; } = false;
+
         [SettingPropertyBool("Disable intro", Order = 1, RequireRestart = false)]
         [SettingPropertyGroup("Miscellaneous", GroupOrder = 4)]
         public bool DisableIntro { get; set; } = false;

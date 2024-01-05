@@ -6,7 +6,7 @@
     <Constant Name="Width" Value="120" />
   </Constants>
   <Window>
-    <ListPanel MarginLeft="@MarginLeft" MarginTop="40" DataSource="*DataSource" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="HorizontalLeftToRight">
+    <ListPanel MarginLeft="@MarginLeft" MarginTop="@MarginTop" DataSource="*DataSource" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="HorizontalLeftToRight">
       <Children>
 
         <AnimatedDropdownWidget DataSource="{SortOptions}" Id="DropdownParent" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="!Width" HorizontalAlignment="Center" VerticalAlignment="Center" DropdownContainerWidget="DropdownClipWidget\DropdownContainerWidget"  ListPanel="DropdownClipWidget\DropdownContainerWidget\ScrollablePanel\ClipRect\PrimaryUsageSelectorList" Button="DropdownButtonContainer\DropdownButton" CurrentSelectedIndex="@SelectedIndex" TextWidget="DropdownButtonContainer\DropdownButton\SelectedTextWidget" DropdownClipWidget="DropdownClipWidget" ScrollbarWidget="DropdownClipWidget\DropdownContainerWidget\VerticalScrollbar" >

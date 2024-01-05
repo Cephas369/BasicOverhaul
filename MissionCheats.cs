@@ -25,7 +25,7 @@ namespace BasicOverhaul
 {
     internal sealed class MissionCheats
     {
-        public static bool SpeedOnCheat;
+        public static (float combatmax, float max) SpeedOnCheat;
         [BasicCheat("Set player speed", new []{ "Speed amount" })]
         [CommandLineFunctionality.CommandLineArgumentFunction("increase_player_speed", "bo_misson")]
         [UsedImplicitly]
@@ -48,7 +48,7 @@ namespace BasicOverhaul
                 main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.MaxSpeedMultiplier, amount);
                 main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.CombatMaxSpeedMultiplier, amount);
                 main.UpdateCustomDrivenProperties();
-                SpeedOnCheat = true;
+                SpeedOnCheat = (main.AgentDrivenProperties.CombatMaxSpeedMultiplier, main.AgentDrivenProperties.MaxSpeedMultiplier);
             }
             
             return "Done!";
@@ -172,33 +172,7 @@ namespace BasicOverhaul
             
             return "Done!";
         }
-        
-        [BasicCheat("Open inventory (campaign only)")]
-        [CommandLineFunctionality.CommandLineArgumentFunction("open_inventory", "bo_misson")]
-        [UsedImplicitly]
-        private static string OpenInventory(List<string> strings)
-        {
-            if (Campaign.Current == null)
-                return "You must be in a campaign!";
-            
-            if (Agent.Main == null)
-                return "You must be in a mission and your hero must be alive.";
 
-            List<ItemObject> itemObjects = MBObjectManager.Instance.GetObjectTypeList<ItemObject>();
-            ItemRoster itemRoster = new ItemRoster();
-            
-            foreach (var item in itemObjects)
-                itemRoster.AddToCounts(item,
-                    BasicOverhaulConfig.Instance.CheatItemCount > 0 ? BasicOverhaulConfig.Instance.CheatItemCount : 10);
-            
-            InventoryManager.OpenScreenAsReceiveItems(itemRoster, new TextObject("All Items"), () =>
-            {
-                Agent.Main?.UpdateSpawnEquipmentAndRefreshVisuals(Agent.Main.Character.Equipment);
-            });
-            
-            return "Done!";
-        }
-        
         [BasicCheat("Disable/enable agents ai", new []{ "0 = Disable | 1 = Enable" })]
         [CommandLineFunctionality.CommandLineArgumentFunction("disable_agents_ai", "bo_misson")]
         [UsedImplicitly]
@@ -215,9 +189,11 @@ namespace BasicOverhaul
             if (!isNumber || number < 0 || number > 1)
                 return "First parameter must be 1 or 0.";
 
+            bool boolean = !Convert.ToBoolean(number);
+
             foreach (Agent agent in Mission.Current.Agents)
             {
-                agent.SetIsAIPaused(isNumber);
+                agent.SetIsAIPaused(boolean);
             }
             
             return "Done!";
@@ -281,12 +257,29 @@ namespace BasicOverhaul
             if(Campaign.Current != null)
                 enemyParty = PlayerEncounter.EncounteredParty != null ? PlayerEncounter.EncounteredParty : PartyBase.MainParty;
             
-            IAgentOriginBase originBase = Campaign.Current != null
-                ? new PartyAgentOrigin(isAlly ? PartyBase.MainParty : enemyParty, character as CharacterObject)
-                : new BasicBattleAgentOrigin(character);
-                
-            AgentBuildData agentBuildData = new AgentBuildData(originBase).Equipment(randomEquipmentElements).Monster(monsterWithSuffix).Team(isAlly ? Mission.Current.PlayerTeam : Mission.Current.PlayerEnemyTeam).Formation(Mission.Current.DefenderTeam.GetFormation(character.GetFormationClass()));
+            IAgentOriginBase originBase;
+            if (Mission.Current.Mode == MissionMode.Battle)
+                originBase = Campaign.Current != null
+                    ? new PartyAgentOrigin(isAlly ? PartyBase.MainParty : enemyParty, character as CharacterObject)
+                    : new BasicBattleAgentOrigin(character);
+            else
+                originBase = new SimpleAgentOrigin(character);
 
+            AgentBuildData agentBuildData = new AgentBuildData(originBase).Equipment(randomEquipmentElements)
+                .Monster(monsterWithSuffix);
+            
+            if (Mission.Current.Mode == MissionMode.Battle)
+                agentBuildData.Formation(Mission.Current.DefenderTeam?.GetFormation(character.GetFormationClass()));
+            else
+            {
+                Vec3 initialPosition = Agent.Main.Position;
+                Vec2 rotation = initialPosition.AsVec2;
+
+                agentBuildData.InitialPosition(in initialPosition).InitialDirection(in rotation);
+            }
+
+            agentBuildData.Team(isAlly ? Mission.Current.PlayerTeam : Mission.Current.PlayerEnemyTeam);
+            
             Agent agent = Mission.Current.SpawnAgent(agentBuildData, true);
             agent.TeleportToPosition(Agent.Main.Position);
             agent.SetWatchState(Agent.WatchState.Alarmed);

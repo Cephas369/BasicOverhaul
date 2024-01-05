@@ -24,9 +24,25 @@ public enum FilterType
 {
     Culture,
     Class,
-    Tier
+    Tier,
+    Type
 }
 
+public enum Side
+{
+    Left,
+    Right
+}
+
+[HarmonyPatch(typeof(PartyScreenManager), "OpenScreenAsCheat")]
+public static class CheckCheatPartyScreen
+{
+    public static bool IsCheatScreen = false;
+    public static void Prefix()
+    {
+        IsCheatScreen = true;
+    }
+}
 public class PartyGUIPatch
 {
     private static GauntletLayer _gauntletLayer;
@@ -45,7 +61,7 @@ public class PartyGUIPatch
     
     public static void Postfix(ScreenLayer layer, ScreenBase __instance)
     {
-        if (__instance is GauntletPartyScreen gauntletPartyScreen && layer is GauntletLayer gauntletLayer)
+        if (CheckCheatPartyScreen.IsCheatScreen && __instance is GauntletPartyScreen gauntletPartyScreen && layer is GauntletLayer gauntletLayer)
         {
             _partyVm = (PartyVM)AccessTools.Field(typeof(GauntletPartyScreen), "_dataSource").GetValue(gauntletPartyScreen);
             
@@ -58,17 +74,19 @@ public class PartyGUIPatch
             int lastMargin = 140;
             foreach (var filter in filters)
             {
-                dataSources.Add(filter.Key, new PartyFilterControllerVM(PartyScreenLogic.PartyRosterSide.Left, 
-                    OnFilterChange, filter.Value, lastMargin, filter.Key));
+                dataSources.Add(filter.Key, new PartyFilterControllerVM(Side.Left, 
+                    OnFilterChange, filter.Value, lastMargin, 40, filter.Key));
 
                 gauntletLayer.LoadMovie("PartyFilterController", dataSources[filter.Key]);
 
                 lastMargin += 160;
             }
+
+            CheckCheatPartyScreen.IsCheatScreen = false;
         }
     }
 
-    private static void OnFilterChange(PartyScreenLogic.PartyRosterSide partyRosterSide, (FilterType filterType, object selected) selected)
+    private static void OnFilterChange(Side partyRosterSide, (FilterType filterType, object selected) selected)
     {
         Reset();
         if (selected.selected is string text && text == "all")
@@ -139,7 +157,11 @@ public class PartyGUIPatch
             { FilterType.Class, new() },
             { FilterType.Tier, new() }
         };
-
+            
+        filters[FilterType.Culture].Add(new TroopFilterSelectorItemVM(new TextObject("All Cultures"), FilterType.Culture,"all"));
+        filters[FilterType.Class].Add(new TroopFilterSelectorItemVM(new TextObject("All Classes"), FilterType.Class,"all"));
+        filters[FilterType.Tier].Add(new TroopFilterSelectorItemVM(new TextObject("All Tiers"), FilterType.Tier,"all"));
+        
         string[] formationClasses = 
         {
             nameof(FormationClass.Infantry),
@@ -148,8 +170,8 @@ public class PartyGUIPatch
             nameof(FormationClass.HorseArcher),
         };
         
-        filters[FilterType.Culture] = MBObjectManager.Instance.GetObjectTypeList<CultureObject>()
-            .Select(x => new TroopFilterSelectorItemVM(x.Name, FilterType.Culture, x.StringId)).ToList();
+        filters[FilterType.Culture].AddRange(MBObjectManager.Instance.GetObjectTypeList<CultureObject>()
+            .Select(x => new TroopFilterSelectorItemVM(x.Name, FilterType.Culture, x.StringId)).ToList());
         
         foreach (var formationClass in formationClasses)
             filters[FilterType.Class].Add(new TroopFilterSelectorItemVM(new TextObject(InsertWhitespace(formationClass)), FilterType.Class, formationClass));
@@ -157,10 +179,6 @@ public class PartyGUIPatch
         for (int i = 1; i <= biggestTier; i++)
             filters[FilterType.Tier].Add(new TroopFilterSelectorItemVM(new TextObject(i), FilterType.Tier, i));
 
-        filters[FilterType.Culture].Add(new TroopFilterSelectorItemVM(new TextObject("All Cultures"), FilterType.Culture,"all"));
-        filters[FilterType.Class].Add(new TroopFilterSelectorItemVM(new TextObject("All Classes"), FilterType.Class,"all"));
-        filters[FilterType.Tier].Add(new TroopFilterSelectorItemVM(new TextObject("All Tiers"), FilterType.Tier,"all"));
-        
         return filters;
     }
     

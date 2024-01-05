@@ -11,18 +11,19 @@ namespace BasicOverhaul
 {
   public class PartyFilterControllerVM : ViewModel
   {
-    private readonly PartyScreenLogic.PartyRosterSide _rosterSide;
-    private readonly Action<PartyScreenLogic.PartyRosterSide, (FilterType filterType, object selected)> _onChange;
+    private readonly Side _rosterSide;
+    private readonly Action<Side, (FilterType filterType, object selected)> _onChange;
     private (FilterType filterType, object selected) _selectedItem;
-    private bool _isAscending;
     private bool _isCustomSort;
     private int _marginLeft;
-    public FilterType FilterType;
+    private int _marginTop;
+    private readonly FilterType _filterType;
     private SelectorVM<TroopFilterSelectorItemVM> _sortOptions;
 
-    public PartyFilterControllerVM(PartyScreenLogic.PartyRosterSide rosterSide, Action<PartyScreenLogic.PartyRosterSide, (FilterType filterType, object selected)> onChange, List<TroopFilterSelectorItemVM> elements, int marginLeft, FilterType filterType)
+    public PartyFilterControllerVM(Side rosterSide, Action<Side, (FilterType filterType, object selected)> onChange, List<TroopFilterSelectorItemVM> elements,
+      int marginLeft, int marginTop, FilterType filterType)
     {
-      FilterType = filterType;
+      _filterType = filterType;
       _rosterSide = rosterSide;
       SortOptions = new SelectorVM<TroopFilterSelectorItemVM>(-1, OnSortSelected);
 
@@ -31,15 +32,16 @@ namespace BasicOverhaul
         SortOptions.AddItem(element);
       }
 
-      SortOptions.SelectedIndex = SortOptions.ItemList.Count - 1;
+      SortOptions.SelectedIndex = 0;
       _onChange = onChange;
       MarginLeft = marginLeft;
+      MarginTop = marginTop;
     }
 
     private void OnSortSelected(SelectorVM<TroopFilterSelectorItemVM> selector)
     {
       _selectedItem = (selector.SelectedItem.FilterType, selector.SelectedItem.Item);
-      Action<PartyScreenLogic.PartyRosterSide, (FilterType filterType, object selected)> onSort = _onChange;
+      Action<Side, (FilterType filterType, object selected)> onSort = _onChange;
       if (onSort == null)
         return;
       onSort(_rosterSide, _selectedItem);
@@ -56,31 +58,18 @@ namespace BasicOverhaul
 
     public void SortWith(object selectedItem, bool isAscending)
     {
-      Action<PartyScreenLogic.PartyRosterSide, (FilterType filterType, object selected)> onSort = _onChange;
+      Action<Side, (FilterType filterType, object selected)> onSort = _onChange;
       if (onSort == null)
         return;
-      onSort(_rosterSide, (FilterType, selectedItem));
+      onSort(_rosterSide, (_filterType, selectedItem));
     }
 
     public void ExecuteToggleOrder()
     {
-      Action<PartyScreenLogic.PartyRosterSide, (FilterType filterType, object selected)> onSort = _onChange;
+      Action<Side, (FilterType filterType, object selected)> onSort = _onChange;
       if (onSort == null)
         return;
       onSort(_rosterSide, _selectedItem);
-    }
-
-    [DataSourceProperty]
-    public bool IsCustomSort
-    {
-      get => _isCustomSort;
-      set
-      {
-        if (value == _isCustomSort)
-          return;
-        _isCustomSort = value;
-        OnPropertyChangedWithValue(value);
-      }
     }
 
     [DataSourceProperty]
@@ -105,6 +94,20 @@ namespace BasicOverhaul
         if (value == _marginLeft)
           return;
         _marginLeft = value;
+        
+        OnPropertyChangedWithValue(value);
+      }
+    }
+    
+    [DataSourceProperty]
+    public int MarginTop
+    {
+      get => _marginTop;
+      set
+      {
+        if (value == _marginTop)
+          return;
+        _marginTop = value;
         
         OnPropertyChangedWithValue(value);
       }

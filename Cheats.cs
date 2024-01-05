@@ -165,7 +165,7 @@ namespace BasicOverhaul
             return "Done!";
         }
         
-        [BasicCheat("Maximize all kingdom stats", new []{ "Kingdom Name" })]
+        [BasicCheat("Maximize every kingdom stats", new []{ "Kingdom Name" })]
         [CommandLineFunctionality.CommandLineArgumentFunction("maximize_kingdom", "bo")]
         [UsedImplicitly]
         private static string AddKingdomMoney(List<string> strings)
@@ -217,24 +217,6 @@ namespace BasicOverhaul
             foreach (Village village in kingdom.Villages)
             {
                 village.Hearth = 99999f;
-            }
-
-            return "Done!";
-        }
-        
-        [BasicCheat("Clear player's party")]
-        [CommandLineFunctionality.CommandLineArgumentFunction("clear_main_party", "bo")]
-        [UsedImplicitly]
-        public static string CleanMainParty(List<string> strings)
-        {
-            if (!CampaignCheats.CheckCheatUsage(ref CampaignCheats.ErrorType))
-                return CampaignCheats.ErrorType;
-
-
-            foreach (var troopElement in PartyBase.MainParty.MemberRoster.GetTroopRoster())
-            {
-                if(troopElement.Character != CharacterObject.PlayerCharacter)
-                    PartyBase.MainParty.MemberRoster.RemoveTroop(troopElement.Character);
             }
 
             return "Done!";

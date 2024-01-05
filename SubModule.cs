@@ -6,9 +6,13 @@ using System.Reflection;
 using BasicOverhaul.Behaviors;
 using BasicOverhaul.Models;
 using BasicOverhaul.Patches;
+using Helpers;
+using SandBox;
 using SandBox.GauntletUI;
+using SandBox.Missions.MissionLogics;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Map;
+using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
@@ -18,6 +22,9 @@ using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.Missions.Handlers;
+using TaleWorlds.MountAndBlade.Source.Missions;
+using TaleWorlds.MountAndBlade.Source.Missions.Handlers.Logic;
 using TaleWorlds.ObjectSystem;
 using TaleWorlds.SaveSystem;
 using TaleWorlds.ScreenSystem;
@@ -108,8 +115,7 @@ namespace BasicOverhaul
                 "Ok", null, affirmativeActions[0], null));
         }
 
-        private bool isHotKeyPressed => (Input.IsKeyDown(InputKey.LeftControl) && Input.IsKeyReleased(InputKey.C)) ||
-                                        (Input.IsKeyReleased(InputKey.LeftControl) && Input.IsKeyDown(InputKey.C));
+        private bool isHotKeyPressed => Input.IsKeyReleased(InputKey.U);
         protected override void OnApplicationTick(float dt)
         {
             base.OnApplicationTick(dt);
@@ -138,9 +144,11 @@ namespace BasicOverhaul
         public override void OnMissionBehaviorInitialize(Mission mission)
         {
             base.OnMissionBehaviorInitialize(mission);
-            BasicOverhaul.MissionCheats.SpeedOnCheat = false;
             mission.AddMissionBehavior(new WeaponryOrderMissionBehavior());
             mission.AddMissionBehavior(new HorseCallMissionLogic());
+            
+            if (Campaign.Current != null && mission.CombatType == Mission.MissionCombatType.Combat && BasicOverhaulConfig.Instance?.EnablePackMule == true)
+                mission.AddMissionBehavior(new PackMuleBehavior());
         }
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
         {
@@ -174,7 +182,6 @@ namespace BasicOverhaul
                 }
                 catch (Exception){}
             }
-            
         }
     }
     public class BasicOverhaulSaveSystem : SaveableTypeDefiner
