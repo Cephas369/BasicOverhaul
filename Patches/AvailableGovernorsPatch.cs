@@ -14,7 +14,7 @@ public static class AvailableGovernorsPatch
     public static void ConstructorPostfix(SettlementGovernorSelectionVM __instance, Settlement settlement,
         Action<Hero> onDone)
     {
-        if (settlement != null)
+        if (BasicOverhaulConfig.Instance?.EnableGovernorNotables == true && settlement != null)
         {
             foreach (var notable in settlement.Notables)
             {

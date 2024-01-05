@@ -165,9 +165,13 @@ namespace BasicOverhaul
                     campaignGameStarter.AddModel(new SlaveBuildingConstructionModel());
                     campaignGameStarter.AddModel(new SlaveSettlementProsperityModel());
                 }
-                
-                campaignGameStarter.AddBehavior(new NotableBehavior());
-                campaignGameStarter.AddModel(new BONotableSpawnModel());
+
+                if (BasicOverhaulConfig.Instance?.EnableGovernorNotables == true)
+                {
+                    campaignGameStarter.AddBehavior(new NotableBehavior());
+                    campaignGameStarter.AddModel(new BONotableSpawnModel());
+                }
+
                 campaignGameStarter.AddModel(new BOPartyModel());
                 campaignGameStarter.AddModel(new BOBattleRewardModel());
                 campaignGameStarter.AddModel(new BOVolunteerModel());

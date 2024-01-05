@@ -43,6 +43,10 @@ namespace BasicOverhaul
         [SettingPropertyBool("Enable more filters on inventory screen", RequireRestart = false, Order = 6)]
         public bool EnableInventoryScreenFilters { get; set; } = true;
         
+        [SettingPropertyGroup("General", GroupOrder = 1)]
+        [SettingPropertyBool("Enable being possible for notables being governors", RequireRestart = true, Order = 7)]
+        public bool EnableGovernorNotables { get; set; } = true;
+        
         [SettingPropertyInteger("Party Size Limit Multiplier", minValue: 0, maxValue: 20, "#0x", Order = 1,
             RequireRestart = false, HintText = "Leave 0 for the default game chance.")]
         [SettingPropertyGroup("Campaign Modifiers", GroupOrder = 2)]

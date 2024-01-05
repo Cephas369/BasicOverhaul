@@ -25,12 +25,6 @@ internal class PackMuleBehavior : MissionBehavior
     private bool focused;
     private InputKey actionKey = (InputKey)Enum.Parse(typeof(InputKey), HotKeyManager.GetHotKeyId("CombatHotKeyCategory", 13));
     
-    private readonly string[] _muleLoadHarnesses =
-    {
-        "mule_load_a",
-        "mule_load_b",
-        "mule_load_c"
-    };
     public override void OnTeamDeployed(Team team)
     {
         base.OnTeamDeployed(team);
@@ -38,13 +32,27 @@ internal class PackMuleBehavior : MissionBehavior
         {
             string packAgentId;
             TerrainType terrainType = Campaign.Current.MapSceneWrapper.GetFaceTerrainType(Hero.MainHero.PartyBelongedTo.CurrentNavigationFace);
-            
+
+            string[] _muleLoadHarnesses;
             if (terrainType == TerrainType.Desert)
+            {
                 packAgentId = "camel";
-            else if (terrainType == TerrainType.Snow)
-                packAgentId = "vlandia_horse_tournament";
+                _muleLoadHarnesses = new []
+                {
+                  "camel_saddle_a",
+                  "camel_saddle_b"
+                };
+            }
             else
+            {
                 packAgentId = "mule";
+                _muleLoadHarnesses =new []
+                {
+                    "mule_load_a",
+                    "mule_load_b",
+                    "mule_load_c"
+                };
+            }
             
             ItemObject animal = MBObjectManager.Instance.GetObject<ItemObject>(packAgentId);
             if (animal != null)
