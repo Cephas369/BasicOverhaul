@@ -8,7 +8,9 @@ using BasicOverhaul.Models;
 using BasicOverhaul.Patches;
 using Helpers;
 using SandBox;
+using SandBox.Conversation.MissionLogics;
 using SandBox.GauntletUI;
+using SandBox.Missions.AgentBehaviors;
 using SandBox.Missions.MissionLogics;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Map;
@@ -67,6 +69,8 @@ namespace BasicOverhaul
         private void MakeMenuFalse() => isMenuOpened = false;
         private void ApplyCheat(List<InquiryElement> inquiryElements)
         {
+            if (!inquiryElements.Any())
+                return;
             InquiryElement inquiry = inquiryElements[0];
             var cheatTuple = Mission.Current != null ? MissionCheats[(int)inquiry.Identifier] : CampaignCheats[(int)inquiry.Identifier];
             string[]? parameters = cheatTuple.Properties!.Parameters;
@@ -141,13 +145,16 @@ namespace BasicOverhaul
             }
         }
 
+        private bool IsSiege => MapEvent.PlayerMapEvent?.IsSiegeAssault == true || MapEvent.PlayerMapEvent?.IsSiegeAmbush == true || MapEvent.PlayerMapEvent?.IsSiegeOutside== true;
         public override void OnMissionBehaviorInitialize(Mission mission)
         {
             base.OnMissionBehaviorInitialize(mission);
-            mission.AddMissionBehavior(new WeaponryOrderMissionBehavior());
+            if(mission.CombatType != Mission.MissionCombatType.ArenaCombat && !IsSiege && mission.CombatType != Mission.MissionCombatType.NoCombat)
+                mission.AddMissionBehavior(new WeaponryOrderMissionBehavior());
+            
             mission.AddMissionBehavior(new HorseCallMissionLogic());
             
-            if (Campaign.Current != null && mission.CombatType == Mission.MissionCombatType.Combat && BasicOverhaulConfig.Instance?.EnablePackMule == true)
+            if (Campaign.Current != null && mission.CombatType == Mission.MissionCombatType.Combat  && BasicOverhaulConfig.Instance?.EnablePackMule == true)
                 mission.AddMissionBehavior(new PackMuleBehavior());
         }
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
@@ -204,3 +211,4 @@ namespace BasicOverhaul
         }
     }
 }
+

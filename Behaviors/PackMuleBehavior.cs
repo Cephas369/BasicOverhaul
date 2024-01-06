@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Linq;
 using HarmonyLib;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Inventory;
@@ -100,18 +101,11 @@ internal class PackMuleBehavior : MissionBehavior
         base.OnMissionTick(dt);
 
         if (Input.IsKeyReleased(actionKey) && focused)
-        {
-            ItemRoster itemRoster = new ItemRoster();
-            if(Game.Current.CheatMode)
-                MBObjectManager.Instance.GetObjectTypeList<ItemObject>().ForEach(item=>itemRoster.AddToCounts(new EquipmentElement(item), 1));
-            
-            InventoryManager.OpenScreenAsReceiveItems(itemRoster, new TextObject(Game.Current.CheatMode ? "All Items" : "Trash"),
-                () =>
-                {
-                    if (Agent.Main?.Character is CharacterObject characterObject)
-                        Agent.Main.UpdateSpawnEquipmentAndRefreshVisuals(characterObject.FirstBattleEquipment);
-                });
-        }
+            InventoryManager.OpenScreenAsInventory(()=>
+            {   
+                if (Agent.Main?.Character is CharacterObject characterObject)
+                    Agent.Main.UpdateSpawnEquipmentAndRefreshVisuals(characterObject.FirstBattleEquipment);
+            });
     }
 
     public override void OnFocusLost(Agent agent, IFocusable focusableObject)
