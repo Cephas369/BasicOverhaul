@@ -111,7 +111,7 @@ namespace BasicOverhaul
                 return "You must be in a mission and your hero must be alive.";
             
             List<InquiryElement> characterElements = MBObjectManager.Instance.GetObjectTypeList<BasicCharacterObject>()
-                .Where(x=>x.IsSoldier && !x.IsObsolete)
+                .Where(x=>x.IsSoldier && !x.IsObsolete || (x is CharacterObject characterObject && characterObject.IsRegular))
                 .Select(x=>new InquiryElement(x, x.Name.ToString(), new ImageIdentifier(CharacterCode.CreateFrom(x))))
                 .OrderBy(x=>x.Title).ToList();
             

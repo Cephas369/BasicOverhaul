@@ -12,6 +12,7 @@ using SandBox.Conversation.MissionLogics;
 using SandBox.GauntletUI;
 using SandBox.Missions.AgentBehaviors;
 using SandBox.Missions.MissionLogics;
+using SandBox.Tournaments.MissionLogics;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Map;
 using TaleWorlds.CampaignSystem.MapEvents;
@@ -145,16 +146,16 @@ namespace BasicOverhaul
             }
         }
 
-        private bool IsSiege => MapEvent.PlayerMapEvent?.IsSiegeAssault == true || MapEvent.PlayerMapEvent?.IsSiegeAmbush == true || MapEvent.PlayerMapEvent?.IsSiegeOutside== true;
+        private bool IsSiege => Campaign.Current != null && (MapEvent.PlayerMapEvent?.IsSiegeAssault == true || MapEvent.PlayerMapEvent?.IsSiegeAmbush == true || MapEvent.PlayerMapEvent?.IsSiegeOutside== true);
         public override void OnMissionBehaviorInitialize(Mission mission)
         {
             base.OnMissionBehaviorInitialize(mission);
-            if(mission.CombatType != Mission.MissionCombatType.ArenaCombat && !IsSiege && mission.CombatType != Mission.MissionCombatType.NoCombat)
+            if(mission.CombatType != Mission.MissionCombatType.ArenaCombat && mission.CombatType != Mission.MissionCombatType.NoCombat && !mission.HasMissionBehavior<TournamentBehavior>())
                 mission.AddMissionBehavior(new WeaponryOrderMissionBehavior());
             
             mission.AddMissionBehavior(new HorseCallMissionLogic());
             
-            if (Campaign.Current != null && mission.CombatType == Mission.MissionCombatType.Combat  && BasicOverhaulConfig.Instance?.EnablePackMule == true)
+            if (Campaign.Current != null && mission.CombatType == Mission.MissionCombatType.Combat  && BasicOverhaulConfig.Instance?.EnablePackMule == true && !IsSiege)
                 mission.AddMissionBehavior(new PackMuleBehavior());
         }
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
