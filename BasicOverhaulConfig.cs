@@ -48,29 +48,29 @@ namespace BasicOverhaul
         public bool EnableGovernorNotables { get; set; } = true;
         
         [SettingPropertyInteger("Party Size Limit Multiplier", minValue: 0, maxValue: 20, "#0x", Order = 1,
-            RequireRestart = false, HintText = "Leave 0 for the default game chance.")]
+            RequireRestart = false, HintText = "OBS: Putting a high value will lag your game. Leave 0 for the default game chance.")]
         [SettingPropertyGroup("Campaign Modifiers", GroupOrder = 2)]
-        public int PartySizeLimitMultiplier { get; set; } = 2;
+        public int PartySizeLimitMultiplier { get; set; } = 0;
         
         [SettingPropertyFloatingInteger("Global Loot Chance", minValue: 0f, maxValue: 1f, "#0%", Order = 2, RequireRestart = false, HintText = "Leave 0 for the default game chance.")]
         [SettingPropertyGroup("Campaign Modifiers", GroupOrder = 2)]
-        public float GlobalLootChance { get; set; } = 3;
+        public float GlobalLootChance { get; set; } = 0;
         
         [SettingPropertyInteger("Battle Renown Gain Multiplier", minValue: 0, maxValue: 100, "#0x", Order = 3, RequireRestart = false, HintText = "Leave 0 for the default game chance.")]
         [SettingPropertyGroup("Campaign Modifiers", GroupOrder = 2)]
-        public int BattleRenownGainMultiplier { get; set; } = 4;
+        public int BattleRenownGainMultiplier { get; set; } = 0;
         
         [SettingPropertyInteger("Battle Influence Gain Multiplier", minValue: 0, maxValue: 100, "#0x", Order = 4, RequireRestart = false, HintText = "Leave 0 for the default game chance.")]
         [SettingPropertyGroup("Campaign Modifiers", GroupOrder = 2)]
-        public int BattleInfluenceGainMultiplier { get; set; } = 5;
+        public int BattleInfluenceGainMultiplier { get; set; } = 0;
         
         [SettingPropertyFloatingInteger("Battle Morale Gain Multiplier", minValue: 0f, maxValue: 10f, "#0x", Order = 5, RequireRestart = false, HintText = "Leave 0 for the default game chance.")]
         [SettingPropertyGroup("Campaign Modifiers", GroupOrder = 2)]
-        public float BattleMoraleGainMultiplier { get; set; } = 6;
+        public float BattleMoraleGainMultiplier { get; set; } = 0;
         
         [SettingPropertyInteger("Recruitment multiplier for parties", minValue: 0, maxValue: 20, "#0x", Order = 6, RequireRestart = false, HintText = "Increases the amount that parties can recruit from settlements and the volunteers production. Leave 0 for the default game chance.")]
         [SettingPropertyGroup("Campaign Modifiers", GroupOrder = 2)]
-        public int RecruitmentRate { get; set; } = 7;
+        public int RecruitmentRate { get; set; } = 0;
         
         [SettingPropertyGroup("In Battle", GroupOrder = 3)]
         [SettingPropertyBool("Disable attack collisions for allies", Order = 1, RequireRestart = false)]
@@ -87,6 +87,10 @@ namespace BasicOverhaul
         [SettingPropertyGroup("In Battle", GroupOrder = 4)]
         [SettingPropertyBool("Enable spawn pack animal in battles for accessing inventory", HintText = "Campaign only.", Order = 4, RequireRestart = false)]
         public bool EnablePackMule { get; set; } = false;
+        
+        [SettingPropertyGroup("In Battle", GroupOrder = 4)]
+        [SettingPropertyBool("Enable weaponry order (CTRL + W)", HintText = "", Order = 5, RequireRestart = false)]
+        public bool EnableWeaponryOrder { get; set; } = true;
 
         [SettingPropertyBool("Disable intro", Order = 1, RequireRestart = false)]
         [SettingPropertyGroup("Miscellaneous", GroupOrder = 4)]

@@ -21,13 +21,16 @@ public static class MeleeHitCallbackPatch
         ref HitParticleResultData hitParticleResultData,
         bool crushedThroughWithoutAgentCollision)
     {
-        if (attacker != null && victim != null && BasicOverhaulConfig.Instance?.DisableAllyCollision == true)
+        if (attacker != null && victim != null)
         {
-            if (!attacker.IsEnemyOf(victim) && victim.IsHuman)
+            if (BasicOverhaulConfig.Instance?.DisableAllyCollision == true && !attacker.IsEnemyOf(victim) && victim.IsHuman)
             {
                 colReaction = MeleeCollisionReaction.ContinueChecking;
                 return false;
             }
+
+            if (MissionCheats.IsPlayerDamageOp && attacker.IsMainAgent)
+                colReaction = MeleeCollisionReaction.SlicedThrough;
         }
 
         return true;

@@ -28,9 +28,9 @@ namespace BasicOverhaul
             Parameters = parameters;
         }
     }
-    internal sealed class Cheats
+    public static class Cheats
     {
-        [BasicCheat("Set campaign speed", new []{ "speed" })]
+        [BasicCheat("Set campaign speed", new []{ "Speed" })]
         [CommandLineFunctionality.CommandLineArgumentFunction("set_campaign_speed", "bo")]
         [UsedImplicitly]
         public static string SetCampaignSpeed(List<string> strings)
@@ -141,27 +141,32 @@ namespace BasicOverhaul
             if (!CampaignCheats.CheckCheatUsage(ref CampaignCheats.ErrorType))
                 return CampaignCheats.ErrorType;
 
-            Hero.MainHero.ChangeHeroGold(999999999);
-            Hero.MainHero.ChangeHeroGold(999999999);
+            MaximizeHero(Hero.MainHero);
+            
+            return "Done!";
+        }
+        
+        [BasicCheat("Maximize clan hero stats")]
+        [CommandLineFunctionality.CommandLineArgumentFunction("maximize_clan_hero", "bo")]
+        [UsedImplicitly]
+        public static string MaximizeHero(List<string> strings)
+        {
+            if (Campaign.Current == null || Clan.PlayerClan == null)
+                return "You must be in a campaign and you must have a clan.";
 
-            Clan.PlayerClan.Influence = 99999999;
-            Clan.PlayerClan.Renown = 5000000;
+            List<InquiryElement> heroes = Clan.PlayerClan.Heroes.Where(x=>x.IsAlive).Select(x =>
+                new InquiryElement(x, x.Name.ToString(),
+                    new ImageIdentifier(CharacterCode.CreateFrom(x.CharacterObject)))).ToList();
+            
+            MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData("Heroes", null, heroes, true, 0,
+                1, "Done", null, list =>
+                {
+                    if (list.Any() && list[0].Identifier is Hero hero)
+                        MaximizeHero(hero);
+                    
+                }, null));
             
 
-            foreach (SkillObject skill in Game.Current.ObjectManager.GetObjectTypeList<SkillObject>())
-            {
-                
-                Hero.MainHero.SetSkillValue(skill, 300);
-            }
-            foreach(CharacterAttribute characterAttribute in MBObjectManager.Instance.GetObjectTypeList<CharacterAttribute>())
-            {
-                AccessTools.Method(typeof(Hero), "SetAttributeValueInternal").Invoke(Hero.MainHero, new object[] { characterAttribute, 10 });
-            }
-
-            foreach (PerkObject perkObject in PerkObject.All)
-            {
-                AccessTools.Method(typeof(Hero), "SetPerkValueInternal").Invoke(Hero.MainHero, new object[] { perkObject, true });
-            }
             return "Done!";
         }
         
@@ -191,20 +196,9 @@ namespace BasicOverhaul
             if (kingdom is null)
                 return "Could not find either required kingdom!";
 
-            foreach(Hero hero in kingdom.Heroes)
-            {
-                hero.ChangeHeroGold(99999999);
-                hero.Clan.Influence = 99999;
-                foreach (SkillObject skill in Game.Current.ObjectManager.GetObjectTypeList<SkillObject>())
-                {
-                    hero.SetSkillValue(skill, 300);
-                }
-                foreach (CharacterAttribute characterAttribute in MBObjectManager.Instance.GetObjectTypeList<CharacterAttribute>())
-                {
-                    AccessTools.Method(typeof(Hero), "SetAttributeValueInternal").Invoke(hero, new object[] { characterAttribute, 10 });
-                }
-
-            }
+            foreach (Hero hero in kingdom.Heroes)
+                MaximizeHero(hero);
+            
             foreach(Settlement settlement in kingdom.Settlements)
             {
                 if (settlement.IsTown || settlement.IsCastle)
@@ -220,6 +214,32 @@ namespace BasicOverhaul
             }
 
             return "Done!";
+        }
+
+        private static void MaximizeHero(Hero hero)
+        {
+            hero.ChangeHeroGold(999999999);
+
+            if (hero.Clan != null)
+            {
+                hero.Clan.Influence = 99999999;
+                hero.Clan.Renown = 5000000;
+            }
+
+            foreach (SkillObject skill in Game.Current.ObjectManager.GetObjectTypeList<SkillObject>())
+            {
+                
+                hero.SetSkillValue(skill, 300);
+            }
+            foreach(CharacterAttribute characterAttribute in MBObjectManager.Instance.GetObjectTypeList<CharacterAttribute>())
+            {
+                AccessTools.Method(typeof(Hero), "SetAttributeValueInternal").Invoke(hero, new object[] { characterAttribute, 10 });
+            }
+
+            foreach (PerkObject perkObject in PerkObject.All)
+            {
+                AccessTools.Method(typeof(Hero), "SetPerkValueInternal").Invoke(hero, new object[] { perkObject, true });
+            }
         }
     }
 }

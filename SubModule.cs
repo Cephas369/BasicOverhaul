@@ -48,7 +48,9 @@ namespace BasicOverhaul
             Harmony = new Harmony("com.basic_overhaul");
             Harmony.PatchAll();
 
-            foreach (var method in AccessTools.GetDeclaredMethods(typeof(Cheats)))
+            List<MethodInfo> Cheats = AccessTools.GetDeclaredMethods(typeof(Cheats));
+            Cheats.AddRange(AccessTools.GetDeclaredMethods(typeof(NativeCheats)));
+            foreach (var method in Cheats)
                 if(Attribute.GetCustomAttribute(method, typeof(BasicCheat)) is BasicCheat cheatAttribute)
                     CampaignCheats.Add((cheatAttribute, method));
             
@@ -150,7 +152,8 @@ namespace BasicOverhaul
         public override void OnMissionBehaviorInitialize(Mission mission)
         {
             base.OnMissionBehaviorInitialize(mission);
-            if(mission.CombatType != Mission.MissionCombatType.ArenaCombat && mission.CombatType != Mission.MissionCombatType.NoCombat && !mission.HasMissionBehavior<TournamentBehavior>())
+            if(BasicOverhaulConfig.Instance?.EnableWeaponryOrder == true && mission.Mode != MissionMode.Battle && mission.CombatType != Mission.MissionCombatType.ArenaCombat
+               && mission.CombatType != Mission.MissionCombatType.NoCombat && !mission.HasMissionBehavior<TournamentBehavior>())
                 mission.AddMissionBehavior(new WeaponryOrderMissionBehavior());
             
             mission.AddMissionBehavior(new HorseCallMissionLogic());

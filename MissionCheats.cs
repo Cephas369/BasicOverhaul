@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SandBox.GameComponents;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.AgentOrigins;
@@ -23,9 +24,11 @@ using TaleWorlds.MountAndBlade.CustomBattle.CustomBattle;
 
 namespace BasicOverhaul
 {
-    internal sealed class MissionCheats
+    public static class MissionCheats
     {
         public static (float combatmax, float max) SpeedOnCheat;
+        public static bool IsPlayerDamageOp;
+        
         [BasicCheat("Set player speed", new []{ "Speed amount" })]
         [CommandLineFunctionality.CommandLineArgumentFunction("increase_player_speed", "bo_misson")]
         [UsedImplicitly]
@@ -102,6 +105,36 @@ namespace BasicOverhaul
             return "Done!";
         }
         
+        [BasicCheat("Make player invincible")]
+        [CommandLineFunctionality.CommandLineArgumentFunction("make_player_invincible", "bo_misson")]
+        [UsedImplicitly]
+        private static string MakePlayerInvincible(List<string> strings)
+        {
+            if (Mission.Current == null || Agent.Main == null)
+                return "You must be in a mission and your character must be alive!";
+            
+            
+            Agent.Main.OnAgentHealthChanged += (agent, health, newHealth) =>
+            {
+                agent.Health = agent.HealthLimit;
+            };
+
+            return "Done!";
+        }
+        
+        [BasicCheat("Enable/disable OP player damage")]
+        [CommandLineFunctionality.CommandLineArgumentFunction("switch_player_damage_op", "bo_misson")]
+        [UsedImplicitly]
+        private static string MakePlayerDamageOP(List<string> strings)
+        {
+            if (Mission.Current == null || Agent.Main == null)
+                return "You must be in a mission and your character must be alive!";
+            
+            IsPlayerDamageOp = !IsPlayerDamageOp;
+
+            return "Done!";
+        }
+        
         [BasicCheat("Spawn character")]
         [CommandLineFunctionality.CommandLineArgumentFunction("spawn_character", "bo_misson")]
         [UsedImplicitly]
@@ -111,7 +144,7 @@ namespace BasicOverhaul
                 return "You must be in a mission and your hero must be alive.";
             
             List<InquiryElement> characterElements = MBObjectManager.Instance.GetObjectTypeList<BasicCharacterObject>()
-                .Where(x=>x.IsSoldier && !x.IsObsolete || (x is CharacterObject characterObject && characterObject.IsRegular))
+                .Where(x=>x.IsSoldier && !x.IsObsolete || (x is CharacterObject characterObject && characterObject.Occupation == Occupation.Mercenary))
                 .Select(x=>new InquiryElement(x, x.Name.ToString(), new ImageIdentifier(CharacterCode.CreateFrom(x))))
                 .OrderBy(x=>x.Title).ToList();
             
@@ -138,10 +171,10 @@ namespace BasicOverhaul
                                             else
                                                 InformationManager.DisplayMessage(new InformationMessage("Value must be 'ally' or 'enemy'."));
                                             
-                                        }, null));
+                                        }, null), true);
                                 }
-                            }, null));
-                    }, null));
+                            }, null), true);
+                    }, null), true);
             return "Done!";
         }
         
@@ -168,7 +201,7 @@ namespace BasicOverhaul
                         MissionWeapon missionWeapon = new MissionWeapon(itemObject, new ItemModifier(), Banner.CreateOneColoredEmptyBanner(1));
                         MatrixFrame frame = Agent.Main.Frame;
                         Mission.Current?.SpawnWeaponWithNewEntityAux(missionWeapon, Mission.WeaponSpawnFlags.WithPhysics, frame, 0, null, false);
-                    }, null));
+                    }, null), true);
             
             return "Done!";
         }
