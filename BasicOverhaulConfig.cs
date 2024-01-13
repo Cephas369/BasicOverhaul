@@ -20,7 +20,7 @@ namespace BasicOverhaul
         
         
         [SettingPropertyGroup("General", GroupOrder = 1)]
-        [SettingPropertyBool("Enable slave system", Order = 1, RequireRestart = false)]
+        [SettingPropertyBool("Enable slave system", Order = 1, RequireRestart = true)]
         public bool EnableSlaveSystem { get; set; } = true;
         
         [SettingPropertyGroup("General", GroupOrder = 1)]

@@ -77,11 +77,11 @@ namespace BasicOverhaul
         {
             if (Campaign.Current == null)
                 return "Campaign was not started.";
-
-            foreach (MobileParty mobileParty in MobileParty.All.Where(x=>x.StringId.Contains("deserter")))
-            {
-                DestroyPartyAction.Apply(PartyBase.MainParty, mobileParty);
-            }
+            
+            List<MobileParty> deserterParties = MobileParty.All.Where(x => x.StringId.Contains("deserter")).ToList();
+            
+            for(int i = deserterParties.Count() - 1; i >= 0; i--)
+                DestroyPartyAction.Apply(PartyBase.MainParty, deserterParties[i]);
 
             return "Done!";
         }
@@ -222,7 +222,7 @@ namespace BasicOverhaul
 
             if (hero.Clan != null)
             {
-                hero.Clan.Influence = 99999999;
+                hero.Clan.Influence = 9999999;
                 hero.Clan.Renown = 5000000;
             }
 

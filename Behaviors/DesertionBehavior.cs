@@ -33,8 +33,23 @@ namespace BasicOverhaul.Behaviors
             CampaignEvents.MapEventEnded.AddNonSerializedListener(this, CheckDesertion);
             CampaignEvents.SettlementEntered.AddNonSerializedListener(this, JoinSettlementMilitia);
             CampaignEvents.HourlyTickPartyEvent.AddNonSerializedListener(this, GoToSettlementBehavior);
+            CampaignEvents.HeroPrisonerTaken.AddNonSerializedListener(this, OnHeroPrisonerTaken);
+            CampaignEvents.OnHeroJoinedPartyEvent.AddNonSerializedListener(this, OnHeroJoinedParty);
 
         }
+
+        private void OnHeroJoinedParty(Hero hero, MobileParty party)
+        {
+            if (party?.StringId.Contains("deserter") == true)
+                party.MemberRoster.RemoveIf(x => x.Character?.HeroObject == hero);
+        }
+
+        private void OnHeroPrisonerTaken(PartyBase party, Hero hero)
+        {
+           if(party.MobileParty?.StringId.Contains("deserter") == true)
+               EndCaptivityAction.ApplyByReleasedAfterBattle(hero);
+        }
+
         private void GoToSettlementBehavior(MobileParty party)
         {
             if(_partiesGoingToSettlement.ContainsKey(party))

@@ -136,8 +136,8 @@ namespace BasicOverhaul.Behaviors
             if (SlaveData.ContainsKey(settlement.StringId) &&
                 (newOwner.MapFaction.IsAtWarWith(Hero.MainHero.MapFaction) || newOwner.GetRelationWithPlayer() < 0))
             {
-                SlaveData.Remove(Settlement.CurrentSettlement.StringId);
-                TextObject textObject = new TextObject("{=slave_settlement_owner_change}{SETTLEMENT} have been occupied by an enemy and you plantation have been destroyed");
+                SlaveData.Remove(settlement.StringId);
+                TextObject textObject = new TextObject("{=slave_settlement_owner_change}{SETTLEMENT} have been occupied by an enemy and your plantation has been destroyed");
                 textObject.SetTextVariable("SETTLEMENT", settlement.Name);
                 InformationManager.ShowInquiry(new InquiryData("{=event}Event", textObject.ToString(), true, false, "{=done}Done", "", null, null));
             }
@@ -282,6 +282,9 @@ namespace BasicOverhaul.Behaviors
         public override void SyncData(IDataStore dataStore)
         {
             dataStore.SyncData("slaveData", ref SlaveData);
+            
+            if (dataStore.IsLoading && SlaveData == null)
+                SlaveData = new();
         }
     }
 }

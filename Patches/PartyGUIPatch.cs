@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -34,128 +35,113 @@ public enum Side
     Right
 }
 
-[HarmonyPatch(typeof(PartyScreenManager), "OpenScreenAsCheat")]
-public static class CheckCheatPartyScreen
-{
-    public static bool IsCheatScreen = false;
-    public static void Prefix()
-    {
-        IsCheatScreen = true;
-    }
-}
 public class PartyGUIPatch
 {
     private static GauntletLayer _gauntletLayer;
-    private static Dictionary<FilterType, PartyFilterControllerVM> dataSources;
-    private static Dictionary<FilterType, Delegate> filterMethods = new()
+    private static Dictionary<Side, List<(FilterType filterType, PartyFilterControllerVM partyFilterControllers)>> dataSources;
+    private static Dictionary<FilterType, object> filterMethods = new()
     {
-        { FilterType.Culture, null },
+        { FilterType.Tier, null },
         { FilterType.Class, null },
-        { FilterType.Tier, null }
+        { FilterType.Culture, null },
     };
     private static PartyVM _partyVm;
-    private static MBReadOnlyList<PartyCharacterVM> original = new();
-    
+
     private static MethodInfo RefreshTopInformation = AccessTools.Method(typeof(PartyVM), "RefreshTopInformation");
     private static MethodInfo RefreshPartyInformation = AccessTools.Method(typeof(PartyVM), "RefreshPartyInformation");
     
     public static void Postfix(ScreenLayer layer, ScreenBase __instance)
     {
-        if (CheckCheatPartyScreen.IsCheatScreen && __instance is GauntletPartyScreen gauntletPartyScreen && layer is GauntletLayer gauntletLayer)
+        if (__instance is GauntletPartyScreen gauntletPartyScreen && layer is GauntletLayer gauntletLayer)
         {
             _partyVm = (PartyVM)AccessTools.Field(typeof(GauntletPartyScreen), "_dataSource").GetValue(gauntletPartyScreen);
             
-            foreach (var character in _partyVm.OtherPartyTroops)
-                original.Add(character);
-
             Dictionary<FilterType, List<TroopFilterSelectorItemVM>> filters = InitializeFilters();
-                
             dataSources = new();
-            int lastMargin = 140;
-            foreach (var filter in filters)
+            
+            for (int i = 0; i < 2; i++)
             {
-                dataSources.Add(filter.Key, new PartyFilterControllerVM(Side.Left, 
-                    OnFilterChange, filter.Value, lastMargin, 40, filter.Key));
+                Side side = i == 0 ? Side.Left : Side.Right;
+                int marginTop = 400;
+                dataSources.Add(side, new());
 
-                gauntletLayer.LoadMovie("PartyFilterController", dataSources[filter.Key]);
+                foreach (var filter in filters)
+                {
+                    var partyFilter = new PartyFilterControllerVM(side,
+                        OnFilterChange, filter.Value, side == Side.Left ? 675 : 1128, marginTop, filter.Key);
+                    
+                    dataSources[side].Add((filter.Key, partyFilter));
+                    
+                    gauntletLayer.LoadMovie("PartyFilterController", partyFilter);
 
-                lastMargin += 160;
+                    marginTop -= 36;
+                }
             }
-
-            CheckCheatPartyScreen.IsCheatScreen = false;
         }
     }
 
     private static void OnFilterChange(Side partyRosterSide, (FilterType filterType, object selected) selected)
     {
-        Reset();
+        MBBindingList<PartyCharacterVM> partyTroops =
+            partyRosterSide == Side.Left ? _partyVm.OtherPartyTroops : _partyVm.MainPartyTroops;
+
+        filterMethods[selected.filterType] = selected.selected;
+
         if (selected.selected is string text && text == "all")
-        {
             filterMethods[selected.filterType] = null;
-        }
-        else
-            switch (selected.filterType)
+        int index = partyTroops.Count - 1;
+        for (int i = partyTroops.Count - 1; i >= 0; i--)
+        {
+            Dictionary<FilterType, bool> results = new();
+            foreach (var keyValuePair in filterMethods.Where(x=>x.Value != null))
             {
-                case FilterType.Culture:
-                    string cultureId = (string)selected.selected;
-                    filterMethods[selected.filterType] = () =>
-                    {
-                        for (int i = _partyVm.OtherPartyTroops.Count - 1; i >= 0; i--)
-                        {
-                            if (_partyVm.OtherPartyTroops[i].Character.Culture.StringId != cultureId)
-                                _partyVm.OtherPartyTroops.Remove(_partyVm.OtherPartyTroops[i]);
-                        }
-                    };
-                    break;
-                
-                case FilterType.Class:
-                    FormationClass formationClass = (FormationClass)Enum.Parse(typeof(FormationClass), (string)selected.selected);
-                    filterMethods[selected.filterType] = () =>
-                    {
-                        for (int i = _partyVm.OtherPartyTroops.Count - 1; i >= 0; i--)
-                        {
-                            if (_partyVm.OtherPartyTroops[i].Character.GetFormationClass() != formationClass)
-                                _partyVm.OtherPartyTroops.Remove(_partyVm.OtherPartyTroops[i]);
-                        }
-                    };
-                    break;
-                
-                case FilterType.Tier:
-                    int tier = (int)selected.selected;
-                    filterMethods[selected.filterType] = () =>
-                    {
-                        for (int i = _partyVm.OtherPartyTroops.Count - 1; i >= 0; i--)
-                        {
-                            if (_partyVm.OtherPartyTroops[i].Character.Tier != tier)
-                                _partyVm.OtherPartyTroops.Remove(_partyVm.OtherPartyTroops[i]);
-                        }
-                    };
-                    break;
+                switch (keyValuePair.Key)
+                {
+                    case FilterType.Culture:
+                        string cultureId = (string)keyValuePair.Value;
+                        results.Add(keyValuePair.Key, false);
+                        if (partyTroops[index].Character.Culture.StringId == cultureId)
+                            results[keyValuePair.Key] = true;
+                        break;
+
+                    case FilterType.Class:
+                        FormationClass formationClass =
+                            (FormationClass)Enum.Parse(typeof(FormationClass), (string)keyValuePair.Value);
+                        results.Add(keyValuePair.Key, false);
+                        if (partyTroops[index].Character.GetFormationClass() == formationClass)
+                            results[keyValuePair.Key] = true;
+                        break;
+
+                    case FilterType.Tier:
+                        int tier = (int)keyValuePair.Value;
+                        results.Add(keyValuePair.Key, false);
+                        if (partyTroops[index].Character.Tier == tier)
+                            results[keyValuePair.Key] = true;
+                        break;
+                }
             }
 
-        foreach (var method in filterMethods)
-            if(method.Value != null)
-                method.Value.DynamicInvoke();
-        
+            if (results.Values.All(x=>x))
+            {
+                partyTroops.Insert(0, partyTroops[index]);
+                partyTroops.RemoveAt(index + 1);
+                index++;
+            }
+
+            index--;
+        }
+
         RefreshTopInformation.Invoke(_partyVm, new object[] { });
         RefreshPartyInformation.Invoke(_partyVm, new object[] { });
     }
-    
-    private static void Reset()
-    {
-        _partyVm.OtherPartyTroops.Clear();
-        foreach (var character in original)
-            _partyVm.OtherPartyTroops.Add(character);
-    }
-
     private static Dictionary<FilterType, List<TroopFilterSelectorItemVM>> InitializeFilters()
     {
         int biggestTier = CharacterObject.All.OrderByDescending(x => x.Tier).FirstOrDefault().Tier;
         Dictionary<FilterType, List<TroopFilterSelectorItemVM>> filters = new()
         {
-            { FilterType.Culture, new() },
+            { FilterType.Tier, new() },
             { FilterType.Class, new() },
-            { FilterType.Tier, new() }
+            { FilterType.Culture, new() },
         };
             
         filters[FilterType.Culture].Add(new TroopFilterSelectorItemVM(new TextObject("All Cultures"), FilterType.Culture,"all"));
@@ -184,12 +170,11 @@ public class PartyGUIPatch
     
     public static void OnPartyVMFinalize()
     {
-        original = new();
         filterMethods = new()
         {
-            { FilterType.Culture, null },
+            { FilterType.Tier, null },
             { FilterType.Class, null },
-            { FilterType.Tier, null }
+            { FilterType.Culture, null },
         };
         dataSources = null;
         _gauntletLayer = null;
