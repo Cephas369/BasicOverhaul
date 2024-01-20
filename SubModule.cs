@@ -3,6 +3,7 @@ using HarmonyLib;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Bannerlord.ButterLib;
 using BasicOverhaul.Behaviors;
 using BasicOverhaul.Models;
 using BasicOverhaul.Patches;
@@ -20,6 +21,7 @@ using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
@@ -47,22 +49,12 @@ namespace BasicOverhaul
             base.OnSubModuleLoad();
             Harmony = new Harmony("com.basic_overhaul");
             Harmony.PatchAll();
-
-            List<MethodInfo> Cheats = AccessTools.GetDeclaredMethods(typeof(Cheats));
-            Cheats.AddRange(AccessTools.GetDeclaredMethods(typeof(NativeCheats)));
-            foreach (var method in Cheats)
-                if(Attribute.GetCustomAttribute(method, typeof(BasicCheat)) is BasicCheat cheatAttribute)
-                    CampaignCheats.Add((cheatAttribute, method));
-            
-            foreach (var method in AccessTools.GetDeclaredMethods(typeof(MissionCheats)))
-                if(Attribute.GetCustomAttribute(method, typeof(BasicCheat)) is BasicCheat cheatAttribute)
-                    MissionCheats.Add((cheatAttribute, method));
         }
 
         public override void OnAfterGameInitializationFinished(Game game, object starterObject)
         {
             base.OnAfterGameInitializationFinished(game, starterObject);
-            if (BasicOverhaulConfig.Instance?.EnablePartyScreenFilters == true)
+            if (BasicOverhaulGlobalConfig.Instance?.EnablePartyScreenFilters == true)
             {
                 Harmony.Patch(AccessTools.Method(typeof(ScreenBase), "AddLayer"), postfix: AccessTools.Method(typeof(PartyGUIPatch), "Postfix"));
                 Harmony.Patch(AccessTools.Method(typeof(PartyVM), "OnFinalize"), postfix: AccessTools.Method(typeof(PartyGUIPatch), "OnPartyVMFinalize"));
@@ -75,8 +67,9 @@ namespace BasicOverhaul
             if (!inquiryElements.Any())
                 return;
             InquiryElement inquiry = inquiryElements[0];
-            var cheatTuple = Mission.Current != null ? MissionCheats[(int)inquiry.Identifier] : CampaignCheats[(int)inquiry.Identifier];
-            string[]? parameters = cheatTuple.Properties!.Parameters;
+            var cheatTuple = ((BasicCheat? Properties, MethodInfo Method))inquiry.Identifier;
+            
+            string[]? parameters = cheatTuple.Properties?.Parameters?.Select(text=>text.ToString()).ToArray();
 
             if (parameters == null)
             {
@@ -118,7 +111,7 @@ namespace BasicOverhaul
                 affirmativeActions.Add(currentAction);
             }
             
-            InformationManager.ShowTextInquiry(new TextInquiryData(cheatTuple.Properties.Parameters?[0], null, true, false, 
+            InformationManager.ShowTextInquiry(new TextInquiryData(cheatTuple.Properties.Parameters?[0].ToString(), null, true, false, 
                 "Ok", null, affirmativeActions[0], null));
         }
 
@@ -128,18 +121,23 @@ namespace BasicOverhaul
             base.OnApplicationTick(dt);
             if (!MBCommon.IsPaused && isHotKeyPressed && Mission.Current?.IsInPhotoMode != true && !CampaignCheats.IsEmpty() && !isMenuOpened)
             {
-                List<InquiryElement> inquiryElements = new();
-                
-                if(Mission.Current != null)
-                    for (int i = 0; i < MissionCheats.Count; i++)
-                        inquiryElements.Add(new InquiryElement(i, MissionCheats[i].Properties?.Description, null));
-                else if (Campaign.Current != null)
-                    for (int i = 0; i < CampaignCheats.Count; i++)
-                        inquiryElements.Add(new InquiryElement(i, CampaignCheats[i].Properties?.Description, null));
-                else
-                    return;
+                var elementCheats = Mission.Current != null ? MissionCheats : Campaign.Current != null ? CampaignCheats : null;
 
-                MultiSelectionInquiryData inquiryData = new("Cheats", "Select a cheat to apply.", 
+                if (elementCheats == null)
+                    return;
+                
+                List<InquiryElement> inquiryElements = elementCheats.Select(element =>
+                    {
+                        if (element.Properties?.Description.Value.Contains("{VALUE}") == true &&
+                            Helpers.CheatDescriptionAttributes.TryGetValue(element.Properties.Description.GetID(), out Delegate del))
+                        {
+                            element.Properties.Description.SetTextVariable("VALUE", (string)del.DynamicInvoke());
+                        }
+                        return new InquiryElement(element, element.Properties?.Description.ToString(), null);
+                        
+                    }).ToList();
+
+                MultiSelectionInquiryData inquiryData = new("Basic Overhaul", "Select a option to apply.", 
                     inquiryElements, true, 0,1, "Done", "Cancel",
                     ApplyCheat, elements => isMenuOpened = false);
                 
@@ -152,13 +150,13 @@ namespace BasicOverhaul
         public override void OnMissionBehaviorInitialize(Mission mission)
         {
             base.OnMissionBehaviorInitialize(mission);
-            if(BasicOverhaulConfig.Instance?.EnableWeaponryOrder == true && mission.Mode != MissionMode.Battle && mission.CombatType != Mission.MissionCombatType.ArenaCombat
+            if(BasicOverhaulGlobalConfig.Instance?.EnableWeaponryOrder == true && mission.Mode != MissionMode.Battle && mission.CombatType != Mission.MissionCombatType.ArenaCombat
                && mission.CombatType != Mission.MissionCombatType.NoCombat && !mission.HasMissionBehavior<TournamentBehavior>())
                 mission.AddMissionBehavior(new WeaponryOrderMissionBehavior());
             
             mission.AddMissionBehavior(new HorseCallMissionLogic());
             
-            if (Campaign.Current != null && mission.CombatType == Mission.MissionCombatType.Combat  && BasicOverhaulConfig.Instance?.EnablePackMule == true && !IsSiege)
+            if (Campaign.Current != null && mission.CombatType == Mission.MissionCombatType.Combat  && BasicOverhaulGlobalConfig.Instance?.EnablePackMule == true && !IsSiege)
                 mission.AddMissionBehavior(new PackMuleBehavior());
         }
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
@@ -166,10 +164,12 @@ namespace BasicOverhaul
             base.OnGameStart(game, gameStarterObject);
             if(gameStarterObject is CampaignGameStarter campaignGameStarter)
             {
-                if(BasicOverhaulConfig.Instance?.EnableDeserterParties == true)
+                campaignGameStarter.AddBehavior(new MiscBehavior());
+                
+                if(BasicOverhaulGlobalConfig.Instance?.EnableDeserterParties == true)
                     campaignGameStarter.AddBehavior(new DesertionBehavior());
                 
-                if (BasicOverhaulConfig.Instance?.EnableSlaveSystem == true)
+                if (BasicOverhaulGlobalConfig.Instance?.EnableSlaveSystem == true)
                 {
                     campaignGameStarter.AddBehavior(new SlaveBehavior());
                     campaignGameStarter.AddModel(new SlaveClanFinanceModel());
@@ -177,16 +177,15 @@ namespace BasicOverhaul
                     campaignGameStarter.AddModel(new SlaveSettlementProsperityModel());
                 }
 
-                if (BasicOverhaulConfig.Instance?.EnableGovernorNotables == true)
+                if (BasicOverhaulGlobalConfig.Instance?.EnableGovernorNotables == true)
                 {
                     campaignGameStarter.AddBehavior(new NotableBehavior());
                     campaignGameStarter.AddModel(new BONotableSpawnModel());
                 }
-
+                
                 campaignGameStarter.AddModel(new BOPartyModel());
                 campaignGameStarter.AddModel(new BOBattleRewardModel());
                 campaignGameStarter.AddModel(new BOVolunteerModel());
-                
                 campaignGameStarter.AddModel(new BOAgentStatCalculateModel());
             }
             else
@@ -197,6 +196,37 @@ namespace BasicOverhaul
                 }
                 catch (Exception){}
             }
+
+            InitializeCheats();
+
+        }
+
+        private void InitializeCheats()
+        {
+            if(!CampaignCheats.Any())
+            {
+                CampaignCheats.AddRange(
+                    from method in AccessTools.GetDeclaredMethods(typeof(Cheats))
+                    let basicCheat = Attribute.GetCustomAttribute(method, typeof(BasicCheat)) as BasicCheat
+                    where basicCheat != null
+                    orderby basicCheat.Description.ToString()
+                    select (basicCheat, method)
+                );
+
+                CampaignCheats.AddRange(
+                    from method in AccessTools.GetDeclaredMethods(typeof(NativeCheats))
+                    where Attribute.GetCustomAttribute(method, typeof(BasicCheat)) is BasicCheat
+                    select (Attribute.GetCustomAttribute(method, typeof(BasicCheat)) as BasicCheat, method)
+                );
+            }
+            if(!MissionCheats.Any())
+                MissionCheats.AddRange(
+                    from method in AccessTools.GetDeclaredMethods(typeof(MissionCheats))
+                    let basicCheat = Attribute.GetCustomAttribute(method, typeof(BasicCheat)) as BasicCheat
+                    where basicCheat != null
+                    orderby basicCheat.Description.ToString()
+                    select (basicCheat, method)
+                );
         }
     }
     public class BasicOverhaulSaveSystem : SaveableTypeDefiner
@@ -212,6 +242,7 @@ namespace BasicOverhaul
         {
             ConstructContainerDefinition(typeof(Dictionary<MobileParty, Settlement>));
             ConstructContainerDefinition(typeof(Dictionary<string, TownSlaveData>));
+            ConstructContainerDefinition(typeof(Dictionary<Settlement, CampaignTime>));
         }
     }
 }

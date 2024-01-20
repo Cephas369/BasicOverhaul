@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <tags>
+    <tag language="Português (BR)" />
+  </tags>
+  <strings>
+    <string id="select_option" text="Selecione uma opção para aplicar." />
+    
+    <string id="cheat_desc.1" text="Definir velocidade da campanha" />
+    <string id="cheat_desc.2" text="Conhecer todos os heróis" />
+    <string id="cheat_desc.3" text="Destruir grupos de desertores" />
+    <string id="cheat_desc.4" text="Maximizar nível das paredes do assentamento" />
+    <string id="cheat_desc.5" text="Maximizar estatísticas do jogador" />
+    <string id="cheat_desc.6" text="Maximizar estatísticas do herói do clã" />
+    <string id="cheat_desc.7" text="Maximizar todas as estatísticas do reino" />
+    <string id="cheat_desc.8" text="Adicionar comida ao grupo" />
+    <string id="cheat_desc.9" text="Definir velocidade do jogador" />
+    <string id="cheat_desc.10" text="Aumentar velocidade da montaria" />
+    <string id="cheat_desc.11" text="Ativar/desativar invencibilidade da montaria ({VALUE})" />
+    <string id="cheat_desc.12" text="Ativar/desativar invencibilidade do jogador ({VALUE})" />
+    <string id="cheat_desc.13" text="Ativar/desativar super dano ({VALUE})" />
+    <string id="cheat_desc.14" text="Gerar personagem" />
+    <string id="cheat_desc.15" text="Gerar arma" />
+    <string id="cheat_desc.16" text="Ativar/desativar IA dos agentes" />
+    <string id="cheat_desc.17" text="Ativar/desativar modo trapaça ({VALUE})" />
+
+    <string id="speed" text="Velocidade" />
+    <string id="settlement_name" text="Nome do Assentamento" />
+    <string id="level" text="Nível" />
+    <string id="speed_amount" text="Quantidade de Velocidade" />
+    <string id="0_disable_1_enable" text="0 = Desativar | 1 = Ativar" />
+
+  </strings>
+
+</base>

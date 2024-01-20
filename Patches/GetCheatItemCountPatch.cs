@@ -18,9 +18,9 @@ public static class GetCheatItemCountPatch
     public static void Prefix(ItemObject item, ref int number)
     {
         string callerClass = new StackFrame(2).GetMethod().Name;
-        if (callerClass == "OpenInventoryPresentation" && BasicOverhaulConfig.Instance.CheatItemCount > 0 && Game.Current?.CheatMode == true)
+        if (callerClass == "OpenInventoryPresentation" && BasicOverhaulGlobalConfig.Instance.CheatItemCount > 0 && Game.Current?.CheatMode == true)
         {
-            number = BasicOverhaulConfig.Instance.CheatItemCount;
+            number = BasicOverhaulGlobalConfig.Instance.CheatItemCount;
         }
     }
 }

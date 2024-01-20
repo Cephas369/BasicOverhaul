@@ -28,8 +28,10 @@ namespace BasicOverhaul
     {
         public static (float combatmax, float max) SpeedOnCheat;
         public static bool IsPlayerDamageOp;
+        public static bool PlayerInvincible;
+        public static bool MountInvincible;
         
-        [BasicCheat("Set player speed", new []{ "Speed amount" })]
+        [BasicCheat("{=cheat_desc.9}Set player speed", new []{ "{=speed_amount}Speed amount" })]
         [CommandLineFunctionality.CommandLineArgumentFunction("increase_player_speed", "bo_misson")]
         [UsedImplicitly]
         private static string SetPlayerSpeed(List<string> strings)
@@ -54,10 +56,10 @@ namespace BasicOverhaul
                 SpeedOnCheat = (main.AgentDrivenProperties.CombatMaxSpeedMultiplier, main.AgentDrivenProperties.MaxSpeedMultiplier);
             }
             
-            return "Done!";
+            return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("Increase mount speed", new []{ "Speed amount" })]
+        [BasicCheat("{=cheat_desc.10}Increase mount speed", new []{ "{=speed_amount}Speed amount" })]
         [CommandLineFunctionality.CommandLineArgumentFunction("increase_mount_speed", "bo_misson")]
         [UsedImplicitly]
         private static string IncreaseMountSpeed(List<string> strings)
@@ -82,10 +84,10 @@ namespace BasicOverhaul
             horseAgent.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.MountDashAccelerationMultiplier, horseAgent.GetAgentDrivenPropertyValue(DrivenProperty.MountDashAccelerationMultiplier) + amount);
             horseAgent.UpdateCustomDrivenProperties();
 
-            return "Done!";
+            return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("Make mount invincible")]
+        [BasicCheat("{=cheat_desc.11}Enabe/disable mount invincible ({VALUE})")]
         [CommandLineFunctionality.CommandLineArgumentFunction("make_mount_invincible", "bo_misson")]
         [UsedImplicitly]
         private static string MakeHorseInvincible(List<string> strings)
@@ -102,10 +104,10 @@ namespace BasicOverhaul
                 agent.Health = agent.HealthLimit;
             };
 
-            return "Done!";
+            return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("Make player invincible")]
+        [BasicCheat("{=cheat_desc.12}Enabe/disable player invincible ({VALUE})")]
         [CommandLineFunctionality.CommandLineArgumentFunction("make_player_invincible", "bo_misson")]
         [UsedImplicitly]
         private static string MakePlayerInvincible(List<string> strings)
@@ -113,16 +115,17 @@ namespace BasicOverhaul
             if (Mission.Current == null || Agent.Main == null)
                 return "You must be in a mission and your character must be alive!";
             
+            PlayerInvincible = !PlayerInvincible;
             
-            Agent.Main.OnAgentHealthChanged += (agent, health, newHealth) =>
-            {
-                agent.Health = agent.HealthLimit;
-            };
+            if(PlayerInvincible)
+                Agent.Main.OnAgentHealthChanged += (agent, health, newHealth) => agent.Health = agent.HealthLimit;
+            else
+                Agent.Main.OnAgentHealthChanged -= (agent, health, newHealth) => agent.Health = agent.HealthLimit;
 
-            return "Done!";
+            return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("Enable/disable OP player damage")]
+        [BasicCheat("{=cheat_desc.13}Enable/disable OP player damage ({VALUE})")]
         [CommandLineFunctionality.CommandLineArgumentFunction("switch_player_damage_op", "bo_misson")]
         [UsedImplicitly]
         private static string MakePlayerDamageOP(List<string> strings)
@@ -132,10 +135,10 @@ namespace BasicOverhaul
             
             IsPlayerDamageOp = !IsPlayerDamageOp;
 
-            return "Done!";
+            return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("Spawn character")]
+        [BasicCheat("{=cheat_desc.14}Spawn character")]
         [CommandLineFunctionality.CommandLineArgumentFunction("spawn_character", "bo_misson")]
         [UsedImplicitly]
         private static string SpawnCharacter(List<string> strings)
@@ -175,10 +178,10 @@ namespace BasicOverhaul
                                 }
                             }, null), true);
                     }, null), true);
-            return "Done!";
+            return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("Spawn weapon")]
+        [BasicCheat("{=cheat_desc.15}Spawn weapon")]
         [CommandLineFunctionality.CommandLineArgumentFunction("spawn_weapon", "bo_misson")]
         [UsedImplicitly]
         private static string SpawnWeapon(List<string> strings)
@@ -203,10 +206,10 @@ namespace BasicOverhaul
                         Mission.Current?.SpawnWeaponWithNewEntityAux(missionWeapon, Mission.WeaponSpawnFlags.WithPhysics, frame, 0, null, false);
                     }, null), true);
             
-            return "Done!";
+            return GameTexts.FindText("str_done").ToString();
         }
 
-        [BasicCheat("Disable/enable agents ai", new []{ "0 = Disable | 1 = Enable" })]
+        [BasicCheat("{=cheat_desc.16}Disable/enable agents AI", new []{ "{=0_disable_1_enable}0 = Disable | 1 = Enable" })]
         [CommandLineFunctionality.CommandLineArgumentFunction("disable_agents_ai", "bo_misson")]
         [UsedImplicitly]
         private static string DisableAi(List<string> strings)
@@ -229,57 +232,9 @@ namespace BasicOverhaul
                 agent.SetIsAIPaused(boolean);
             }
             
-            return "Done!";
+            return GameTexts.FindText("str_done").ToString();
         }
-
-        /*[CommandLineFunctionality.CommandLineArgumentFunction("test", "bo_misson")]
-        [UsedImplicitly]
-        private static string Test(List<string> strings)
-        {
-
-
-            if (Mission.Current == null)
-                return "You must be in a mission!";
-
-            Mission.Current.AddMissionBehavior(new MissionTest());
-
-           Agent agent = Mission.Current.Agents.Find(x => !Agent.Main.IsEnemyOf(x) && x != Agent.Main);
-
-           WorldPosition wp = Mission.Current.GetStraightPathToTarget(MissionTest.positions.Item1, agent.GetWorldPosition());
-            agent.SetScriptedPositionAndDirection(ref wp, wp.AsVec2.RotationInRadians, true, Agent.AIScriptedFrameFlags.GoToPosition);
-            agent.ResetGuard();
-            agent.SetWatchState(Agent.WatchState.Alarmed);
-            MissionTest.target = agent;
-            
-           ActionIndexCache myAction = ActionIndexCache.Create("act_pickup_down_begin");
-            Agent.Main.SetActionChannel(0, myAction, true);
-
-            return "Done!";
-        }
-
-        private class MissionTest : MissionBehavior
-        {
-            public static (Vec2, Vec3) positions;
-            public static Agent target;
-            public override MissionBehaviorType BehaviorType => MissionBehaviorType.Other;
-
-            public override void OnAgentDeleted(Agent affectedAgent)
-            {
-                positions = (affectedAgent.Position.AsVec2, affectedAgent.Position);
-            }
-
-            public override void OnMissionTick(float dt)
-            {
-                if (target?.Position.DistanceSquared(positions.Item1.ToVec3()) <= 2)
-                {
-                    target.ClearTargetFrame();
-                    ActionIndexCache myAction = ActionIndexCache.Create("act_pickup_down_begin");
-                    Agent.Main.SetActionChannel(0, myAction, true);
-                }
-            }
-        }*/
-
-
+        
         private static void SpawnCharacterAgent(BasicCharacterObject character, bool isAlly)
         {
             Monster monsterWithSuffix = FaceGen.GetMonsterWithSuffix(character.Race, FaceGen.MonsterSuffixSettlement);

@@ -20,9 +20,9 @@ public static class GetCheatTroopsCountPatch
     private static void Prefix(CharacterObject character, ref int count, bool insertAtFront = false, int woundedCount = 0, int xpChange = 0, bool removeDepleted = true, int index = -1)
     {
         string callerClass = new StackFrame(2).GetMethod().Name;
-        if (callerClass == "GetRosterWithAllGameTroops" && BasicOverhaulConfig.Instance.CheatTroopCount > 0 && Game.Current?.CheatMode == true)
+        if (callerClass == "GetRosterWithAllGameTroops" && BasicOverhaulGlobalConfig.Instance.CheatTroopCount > 0 && Game.Current?.CheatMode == true)
         {
-            count = BasicOverhaulConfig.Instance.CheatTroopCount;
+            count = BasicOverhaulGlobalConfig.Instance.CheatTroopCount;
         }
     }
 }

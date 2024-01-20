@@ -139,10 +139,19 @@ namespace BasicOverhaul.Behaviors
             {
                 foreach (var soldier in mobileParty.MemberRoster.GetTroopRoster())
                 {
-                    CharacterObject newMilitia = CharacterObject.FindAll(x => !x.IsHero && x.IsSoldier && x.IsRegular && x.Culture == settlement.Culture &&
-                    x.Tier == soldier.Character.Tier && x.DefaultFormationClass == soldier.Character.DefaultFormationClass && soldier.Character.Occupation == Occupation.Soldier).GetRandomElementInefficiently();
+                    var newMilitias = CharacterObject.FindAll(x => !x.IsHero && x.IsSoldier && x.IsRegular && x.Culture == settlement.Culture &&
+                    x.DefaultFormationClass == soldier.Character.DefaultFormationClass && soldier.Character.Occupation == Occupation.Soldier).ToList();
+                    
+                    newMilitias.Randomize();
+                    
+                    var newMilitia = newMilitias.OrderBy(x => Math.Abs(soldier.Character.Tier - x.Tier)).First();
 
-                    settlement.Town.GarrisonParty.AddElementToMemberRoster(newMilitia != null ? newMilitia : soldier.Character, soldier.Number);
+                    if (newMilitia == null)
+                        newMilitia = CharacterObject
+                            .FindAll(x => !x.IsHero && x.IsSoldier && x.Culture == settlement.Culture)
+                            .GetRandomElementInefficiently();
+                        
+                    settlement.Town?.GarrisonParty?.AddElementToMemberRoster(newMilitia != null ? newMilitia : soldier.Character, soldier.Number);
                 }
 
                 DestroyPartyAction.Apply(settlement.Party, mobileParty);

@@ -10,7 +10,7 @@ public static class AddMissionBoundaries
 {
     public static bool Prefix()
     {
-        if (BasicOverhaulConfig.Instance?.DisableMissionBoundaries == true)
+        if (BasicOverhaulGlobalConfig.Instance?.DisableMissionBoundaries == true)
             return false;
         return true;
     }

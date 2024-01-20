@@ -23,7 +23,7 @@ public static class MeleeHitCallbackPatch
     {
         if (attacker != null && victim != null)
         {
-            if (BasicOverhaulConfig.Instance?.DisableAllyCollision == true && !attacker.IsEnemyOf(victim) && victim.IsHuman)
+            if (BasicOverhaulGlobalConfig.Instance?.DisableAllyCollision == true && !attacker.IsEnemyOf(victim) && victim.IsHuman)
             {
                 colReaction = MeleeCollisionReaction.ContinueChecking;
                 return false;

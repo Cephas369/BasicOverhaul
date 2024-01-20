@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <tags>
+	  <tag language="Português (BR)" />
+  </tags>
+  <strings>
+	  <string id="all_cultures" text="Todas as Culturas" />
+	  <string id="all_classes" text="Todas as Classes" />
+	  <string id="all_tiers" text="Todos os Níveis" />
+	  <string id="all_types" text="Todos os Tipos" />
+
+	  <string id="mount_heard_call" text="Seu cavalo ouviu seu chamado..." />
+	  <string id="horse_call_warning.1" text="Você já está montado!" />
+	  <string id="horse_call_warning.2" text="Seu cavalo morreu." />
+	  <string id="horse_call_warning.3" text="Você não possui a habilidade necessária para chamar seu cavalo." />
+
+	  <string id="bo_open_inventory" text="Pressione {KEY} para abrir seu inventário" />
+  </strings>
+</base>

@@ -63,4 +63,8 @@
     <PackageReference Include="Bannerlord.MCM" Version="5.7.2" IncludeAssets="compile" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="_Module\ModuleSounds\" />
+  </ItemGroup>
+
 </Project>

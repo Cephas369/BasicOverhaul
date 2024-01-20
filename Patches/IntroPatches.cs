@@ -22,8 +22,8 @@ public static class CleanAndPushStatePatch
     public static void Prefix(ref GameState gameState, int level = 0)
     {
         if (gameState is VideoPlaybackState videoState)
-            if ((BasicOverhaulConfig.Instance?.DisableIntro == true && videoState.VideoPath.Contains("TWLogo_and_Partners")) ||
-                (BasicOverhaulConfig.Instance?.DisableNewIntro == true && videoState.VideoPath.Contains("intro")))
+            if ((BasicOverhaulGlobalConfig.Instance?.DisableIntro == true && videoState.VideoPath.Contains("TWLogo_and_Partners")) ||
+                (BasicOverhaulGlobalConfig.Instance?.DisableNewIntro == true && videoState.VideoPath.Contains("intro")))
             {
                 AccessTools.Property(typeof(VideoPlaybackState), "AudioPath").SetValue(gameState, "");
                 skipVideo = true;

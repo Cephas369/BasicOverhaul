@@ -15,7 +15,7 @@ public static class LoadXMLPatch
 {
     public static void Prefix(CampaignGameStarter gameInitializer, GameManagerBase gameManager, bool isSavedCampaign)
     {
-        if (BasicOverhaulConfig.Instance?.EnableDeserterParties == false && XmlResource.XmlInformationList.Any(x => x.Name == "deserter_clan"))
+        if (BasicOverhaulGlobalConfig.Instance?.EnableDeserterParties == false && XmlResource.XmlInformationList.Any(x => x.Name == "deserter_clan"))
             XmlResource.XmlInformationList.RemoveAll(x => x.Name == "deserter_clan");
     }
 }

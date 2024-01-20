@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <tags>
+    <tag language="Português (BR)" />
+  </tags>
+  <strings>
+
+    <string id="leave_0_for_default" text="Deixe 0 para a contagem padrão do jogo." />
+    <string id="leave_0_for_default_chance" text="Deixe 0 para a contagem padrão do jogo." />
+
+    <string id="basic_overhaul_campaign" text="Basic Overhaul (Campanha Atual)" />
+    <!-- Group -->
+    <string id="general" text="Geral" />
+    <string id="campaign_modifiers" text="Modificadores da Campanha" />
+    <string id="in_battle" text="Em Batalha" />
+    <string id="miscellaneous" text="Diversos" />
+
+    <!-- General -->
+    <string id="bo_config_title.1" text="Ativar sistema de escravidão" />
+    <string id="bo_config_title.2" text="Ativar sistema de deserção" />
+    <string id="bo_config_description.2" text="Se ativado, grupos de desertores aparecerão após cada batalha com desertores." />
+    <string id="bo_config_title.3" text="Contagem para cada tropa na tela de grupo" />
+    <string id="bo_config_title.4" text="Contagem para cada item na tela de inventário" />
+    <string id="bo_config_title.5" text="Ativar filtros na tela de grupo" />
+    <string id="bo_config_title.6" text="Ativar mais filtros na tela de inventário" />
+    <string id="bo_config_title.7" text="Permitir que notáveis se tornem governadores" />
+
+    <!-- In Battle -->
+    <string id="bo_config_title.8" text="Desativar colisões de ataque para aliados" />
+    <string id="bo_config_title.9" text="Habilidade de montar necessária para chamar cavalo (Tecla X)" />
+    <string id="bo_config_description.9" text="Se estiver usando outro mod com essa mecânica, deixe 0 para desativá-la." />
+    <string id="bo_config_title.10" text="Desativar limite de cenário para o jogador" />
+    <string id="bo_config_title.11" text="Ativar animal de carga em batalhas para acessar inventário" />
+    <string id="bo_config_description.11" text="Apenas na campanha." />
+    <string id="bo_config_title.12" text="Ativar ordem de armamento (CTRL + W)" />
+
+    <!-- Miscellaneous -->
+    <string id="bo_config_title.13" text="Desativar vídeo de introdução" />
+    <string id="bo_config_title.14" text="Desativar introdução ao criar novo jogo" />
+    <string id="bo_config_title.15" text="Mudar modo trapaça pela config do mod" />
+    <string id="bo_config_description.15" text="Ative se você prefere mudar o modo trapaça pelo Basic Overhaul Campaign ao invés de mudar nos arquivos do jogo." />
+
+    <!-- Campaign Save Settings -->
+    <string id="bo_campaign_config_title.1" text="Multiplicador de Limite de Tropas no Grupo" />
+    <string id="bo_campaign_config_desc.1" text="OBS: Colocar um valor alto causará lag no jogo. Deixe 0 para a chance padrão do jogo." />
+    <string id="bo_campaign_config_title.2" text="Chance Global de Saque" />
+    <string id="bo_campaign_config_title.3" text="Multiplicador de Renome em Batalha" />
+    <string id="bo_campaign_config_title.4" text="Multiplicador de Influência em Batalha" />
+    <string id="bo_campaign_config_title.5" text="Multiplicador de Moral em Batalha" />
+    <string id="bo_campaign_config_title.6" text="Multiplicador de Recrutamento para Grupos" />
+    <string id="bo_campaign_config_desc.6" text="Aumenta a quantidade que grupos podem recrutar de assentamentos e produção de voluntários. Deixe 0 para a chance padrão do jogo." />
+    <string id="bo_campaign_config_title.7" text="Ativar trapaças" />
+    <string id="bo_campaign_config_desc.7" text="Ative a opção 'mudar modo trapaça pela config do mod' na config global do B.O pra usar essa opção. Se você mudar isso durante a campanha reinicie o save para aplicar." />
+
+  </strings>
+
+</base>

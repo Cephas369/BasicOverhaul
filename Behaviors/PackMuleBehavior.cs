@@ -87,7 +87,7 @@ internal class PackMuleBehavior : MissionBehavior
         base.OnFocusGained(agent, focusableObject, isInteractable);
         if (focusableObject == packAgent)
         {
-            TextObject textObject = new TextObject("Press {KEY} to open your inventory");
+            TextObject textObject = new TextObject("{=bo_open_inventory}Press {KEY} to open your inventory");
             MBTextManager.SetTextVariable("KEY", GameTexts.FindText("str_ui_agent_interaction_use"));
             MBTextManager.SetTextVariable("USE_KEY", HyperlinkTexts.GetKeyHyperlinkText(HotKeyManager.GetHotKeyId("CombatHotKeyCategory", 13)), false);
             InterfaceVm.SecondaryInteractionMessage = textObject.ToString();

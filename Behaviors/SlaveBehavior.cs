@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Helpers;
 using TaleWorlds.CampaignSystem;
@@ -83,19 +84,21 @@ namespace BasicOverhaul.Behaviors
     }
     internal class TownSlaveData
     {
+        [SaveableField(1)]
+        public int SlaveAmount;
+        [SaveableField(2)]
+        public DestinationTypes DestinationType;
         public TownSlaveData(int slaves, DestinationTypes destination)
         {
             SlaveAmount = slaves;
             DestinationType = destination;
         }
-        [SaveableField(1)]
-        public int SlaveAmount;
-        [SaveableField(2)]
-        public DestinationTypes DestinationType;
     }
     internal class SlaveBehavior : CampaignBehaviorBase
     {
         public Dictionary<string, TownSlaveData> SlaveData = new();
+
+        private Dictionary<Settlement, CampaignTime> _buildEndDates = new();
 
         public static SlaveBehavior? Instance;
 
@@ -111,6 +114,31 @@ namespace BasicOverhaul.Behaviors
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener(this, SessionLaunched);
             CampaignEvents.OnSettlementOwnerChangedEvent.AddNonSerializedListener(this, OnSettlementOwnerChanged);
             CampaignEvents.WeeklyTickEvent.AddNonSerializedListener(this, WeeklyTick);
+            CampaignEvents.DailyTickEvent.AddNonSerializedListener(this, OnDailyTick);
+        }
+
+        private void OnDailyTick()
+        {
+            List<Settlement> toRemove = new();
+            foreach (var keyValue in _buildEndDates)
+            {
+                if (CampaignTime.Now >= keyValue.Value)
+                {
+                    TextObject textObject = new TextObject("{=plantation_building_finished}Your plantation at {SETTLEMENT} has finished being built.");
+                    textObject.SetTextVariable("SETTLEMENT", keyValue.Key.Name);
+
+                    SlaveData.Add(keyValue.Key.StringId, new TownSlaveData(0, DestinationTypes.Clan));
+                    
+                    toRemove.Add(keyValue.Key);
+                    
+                    InformationManager.ShowInquiry(new InquiryData(new TextObject("{=event}Event").ToString(), textObject.ToString(), true, false, 
+                        GameTexts.FindText("str_done").ToString(), null, null, null) , true);
+
+                }
+            }
+            
+            foreach (var element in toRemove)
+                _buildEndDates.Remove(element);
         }
 
         private void WeeklyTick()
@@ -119,7 +147,6 @@ namespace BasicOverhaul.Behaviors
             {
                 if (MBRandom.RandomFloat > 0.1f)
                 {
-                    Settlement settlement = Settlement.Find(settlementId);
                     float factor = MBRandom.RandomFloat;
                     int lostSlaves = (int)(0.1f * SlaveData[settlementId].SlaveAmount * factor);
                     SlaveData[settlementId].SlaveAmount =- lostSlaves;
@@ -148,29 +175,49 @@ namespace BasicOverhaul.Behaviors
         private void SessionLaunched(CampaignGameStarter campaignGameStarter)
         {
             campaignGameStarter.AddGameMenuOption("town", "town_build_slave",
-                "{=bo_introduce_slavery}Build slave plantation ({COST}{GOLD_ICON})", args =>
+                "{=bo_introduce_slavery}Build plantation ({COST}{GOLD_ICON})", args =>
                 {
                     MBTextManager.SetTextVariable("COST", string.Format("{0:n0}", _slavePlantationCost));
                     args.optionLeaveType = GameMenuOption.LeaveType.Submenu;
                     if (Hero.MainHero.Gold < _slavePlantationCost)
                     {
                         args.IsEnabled = false;
-                        args.Tooltip = new TextObject("{=bo_not_enough_money}You don't have enough money");
+                        args.Tooltip = new TextObject("{=bo_not_enough_money.1}You don't have enough money");
                     }
 
                     if (Hero.MainHero?.Clan?.Tier < 3)
                     {
                         args.IsEnabled = false;
-                        args.Tooltip = new TextObject("{=bo_not_enough_money}Your clan tier must be at least 3.");
+                        args.Tooltip = new TextObject("{=bo_not_enough_money.2}Your clan tier must be at least 3.");
                     }
 
-                    return IsBuildSlaveryPossible;
+                    return !_buildEndDates.ContainsKey(Settlement.CurrentSettlement) && IsBuildSlaveryPossible;
                 }, args =>
                 {
-                    SlaveData.Add(Settlement.CurrentSettlement.StringId, new TownSlaveData(0, DestinationTypes.Clan));
-                    GameMenu.SwitchToMenu("town");
+                    _buildEndDates.Add(Settlement.CurrentSettlement, CampaignTime.DaysFromNow(8));
                     GiveGoldAction.ApplyBetweenCharacters(null, Hero.MainHero, -_slavePlantationCost);
+                    args.MenuContext.Refresh();
                 }, false, 4);
+            
+            
+            campaignGameStarter.AddGameMenuOption("town", "town_building_progress",
+                "{=town_building_progress}Plantation building in progress... ({DAYS_LEFT} days)", args =>
+                {
+                    if (_buildEndDates.TryGetValue(Settlement.CurrentSettlement, out CampaignTime time))
+                    {
+                        double daysLeft = Math.Round(time.RemainingDaysFromNow, 1);
+                        if (daysLeft < 0)
+                            daysLeft = 0;
+                        
+                        MBTextManager.SetTextVariable("DAYS_LEFT", daysLeft);
+                        args.optionLeaveType = GameMenuOption.LeaveType.Wait;
+
+                        args.IsEnabled = false;
+                    
+                        return true;
+                    }
+                    return false;
+                }, null, false, 4);
 
             campaignGameStarter.AddGameMenu("town_manage_slavery", "", null,
                 TaleWorlds.CampaignSystem.Overlay.GameOverlays.MenuOverlayType.SettlementWithBoth,
@@ -249,16 +296,16 @@ namespace BasicOverhaul.Behaviors
                 (CharacterObject character, PartyScreenLogic.TroopType type, PartyScreenLogic.PartyRosterSide side,
                     PartyBase LeftOwnerParty) => !character.IsHero, null, OnSlaveDonationDone, null,
                 PartyScreenLogic.TransferState.NotTransferable,
-                PartyScreenLogic.TransferState.Transferable, new TextObject("Slave"), 10000, false, true,
+                PartyScreenLogic.TransferState.Transferable, new TextObject("{=slave}Slave"), 10000, false, true,
                 PartyScreenMode.PrisonerManage, TroopRoster.CreateDummyTroopRoster(),
                 slaveRoster);
         }
 
         private void RemoveSlaveryFromMenu(MenuCallbackArgs args)
         {
-            InformationManager.ShowInquiry(new InquiryData("Confirmation",
+            InformationManager.ShowInquiry(new InquiryData(new TextObject("{=confirmation}Confirmation").ToString(),
                 new TextObject(
-                        "{=bo_remove_slavery_description}Are you sure you want undo slavery from {SETTLEMENT_NAME} ?")
+                        "{=bo_remove_slavery_description}Are you sure you want to destroy the plantation from {SETTLEMENT_NAME} ?")
                     .SetTextVariable("SETTLEMENT_NAME", Settlement.CurrentSettlement.Name).ToString(), true,
                 true, new TextObject("{=bo_yes}Yes").ToString(), new TextObject("{=bo_no}No").ToString(), () =>
                 {
@@ -282,6 +329,7 @@ namespace BasicOverhaul.Behaviors
         public override void SyncData(IDataStore dataStore)
         {
             dataStore.SyncData("slaveData", ref SlaveData);
+            dataStore.SyncData("_buildEndDates", ref _buildEndDates);
             
             if (dataStore.IsLoading && SlaveData == null)
                 SlaveData = new();

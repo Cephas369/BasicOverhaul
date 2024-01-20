@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <tags>
+    <tag language="English" />
+  </tags>
+  <strings>
+    
+    
+    <string id="leave_0_for_default" text="Leave 0 for the default game count." />
+    <string id="leave_0_for_default_chance" text="Leave 0 for the default game count." />
+
+    <string id="basic_overhaul_campaign" text="Basic Overhaul (Current Campaign)" />
+    <!-- Group -->
+    <string id="general" text="General" />
+    <string id="campaign_modifiers" text="Campaign Modifiers" />
+    <string id="in_battle" text="In Battle" />
+    <string id="miscellaneous" text="Miscellaneous" />
+    
+    
+    <!-- General -->
+    <string id="bo_config_title.1" text="Enable slave system" />
+    <string id="bo_config_title.2" text="Enable desertion system" />
+    <string id="bo_config_description.2" text="If you enable this parties of deserters will spawn everytime an after-battle have deserters." />
+    <string id="bo_config_title.3" text="Count for each troop on the party screen" />
+    <string id="bo_config_title.4" text="Count for each item on the inventory screen" />
+    <string id="bo_config_title.5" text="Enable filters on party screen" />
+    <string id="bo_config_title.6" text="Enable more filters on inventory screen" />
+    <string id="bo_config_title.7" text="Enable being possible for notables being governors" />
+
+    <!-- In Battle -->
+    <string id="bo_config_title.8" text="Disable attack collisions for allies" />
+    <string id="bo_config_title.9" text="Horse call required riding skill (Key X)" />
+    <string id="bo_config_description.9" text="If you're using another mod that have this mechanic just leave it 0 to disable it." />
+    <string id="bo_config_title.10" text="Disable boundaries crossing for player" />
+    <string id="bo_config_title.11" text="Enable spawn pack animal in battles for accessing inventory" />
+    <string id="bo_config_description.11" text="Campaign only." />
+    <string id="bo_config_title.12" text="Enable weaponry order (CTRL + W)" />
+
+    <!-- Miscellaneous -->
+    <string id="bo_config_title.13" text="Disable intro" />
+    <string id="bo_config_title.14" text="Disable new game intro" />
+    <string id="bo_config_title.15" text="Enable switch cheat mode by this mod config" />
+    <string id="bo_config_description.15" text="Enable this if you want to change the cheat mode by the Basic Overhaul Campaign Configs instead of the game config files." />
+
+
+    
+    
+    <!-- Campaign Save Settings -->
+    
+    <string id="bo_campaign_config_title.1" text="Party Size Limit Multiplier" />
+    <string id="bo_campaign_config_desc.1" text="OBS: Putting a high value will lag your game. Leave 0 for the default game chance." />
+    <string id="bo_campaign_config_title.2" text="Global Loot Chance" />
+    <string id="bo_campaign_config_title.3" text="Battle Renown Gain Multiplier" />
+    <string id="bo_campaign_config_title.4" text="Battle Influence Gain Multiplier" />
+    <string id="bo_campaign_config_title.5" text="Battle Morale Gain Multiplier" />
+    <string id="bo_campaign_config_title.6" text="Recruitment multiplier for parties" />
+    <string id="bo_campaign_config_desc.6" text="Increases the amount that parties can recruit from settlements and the volunteers production. Leave 0 for the default game chance." />
+    <string id="bo_campaign_config_title.7" text="Enable cheat mode" />
+    <string id="bo_campaign_config_desc.7" text="Enable 'switch cheat mode by this mod config' in the B.O global settings to use this. If you change this during the campaign, restart the save to apply." />
+  </strings>
+</base>

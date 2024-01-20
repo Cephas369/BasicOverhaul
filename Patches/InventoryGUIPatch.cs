@@ -35,7 +35,7 @@ public static class InventoryPatch
 
     public static void Postfix(string movieName, ViewModel dataSource, GauntletLayer __instance)
     {
-        if (BasicOverhaulConfig.Instance?.EnableInventoryScreenFilters == true && movieName == "Inventory" && ScreenManager.TopScreen is GauntletInventoryScreen gauntletInventoryScreen)
+        if (BasicOverhaulGlobalConfig.Instance?.EnableInventoryScreenFilters == true && movieName == "Inventory" && ScreenManager.TopScreen is GauntletInventoryScreen gauntletInventoryScreen)
         {
             ClearValues();
             _inventoryVm = (SPInventoryVM)AccessTools.Field(typeof(GauntletInventoryScreen), "_dataSource").GetValue(gauntletInventoryScreen);
@@ -75,14 +75,14 @@ public static class InventoryPatch
             { FilterType.Tier, new() }
         };
         
-        filters[FilterType.Type].Add(new TroopFilterSelectorItemVM(new TextObject("All Types"), FilterType.Type,"all"));
-        filters[FilterType.Tier].Add(new TroopFilterSelectorItemVM(new TextObject("All Tiers"), FilterType.Tier,"all"));
+        filters[FilterType.Type].Add(new TroopFilterSelectorItemVM(new TextObject("{=all_types}All Types"), FilterType.Type,"all"));
+        filters[FilterType.Tier].Add(new TroopFilterSelectorItemVM(new TextObject("{=all_tiers}All Tiers"), FilterType.Tier,"all"));
 
-        List<string> itemTypes = Enum.GetNames(typeof(ItemObject.ItemTypeEnum)).ToList();
-        itemTypes.RemoveAll(x=>x=="Invalid");
-        foreach (var itemType in itemTypes)
-            filters[FilterType.Type].Add(new TroopFilterSelectorItemVM(new TextObject(Regex.Replace(itemType, @"(?<=[a-z])(?=[A-Z])", " ")),
-                FilterType.Type, itemType));
+        for (int i = 1; i <= 24; i++)
+        {
+            filters[FilterType.Type].Add(new TroopFilterSelectorItemVM(GameTexts.FindText("str_inventory_type_" + i),
+                FilterType.Type, ((ItemObject.ItemTypeEnum)i).ToString()));
+        }
 
         for (int i = 0; i <= 5; i++)
             filters[FilterType.Tier].Add(new TroopFilterSelectorItemVM(new TextObject(i), FilterType.Tier, i));

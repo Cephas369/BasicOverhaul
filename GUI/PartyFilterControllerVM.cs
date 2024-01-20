@@ -17,6 +17,7 @@ namespace BasicOverhaul
     private bool _isCustomSort;
     private int _marginLeft;
     private int _marginTop;
+    private bool _isVisible;
     private readonly FilterType _filterType;
     private SelectorVM<TroopFilterSelectorItemVM> _sortOptions;
 
@@ -36,6 +37,7 @@ namespace BasicOverhaul
       _onChange = onChange;
       MarginLeft = marginLeft;
       MarginTop = marginTop;
+      IsVisible = true;
     }
 
     private void OnSortSelected(SelectorVM<TroopFilterSelectorItemVM> selector)
@@ -84,7 +86,18 @@ namespace BasicOverhaul
         OnPropertyChangedWithValue(value);
       }
     }
-    
+    [DataSourceProperty]
+    public bool IsVisible
+    {
+      get => _isVisible;
+      set
+      {
+        if (value == _isVisible)
+          return;
+        _isVisible = value;
+        OnPropertyChangedWithValue(value);
+      }
+    }
     [DataSourceProperty]
     public int MarginLeft
     {

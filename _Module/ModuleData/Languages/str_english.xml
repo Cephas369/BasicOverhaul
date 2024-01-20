@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <tags>
+    <tag language="English" />
+  </tags>
+  <strings>
+    <string id="bo_introduce_slavery" text="Build plantation ({COST}{GOLD_ICON})" />
+	<string id="bo_not_enough_money.1" text="You don't have enough money." />
+    <string id="bo_not_enough_money.2" text="Your clan tier must be at least 3." />
+	<string id="bo_manage_slavery" text="Manage plantation" />
+	<string id="bo_enslave_prisoners" text="Enslave prisoners" />
+	<string id="bo_profit_allocation" text="Profit allocation" />
+	<string id="bo_profit_allocation_description" text="Choose where your slavery profit will be spent" />
+	<string id="bo_player_income" text="Player Income" />
+	<string id="bo_town_prosperity" text="Town Prosperity" />
+	<string id="bo_construction" text="Construction" />
+	<string id="bo_remove_slavery" text="Destroy plantation" />
+	<string id="bo_remove_slavery_description" text="Are you sure you want to destroy the plantation from {SETTLEMENT_NAME} ?" />
+	<string id="bo_yes" text="Yes" />
+	<string id="bo_no" text="No" />
+	<string id="bo_slavery" text="Slavery" />
+	<string id="bo_town_slavery" text="{TOWN} Slavery" />
+    <string id="bo_slave_loss_title" text="Exhaustion" />
+    <string id="bo_slave_loss_description" text="{AMOUNT} slaves prisoners have died this week." />
+    <string id="slave" text="Slave" />
+	  <string id="plantation_building_finished" text="Your plantation at {SETTLEMENT} has finished being built." />
+	  <string id="confirmation" text="Confirmation" />
+	  
+	<string id="str_title_weaponry_order" text="Restrict weapon use" />
+
+	<string id="str_dismiss_order" text="Dismiss Order" />
+	<string id="str_weapon_classes" text="By weapon class -->" />
+	<string id="str_damage_types_inquiry" text="By damage type -->" />
+
+	<string id="str_weaponry_order_description_1" text="Choose which weapon you want to restrict for this formation" />
+	<string id="str_weaponry_order_description_2" text="Choose the weapon damage type" />
+	<string id="str_weaponry_order_description_3" text="Choose the weapon class" />
+
+    <string id="deserters" text="Deserters" />
+  </strings>
+</base>

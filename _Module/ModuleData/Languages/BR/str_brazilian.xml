@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <tags>
+    <tag language="Português (BR)" />
+  </tags>
+	<strings>
+		<string id="bo_introduce_slavery" text="Construir plantação ({COST}{GOLD_ICON})" />
+		<string id="bo_not_enough_money.1" text="Você não tem dinheiro suficiente." />
+		<string id="bo_not_enough_money.2" text="Seu nível de clã deve ser pelo menos 3." />
+		<string id="bo_manage_slavery" text="Gerenciar plantação" />
+		<string id="bo_enslave_prisoners" text="Escravizar prisioneiros" />
+		<string id="bo_profit_allocation" text="Alocação de lucros" />
+		<string id="bo_profit_allocation_description" text="Escolha onde seus lucros da escravidão serão gastos" />
+		<string id="bo_player_income" text="Renda do jogador" />
+		<string id="bo_town_prosperity" text="Prosperidade da cidade" />
+		<string id="bo_construction" text="Construção" />
+		<string id="bo_remove_slavery" text="Destruir plantação" />
+		<string id="bo_remove_slavery_description" text="Você tem certeza de que deseja destruir a plantação em {SETTLEMENT_NAME}?" />
+		<string id="bo_yes" text="Sim" />
+		<string id="bo_no" text="Não" />
+		<string id="bo_slavery" text="Escravidão" />
+		<string id="bo_town_slavery" text="{TOWN} Escravidão" />
+		<string id="bo_slave_loss_title" text="Exaustão" />
+		<string id="bo_slave_loss_description" text="{AMOUNT} escravos/prisioneiros morreram esta semana." />
+		<string id="slave" text="Escravo" />
+		<string id="plantation_building_finished" text="Sua plantação em {SETTLEMENT} terminou de ser construída." />
+		<string id="confirmation" text="Confirmação" />
+		
+		<string id="str_title_weaponry_order" text="Restringir uso de armas" />
+
+		<string id="str_dismiss_order" text="Dispensar Ordem" />
+		<string id="str_weapon_classes" text="Por classe de arma -->" />
+		<string id="str_damage_types_inquiry" text="Por tipo de dano -->" />
+
+		<string id="str_weaponry_order_description_1" text="Escolha qual arma você deseja restringir para esta formação" />
+		<string id="str_weaponry_order_description_2" text="Escolha o tipo de dano da arma" />
+		<string id="str_weaponry_order_description_3" text="Escolha a classe da arma" />
+
+		<string id="deserters" text="Desertores" />
+		<string id="bo_deserters_log" text="Desertores criados perto de {SETTLEMENT}" />
+	</strings>
+</base>

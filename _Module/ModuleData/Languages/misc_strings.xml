@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <tags>
+    <tag language="English" />
+  </tags>
+  <strings>
+	  <string id="all_cultures" text="All Cultures" />
+	  <string id="all_classes" text="All Classes" />
+	  <string id="all_tiers" text="All Tiers" />
+	  <string id="all_types" text="All Types" />
+	  
+	  <string id="mount_heard_call" text="Your mount has heard your call..." />
+	  <string id="horse_call_warning.1" text="You're already riding!" />
+	  <string id="horse_call_warning.2" text="Your horse has died." />
+	  <string id="horse_call_warning.3" text="You don't have the required skill to call your horse." />
+	  
+	  <string id="bo_open_inventory" text="Press {KEY} to open your inventory" />
+	  <string id="all_cultures" text="Build" />
+  </strings>
+</base>

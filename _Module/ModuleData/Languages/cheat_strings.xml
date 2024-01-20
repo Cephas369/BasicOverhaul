@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+  <tags>
+    <tag language="English" />
+  </tags>
+  <strings>
+	  <string id="select_option" text="Select a option to apply." />
+	  
+	  <string id="cheat_desc.1" text="Set campaign speed" />
+	  <string id="cheat_desc.2" text="Know all heroes" />
+	  <string id="cheat_desc.3" text="Destroy deserter parties" />
+	  <string id="cheat_desc.4" text="Maximize settlement walls" />
+	  <string id="cheat_desc.5" text="Maximize player stats" />
+	  <string id="cheat_desc.6" text="Maximize clan hero stats" />
+	  <string id="cheat_desc.7" text="Maximize every kingdom stats" />
+	  <string id="cheat_desc.8" text="Add food to party" />
+	  <string id="cheat_desc.9" text="Set player speed" />
+	  <string id="cheat_desc.10" text="Increase mount speed" />
+	  <string id="cheat_desc.11" text="Enabe/disable mount invincible ({VALUE})" />
+	  <string id="cheat_desc.12" text="Enabe/disable player invincible ({VALUE})" />
+	  <string id="cheat_desc.13" text="Enable/disable OP player damage ({VALUE})" />
+	  <string id="cheat_desc.14" text="Spawn character" />
+	  <string id="cheat_desc.15" text="Spawn weapon" />
+	  <string id="cheat_desc.16" text="Disable/enable agents AI" />
+	  <string id="cheat_desc.17" text="Enable/disable cheat mode ({VALUE})" />
+	  
+
+	  <string id="speed" text="Speed" />
+	  <string id="settlement_name" text="Settlement name" />
+	  <string id="level" text="Level" />
+	  <string id="speed_amount" text="Speed amount" />
+	  <string id="0_disable_1_enable" text="0 = Disable | 1 = Enable" />
+  </strings>
+</base>

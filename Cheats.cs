@@ -11,35 +11,28 @@ using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.Settlements.Buildings;
 using TaleWorlds.Core;
+using TaleWorlds.Engine;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
+using TaleWorlds.Localization;
 using TaleWorlds.ObjectSystem;
+using Agent = TaleWorlds.MountAndBlade.Agent;
+using Mission = TaleWorlds.MountAndBlade.Mission;
+using MissionWeapon = TaleWorlds.MountAndBlade.MissionWeapon;
 
 namespace BasicOverhaul
 {
-    public class BasicCheat : Attribute
-    {
-        public string Description;
-        public string[]? Parameters;
-
-        public BasicCheat(string description, string[]? parameters = null)
-        {
-            Description = description;
-            Parameters = parameters;
-        }
-    }
     public static class Cheats
     {
-        [BasicCheat("Set campaign speed", new []{ "Speed" })]
+        [BasicCheat("{=cheat_desc.1}Set campaign speed", new []{ "{=speed}Speed" })]
         [CommandLineFunctionality.CommandLineArgumentFunction("set_campaign_speed", "bo")]
         [UsedImplicitly]
         public static string SetCampaignSpeed(List<string> strings)
         {
             string result = "Format is bo.set_campaign_speed [positive speedUp multiplier].";
-            if (!CampaignCheats.CheckCheatUsage(ref CampaignCheats.ErrorType))
-            {
-                return CampaignCheats.ErrorType;
-            }
+            if (Campaign.Current == null || Mission.Current != null)
+                return "You must be in the campaign map.";
+            
             if (!CampaignCheats.CheckParameters(strings, 1) || CampaignCheats.CheckHelp(strings))
             {
                 return result;
@@ -50,10 +43,10 @@ namespace BasicOverhaul
                 return result;
             }
             Campaign.Current.SpeedUpMultiplier = num;
-            return "Done!";
+            return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("Know all heroes")]
+        [BasicCheat("{=cheat_desc.2}Know all heroes")]
         [CommandLineFunctionality.CommandLineArgumentFunction("know_all_heroes", "bo")]
         [UsedImplicitly]
         public static string KnowAllHeroes(List<string> strings)
@@ -67,10 +60,33 @@ namespace BasicOverhaul
                 hero.SetHasMet();
             }
 
-            return "Done!";
+            return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("Destroy deserter parties")]
+        [BasicCheat("{=cheat_desc.8}Add food to party")]
+        [CommandLineFunctionality.CommandLineArgumentFunction("add_food", "bo")]
+        [UsedImplicitly]
+        private static string SpawnWeapon(List<string> strings)
+        {
+            if (Campaign.Current == null)
+                return "You must be in a campaign.";
+
+            List<ItemObject> foods = new();
+
+            int max = (int)(PartyBase.MainParty.NumberOfAllMembers * 1.5);
+            for (int i = 0; i < max; i++)
+            {
+                ItemObject random = MBObjectManager.Instance.GetObjectTypeList<ItemObject>().Where(x => x.IsFood)
+                    .GetRandomElementInefficiently();
+                int randomNumber = MBRandom.RandomInt(0, max - i-1);
+                PartyBase.MainParty.ItemRoster.AddToCounts(random, randomNumber);
+                i += randomNumber;
+            }
+
+            return GameTexts.FindText("str_done").ToString();
+        }
+        
+        [BasicCheat("{=cheat_desc.3}Destroy deserter parties")]
         [CommandLineFunctionality.CommandLineArgumentFunction("destroy_deserter_parties", "bo")]
         [UsedImplicitly]
         public static string DestroyDeserterParties(List<string> strings)
@@ -83,10 +99,10 @@ namespace BasicOverhaul
             for(int i = deserterParties.Count() - 1; i >= 0; i--)
                 DestroyPartyAction.Apply(PartyBase.MainParty, deserterParties[i]);
 
-            return "Done!";
+            return GameTexts.FindText("str_done").ToString();
         }
 
-        [BasicCheat("Maximize settlement walls", new []{ "Settlement name", "Level" })]
+        [BasicCheat("{=cheat_desc.4}Maximize settlement walls", new []{ "{=settlement_name}Settlement name", "{=level}Level" })]
         [CommandLineFunctionality.CommandLineArgumentFunction("maximize_settlement_levels", "bo")]
         [UsedImplicitly]
         public static string MaximizeSettlementLevels(List<string> strings)
@@ -95,7 +111,7 @@ namespace BasicOverhaul
                 return CampaignCheats.ErrorType;
 
             if (!CampaignCheats.CheckParameters(strings, 1) && !CampaignCheats.CheckParameters(strings, 2))
-                return "Format uses 1 settlement name parameters without spaces: overhaul.maximize_settlement_levels [Settlement] [Level?]";
+                return "Format uses 1 settlement name parameters without spaces: bo.maximize_settlement_levels [Settlement] [Level?]";
             int buildingLevel = 3;
             if(CampaignCheats.CheckParameters(strings, 2))
             {
@@ -130,10 +146,10 @@ namespace BasicOverhaul
                 building.CurrentLevel = buildingLevel;
             }
 
-            return "Done!";
+            return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("Maximize player stats")]
+        [BasicCheat("{=cheat_desc.5}Maximize player stats")]
         [CommandLineFunctionality.CommandLineArgumentFunction("maximize_player", "bo")]
         [UsedImplicitly]
         public static string MaximizePlayer(List<string> strings)
@@ -143,10 +159,10 @@ namespace BasicOverhaul
 
             MaximizeHero(Hero.MainHero);
             
-            return "Done!";
+            return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("Maximize clan hero stats")]
+        [BasicCheat("{=cheat_desc.6}Maximize clan hero stats")]
         [CommandLineFunctionality.CommandLineArgumentFunction("maximize_clan_hero", "bo")]
         [UsedImplicitly]
         public static string MaximizeHero(List<string> strings)
@@ -167,10 +183,29 @@ namespace BasicOverhaul
                 }, null));
             
 
-            return "Done!";
+            return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("Maximize every kingdom stats", new []{ "Kingdom Name" })]
+        [BasicCheat("{=cheat_desc.17}Enable/disable cheat mode ({VALUE})")]
+        [CommandLineFunctionality.CommandLineArgumentFunction("switch_cheat_mode", "bo")]
+        [UsedImplicitly]
+        public static string SwitchCheatMode(List<string> strings)
+        {
+            if (Campaign.Current == null || BasicOverhaulCampaignConfig.Instance == null)
+                return "You must be in a campaign.";
+
+            if (BasicOverhaulGlobalConfig.Instance?.EnableSwitchCheatMode == false)
+                return "You must activate the enable switch cheat mode in the mod config to use this.";
+
+            bool current = (bool)Helpers.CheatModeField.GetValue(null);
+            Helpers.CheatModeField.SetValue(null, !current);
+
+            BasicOverhaulCampaignConfig.Instance.CheatModeEnabled = !current;
+
+            return GameTexts.FindText("str_done").ToString();
+        }
+        
+        [BasicCheat("{=cheat_desc.7}Maximize every kingdom stats", new []{ "Kingdom Name" })]
         [CommandLineFunctionality.CommandLineArgumentFunction("maximize_kingdom", "bo")]
         [UsedImplicitly]
         private static string AddKingdomMoney(List<string> strings)
@@ -179,7 +214,7 @@ namespace BasicOverhaul
                 return CampaignCheats.ErrorType;
             
             if (!CampaignCheats.CheckParameters(strings, 1) || CampaignCheats.CheckHelp(strings))
-                return "Format uses 1 kingdom ID parameter: overhaul.maximize_kingdom [Kingdom]";
+                return "Format uses 1 kingdom ID parameter: bo.maximize_kingdom [Kingdom]";
 
             var b1 = strings[0].ToLower();
 
@@ -213,7 +248,7 @@ namespace BasicOverhaul
                 village.Hearth = 99999f;
             }
 
-            return "Done!";
+            return GameTexts.FindText("str_done").ToString();
         }
 
         private static void MaximizeHero(Hero hero)
@@ -227,19 +262,14 @@ namespace BasicOverhaul
             }
 
             foreach (SkillObject skill in Game.Current.ObjectManager.GetObjectTypeList<SkillObject>())
-            {
-                
                 hero.SetSkillValue(skill, 300);
-            }
+            
             foreach(CharacterAttribute characterAttribute in MBObjectManager.Instance.GetObjectTypeList<CharacterAttribute>())
-            {
                 AccessTools.Method(typeof(Hero), "SetAttributeValueInternal").Invoke(hero, new object[] { characterAttribute, 10 });
-            }
-
+            
             foreach (PerkObject perkObject in PerkObject.All)
-            {
                 AccessTools.Method(typeof(Hero), "SetPerkValueInternal").Invoke(hero, new object[] { perkObject, true });
-            }
+            
         }
     }
 }

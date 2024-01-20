@@ -15,7 +15,10 @@ namespace BasicOverhaul.Models
         public override ExplainedNumber GetPartyMemberSizeLimit(PartyBase party, bool includeDescriptions = false)
         {
             ExplainedNumber baseNumber = base.GetPartyMemberSizeLimit(party, includeDescriptions);
-            int multiplier = BasicOverhaulConfig.Instance.PartySizeLimitMultiplier;
+            int multiplier = BasicOverhaulCampaignConfig.Instance != null
+                ? BasicOverhaulCampaignConfig.Instance.PartySizeLimitMultiplier
+                    : 0;
+            
             if (multiplier > 0)
                 baseNumber.AddFactor(multiplier, new TextObject("Basic Overhaul"));
             return baseNumber;

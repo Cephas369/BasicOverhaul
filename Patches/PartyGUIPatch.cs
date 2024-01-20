@@ -62,7 +62,7 @@ public class PartyGUIPatch
             for (int i = 0; i < 2; i++)
             {
                 Side side = i == 0 ? Side.Left : Side.Right;
-                int marginTop = 400;
+                int marginTop = 300;
                 dataSources.Add(side, new());
 
                 foreach (var filter in filters)
@@ -73,7 +73,7 @@ public class PartyGUIPatch
                     dataSources[side].Add((filter.Key, partyFilter));
                     
                     gauntletLayer.LoadMovie("PartyFilterController", partyFilter);
-
+                    
                     marginTop -= 36;
                 }
             }
@@ -144,9 +144,9 @@ public class PartyGUIPatch
             { FilterType.Culture, new() },
         };
             
-        filters[FilterType.Culture].Add(new TroopFilterSelectorItemVM(new TextObject("All Cultures"), FilterType.Culture,"all"));
-        filters[FilterType.Class].Add(new TroopFilterSelectorItemVM(new TextObject("All Classes"), FilterType.Class,"all"));
-        filters[FilterType.Tier].Add(new TroopFilterSelectorItemVM(new TextObject("All Tiers"), FilterType.Tier,"all"));
+        filters[FilterType.Culture].Add(new TroopFilterSelectorItemVM(new TextObject("{=all_cultures}All Cultures"), FilterType.Culture,"all"));
+        filters[FilterType.Class].Add(new TroopFilterSelectorItemVM(new TextObject("{=all_classes}All Classes"), FilterType.Class,"all"));
+        filters[FilterType.Tier].Add(new TroopFilterSelectorItemVM(new TextObject("{=all_tiers}All Tiers"), FilterType.Tier,"all"));
         
         string[] formationClasses = 
         {
@@ -180,6 +180,46 @@ public class PartyGUIPatch
         _gauntletLayer = null;
         _partyVm = null;
     }
+
+    private static void ChangeVisibility(bool visible)
+    {
+        foreach (var keyValue in dataSources)
+        {
+            foreach (var data in dataSources[keyValue.Key])
+                data.partyFilterControllers.IsVisible = visible;
+        }
+    }
+    
+    [HarmonyPatch(typeof(PartyVM))]
+    public static class PartyVMPatches
+    {
+        [HarmonyPatch("OnUpgradePopUpClosed")]
+        [HarmonyPostfix]
+        public static void OnUpgradePopUpClosed(bool isCancelled)
+        {
+            ChangeVisibility(true);
+        }
+        [HarmonyPatch("OnRecruitPopUpClosed")]
+        [HarmonyPostfix]
+        public static void OnRecruitPopUpClosed(bool isCancelled)
+        {
+            ChangeVisibility(true);
+        }
+        [HarmonyPatch("ExecuteOpenRecruitPopUp")]
+        [HarmonyPostfix]
+        public static void ExecuteOpenRecruitPopUp()
+        {
+            ChangeVisibility(false);
+        }
+    
+        [HarmonyPatch("ExecuteOpenUpgradePopUp")]
+        [HarmonyPostfix]
+        public static void ExecuteOpenUpgradePopUp()
+        {
+            ChangeVisibility(false);
+        }
+    }
+
     
     static string InsertWhitespace(string input)
     {
