@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BasicOverhaul.GUI;
 using BasicOverhaul.Patches;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Party;

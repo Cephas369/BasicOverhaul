@@ -5,19 +5,20 @@ using System.Reflection;
 using HarmonyLib;
 using TaleWorlds.Engine;
 using TaleWorlds.Localization;
+using TaleWorlds.MountAndBlade;
 
 namespace BasicOverhaul;
 
 public static class Helpers
 {
     public static readonly PropertyInfo CheatModeField = AccessTools.Property(typeof(NativeConfig), "CheatMode");
-    
+
     public static readonly Dictionary<string, Delegate> CheatDescriptionAttributes = new()
     {
         {"cheat_desc.11", () => MissionCheats.MountInvincible.ToString().ToLower()},
         {"cheat_desc.12", () => MissionCheats.PlayerInvincible.ToString().ToLower()},
         {"cheat_desc.13", () => MissionCheats.IsPlayerDamageOp.ToString().ToLower()},
-        {"cheat_desc.17", () => CheatModeField.GetValue(null).ToString().ToLower()},
+        {"cheat_desc.17", () => NativeConfig.CheatMode.ToString().ToLower()},
     };
 }
 public class BasicCheat : Attribute

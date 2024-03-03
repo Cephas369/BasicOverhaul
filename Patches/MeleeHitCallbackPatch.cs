@@ -32,7 +32,7 @@ public static class MeleeHitCallbackPatch
             if (MissionCheats.IsPlayerDamageOp && attacker.IsMainAgent)
                 colReaction = MeleeCollisionReaction.SlicedThrough;
         }
-
+        
         return true;
     }
 }

@@ -116,11 +116,6 @@ namespace BasicOverhaul
                 return "You must be in a mission and your character must be alive!";
             
             PlayerInvincible = !PlayerInvincible;
-            
-            if(PlayerInvincible)
-                Agent.Main.OnAgentHealthChanged += (agent, health, newHealth) => agent.Health = agent.HealthLimit;
-            else
-                Agent.Main.OnAgentHealthChanged -= (agent, health, newHealth) => agent.Health = agent.HealthLimit;
 
             return GameTexts.FindText("str_done").ToString();
         }

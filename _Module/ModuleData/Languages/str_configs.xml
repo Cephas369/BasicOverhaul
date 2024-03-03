@@ -8,6 +8,7 @@
     
     <string id="leave_0_for_default" text="Leave 0 for the default game count." />
     <string id="leave_0_for_default_chance" text="Leave 0 for the default game count." />
+    <string id="leave_0_for_default_value" text="Leave 0 for native default value." />
 
     <string id="basic_overhaul_campaign" text="Basic Overhaul (Current Campaign)" />
     <!-- Group -->
@@ -21,8 +22,8 @@
     <string id="bo_config_title.1" text="Enable slave system" />
     <string id="bo_config_title.2" text="Enable desertion system" />
     <string id="bo_config_description.2" text="If you enable this parties of deserters will spawn everytime an after-battle have deserters." />
-    <string id="bo_config_title.3" text="Count for each troop on the party screen" />
-    <string id="bo_config_title.4" text="Count for each item on the inventory screen" />
+    <string id="bo_config_title.3" text="Count for each troop on the cheat party screen" />
+    <string id="bo_config_title.4" text="Count for each item on the cheat inventory screen" />
     <string id="bo_config_title.5" text="Enable filters on party screen" />
     <string id="bo_config_title.6" text="Enable more filters on inventory screen" />
     <string id="bo_config_title.7" text="Enable being possible for notables being governors" />
@@ -41,8 +42,7 @@
     <string id="bo_config_title.14" text="Disable new game intro" />
     <string id="bo_config_title.15" text="Enable switch cheat mode by this mod config" />
     <string id="bo_config_description.15" text="Enable this if you want to change the cheat mode by the Basic Overhaul Campaign Configs instead of the game config files." />
-
-
+    <string id="bo_config_title.16" text="Enable limit max skill levels at 300" />
     
     
     <!-- Campaign Save Settings -->
@@ -50,6 +50,7 @@
     <string id="bo_campaign_config_title.1" text="Party Size Limit Multiplier" />
     <string id="bo_campaign_config_desc.1" text="OBS: Putting a high value will lag your game. Leave 0 for the default game chance." />
     <string id="bo_campaign_config_title.2" text="Global Loot Chance" />
+    <string id="bo_campaign_config_desc.2" text="This is the chance that each item used in a battle have to be looted, putting 100 will make all items used in a battle by the enemy available to loot. Leave 0 for the default game chance." />
     <string id="bo_campaign_config_title.3" text="Battle Renown Gain Multiplier" />
     <string id="bo_campaign_config_title.4" text="Battle Influence Gain Multiplier" />
     <string id="bo_campaign_config_title.5" text="Battle Morale Gain Multiplier" />
@@ -57,5 +58,8 @@
     <string id="bo_campaign_config_desc.6" text="Increases the amount that parties can recruit from settlements and the volunteers production. Leave 0 for the default game chance." />
     <string id="bo_campaign_config_title.7" text="Enable cheat mode" />
     <string id="bo_campaign_config_desc.7" text="Enable 'switch cheat mode by this mod config' in the B.O global settings to use this. If you change this during the campaign, restart the save to apply." />
+    <string id="bo_campaign_config_title.8" text="Towns gold multiplier" />
+    <string id="bo_campaign_config_title.9" text="Workshop production speed multiplier" />
+    <string id="bo_campaign_config_desc.9" text="This will increase the amounts of items in town markets. Leave 0 for the default." />
   </strings>
 </base>

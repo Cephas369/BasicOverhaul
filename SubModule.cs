@@ -51,19 +51,10 @@ namespace BasicOverhaul
             Harmony.PatchAll();
         }
 
-        public override void OnAfterGameInitializationFinished(Game game, object starterObject)
-        {
-            base.OnAfterGameInitializationFinished(game, starterObject);
-            if (BasicOverhaulGlobalConfig.Instance?.EnablePartyScreenFilters == true)
-            {
-                Harmony.Patch(AccessTools.Method(typeof(ScreenBase), "AddLayer"), postfix: AccessTools.Method(typeof(PartyGUIPatch), "Postfix"));
-                Harmony.Patch(AccessTools.Method(typeof(PartyVM), "OnFinalize"), postfix: AccessTools.Method(typeof(PartyGUIPatch), "OnPartyVMFinalize"));
-            }
-        }
-
         private void MakeMenuFalse() => isMenuOpened = false;
         private void ApplyCheat(List<InquiryElement> inquiryElements)
         {
+            MakeMenuFalse();
             if (!inquiryElements.Any())
                 return;
             InquiryElement inquiry = inquiryElements[0];
@@ -115,11 +106,11 @@ namespace BasicOverhaul
                 "Ok", null, affirmativeActions[0], null));
         }
 
-        private bool isHotKeyPressed => Input.IsKeyReleased(InputKey.U);
+        private bool IsHotKeyPressed => Input.IsKeyReleased(InputKey.U);
         protected override void OnApplicationTick(float dt)
         {
             base.OnApplicationTick(dt);
-            if (!MBCommon.IsPaused && isHotKeyPressed && Mission.Current?.IsInPhotoMode != true && !CampaignCheats.IsEmpty() && !isMenuOpened)
+            if (!MBCommon.IsPaused && IsHotKeyPressed && Mission.Current?.IsInPhotoMode != true && !CampaignCheats.IsEmpty() && !isMenuOpened)
             {
                 var elementCheats = Mission.Current != null ? MissionCheats : Campaign.Current != null ? CampaignCheats : null;
 
@@ -137,8 +128,8 @@ namespace BasicOverhaul
                         
                     }).ToList();
 
-                MultiSelectionInquiryData inquiryData = new("Basic Overhaul", "Select a option to apply.", 
-                    inquiryElements, true, 0,1, "Done", "Cancel",
+                MultiSelectionInquiryData inquiryData = new("Basic Overhaul", new TextObject("{=select_option}Select a option to apply.").ToString(), 
+                    inquiryElements, false, 0,1, "Done", "Cancel",
                     ApplyCheat, elements => isMenuOpened = false);
                 
                 MBInformationManager.ShowMultiSelectionInquiry(inquiryData, true);
@@ -158,6 +149,8 @@ namespace BasicOverhaul
             
             if (Campaign.Current != null && mission.CombatType == Mission.MissionCombatType.Combat  && BasicOverhaulGlobalConfig.Instance?.EnablePackMule == true && !IsSiege)
                 mission.AddMissionBehavior(new PackMuleBehavior());
+            
+            mission.AddMissionBehavior(new MiscMissionLogic());
         }
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
         {
@@ -172,9 +165,9 @@ namespace BasicOverhaul
                 if (BasicOverhaulGlobalConfig.Instance?.EnableSlaveSystem == true)
                 {
                     campaignGameStarter.AddBehavior(new SlaveBehavior());
-                    campaignGameStarter.AddModel(new SlaveClanFinanceModel());
-                    campaignGameStarter.AddModel(new SlaveBuildingConstructionModel());
-                    campaignGameStarter.AddModel(new SlaveSettlementProsperityModel());
+                    campaignGameStarter.AddModel(new BOClanFinanceModel());
+                    campaignGameStarter.AddModel(new BOBuildingConstructionModel());
+                    
                 }
 
                 if (BasicOverhaulGlobalConfig.Instance?.EnableGovernorNotables == true)
@@ -183,10 +176,13 @@ namespace BasicOverhaul
                     campaignGameStarter.AddModel(new BONotableSpawnModel());
                 }
                 
+                campaignGameStarter.AddModel(new BOSettlementProsperityModel());
                 campaignGameStarter.AddModel(new BOPartyModel());
                 campaignGameStarter.AddModel(new BOBattleRewardModel());
                 campaignGameStarter.AddModel(new BOVolunteerModel());
                 campaignGameStarter.AddModel(new BOAgentStatCalculateModel());
+                campaignGameStarter.AddModel(new BOWorkshopModel());
+                campaignGameStarter.AddModel(new BOSettlementEconomyModel());
             }
             else
             {

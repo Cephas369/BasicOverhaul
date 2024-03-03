@@ -1,7 +1,9 @@
 ﻿using BasicOverhaul.Models;
 using HarmonyLib;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.Core;
 using TaleWorlds.Engine;
+using TaleWorlds.MountAndBlade;
 
 namespace BasicOverhaul.Behaviors;
 
@@ -11,7 +13,6 @@ internal class MiscBehavior : CampaignBehaviorBase
     {
         CampaignEvents.OnGameLoadFinishedEvent.AddNonSerializedListener(this, OnGameLoadFinished);
     }
-
     private void OnGameLoadFinished()
     {
         if (BasicOverhaulCampaignConfig.Instance != null)
@@ -21,5 +22,18 @@ internal class MiscBehavior : CampaignBehaviorBase
     public override void SyncData(IDataStore dataStore)
     {
         
+    }
+}
+
+internal class MiscMissionLogic : MissionLogic
+{
+    public override void OnAgentHit(Agent affectedAgent, Agent affectorAgent, in MissionWeapon affectorWeapon, in Blow blow,
+        in AttackCollisionData attackCollisionData)
+    {
+        base.OnAgentHit(affectedAgent, affectorAgent, in affectorWeapon, in blow, in attackCollisionData);
+        if (affectedAgent.IsMainAgent && MissionCheats.PlayerInvincible)
+            affectedAgent.Health = affectedAgent.HealthLimit;
+        else if (affectedAgent.IsMount && affectedAgent.RiderAgent?.IsMainAgent == true && MissionCheats.MountInvincible)
+            affectedAgent.Health = affectedAgent.HealthLimit;
     }
 }

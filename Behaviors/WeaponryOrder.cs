@@ -52,7 +52,7 @@ namespace BasicOverhaul.Behaviors
         }
         public override void OnAgentBuild(Agent agent, Banner banner)
         {
-            if(!agent.IsHero && agent.Team == Mission.PlayerTeam)
+            if(!agent.IsHero && agent.Team == Mission.PlayerTeam && agent.Equipment != null)
             {
                 _agentsProperties.Add(agent, new AgentWeaponryData(agent.Equipment));
             }
@@ -200,32 +200,20 @@ namespace BasicOverhaul.Behaviors
         }
     }
 
-    class AgentWeaponryData
+    internal class AgentWeaponryData
     {
         private readonly MissionWeapon[] _weaponSlots;
 
         public MissionWeapon this[int index]
         {
-            get
-            {
-                return _weaponSlots[index];
-            }
-            set
-            {
-                _weaponSlots[index] = value;
-            }
+            get => _weaponSlots[index];
+            set => _weaponSlots[index] = value;
         }
 
         public MissionWeapon this[EquipmentIndex index]
         {
-            get
-            {
-                return _weaponSlots[(int)index];
-            }
-            set
-            {
-                this[(int)index] = value;
-            }
+            get => _weaponSlots[(int)index];
+            set => this[(int)index] = value;
         }
         public bool isFollowingOrder;
         public AgentWeaponryData(MissionEquipment missionEquipment, bool IsFollowingOrder = false)

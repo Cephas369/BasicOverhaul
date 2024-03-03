@@ -28,11 +28,11 @@ namespace BasicOverhaul
         public bool EnableDeserterParties { get; set; } = false;
         
         [SettingPropertyGroup("{=general}General", GroupOrder = 1)]
-        [SettingPropertyInteger("{=bo_config_title.3}Count for each troop on the party screen", minValue:0, maxValue: 2000, HintText = "{=leave_0_for_default}Leave 0 for the default game count.", RequireRestart = false, Order = 3)]
+        [SettingPropertyInteger("{=bo_config_title.3}Count for each troop on the cheat party screen", minValue:0, maxValue: 2000, HintText = "{=leave_0_for_default}Leave 0 for the default game count.", RequireRestart = false, Order = 3)]
         public int CheatTroopCount { get; set; } = 0;
         
         [SettingPropertyGroup("{=general}General", GroupOrder = 1)]
-        [SettingPropertyInteger("{=bo_config_title.4}Count for each item on the inventory screen", minValue:0, maxValue: 2000, HintText = "{=leave_0_for_default}Leave 0 for the default game count.", RequireRestart = false, Order = 4)]
+        [SettingPropertyInteger("{=bo_config_title.4}Count for each item on the cheat inventory screen", minValue:0, maxValue: 2000, HintText = "{=leave_0_for_default}Leave 0 for the default game count.", RequireRestart = false, Order = 4)]
         public int CheatItemCount { get; set; } = 0;
         
         [SettingPropertyGroup("{=general}General", GroupOrder = 1)]
@@ -46,6 +46,10 @@ namespace BasicOverhaul
         [SettingPropertyGroup("{=general}General", GroupOrder = 1)]
         [SettingPropertyBool("{=bo_config_title.7}Enable being possible for notables being governors", RequireRestart = true, Order = 7)]
         public bool EnableGovernorNotables { get; set; } = true;
+        
+        [SettingPropertyGroup("{=general}General", GroupOrder = 1)]
+        [SettingPropertyBool("{=bo_config_title.16}Enable limit max skill levels at 300", RequireRestart = false, Order = 8)]
+        public bool EnableLimitSkill { get; set; } = true;
 
         [SettingPropertyGroup("{=in_battle}In Battle", GroupOrder = 2)]
         [SettingPropertyBool("{=bo_config_title.8}Disable attack collisions for allies", Order = 1, RequireRestart = false)]

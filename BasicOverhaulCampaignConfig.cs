@@ -20,7 +20,7 @@ internal sealed class BasicOverhaulCampaignConfig : AttributePerCampaignSettings
     public int PartySizeLimitMultiplier { get; set; } = 0;
     
     [SettingPropertyGroup("{=campaign_modifiers}Campaign Modifiers", GroupOrder = 1)]
-    [SettingPropertyFloatingInteger("{=bo_campaign_config_title.2}Global Loot Chance", minValue: 0f, maxValue: 1f, "#0%", Order = 2, RequireRestart = false, HintText = "{=leave_0_for_default_chance}Leave 0 for the default game chance.")]
+    [SettingPropertyFloatingInteger("{=bo_campaign_config_title.2}Global Loot Chance", minValue: 0f, maxValue: 1f, "#0%", Order = 2, RequireRestart = false, HintText = "{=bo_campaign_config_desc.2}This is the chance that each item used in a battle have to be looted, putting 100 will make all items used in a battle by the enemy available to loot. Leave 0 for the default game chance.")]
     public float GlobalLootChance { get; set; } = 0;
     
     [SettingPropertyGroup("{=campaign_modifiers}Campaign Modifiers", GroupOrder = 1)]
@@ -38,6 +38,14 @@ internal sealed class BasicOverhaulCampaignConfig : AttributePerCampaignSettings
     [SettingPropertyGroup("{=campaign_modifiers}Campaign Modifiers", GroupOrder = 1)]
     [SettingPropertyInteger("{=bo_campaign_config_title.6}Recruitment multiplier for parties", minValue: 0, maxValue: 20, "#0x", Order = 6, RequireRestart = false, HintText = "{=bo_campaign_config_desc.6}Increases the amount that parties can recruit from settlements and the volunteers production. Leave 0 for the default game chance.")]
     public int RecruitmentRate { get; set; } = 0;
+    
+    [SettingPropertyGroup("{=campaign_modifiers}Campaign Modifiers", GroupOrder = 1)]
+    [SettingPropertyInteger("{=bo_campaign_config_title.8}Towns gold multiplier", minValue: 0, maxValue: 500, "#0x", Order = 7, RequireRestart = false, HintText = "{=leave_0_for_default_value}Leave 0 for native default value.")]
+    public int TownsGoldMultiplier { get; set; } = 0;
+    
+    [SettingPropertyGroup("{=campaign_modifiers}Campaign Modifiers", GroupOrder = 1)]
+    [SettingPropertyInteger("{=bo_campaign_config_title.9}Workshop production speed multiplier", minValue: 0, maxValue: 500, "#0x", Order = 8, RequireRestart = false, HintText = "{=bo_campaign_config_desc.9}This will increase the amounts of items in town markets. Leave 0 for the default.")]
+    public int WorkshopProductionSpeed { get; set; } = 0;
     
     [SettingPropertyGroup("{=miscellaneous}Miscellaneous", GroupOrder = 2)]
     [SettingPropertyBool("{=bo_campaign_config_title.7}Enable cheat mode", HintText = "{=bo_campaign_config_desc.7}Enable 'switch cheat mode by this mod config' in the B.O global settings to use this. If you change this during the campaign, restart the save to apply.", Order = 2, RequireRestart = false)]

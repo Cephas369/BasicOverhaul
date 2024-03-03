@@ -7,6 +7,7 @@
 
     <string id="leave_0_for_default" text="Deixe 0 para a contagem padrão do jogo." />
     <string id="leave_0_for_default_chance" text="Deixe 0 para a contagem padrão do jogo." />
+    <string id="leave_0_for_default_value" text="Deixe 0 para o valor padrão do jogo." />
 
     <string id="basic_overhaul_campaign" text="Basic Overhaul (Campanha Atual)" />
     <!-- Group -->
@@ -19,8 +20,8 @@
     <string id="bo_config_title.1" text="Ativar sistema de escravidão" />
     <string id="bo_config_title.2" text="Ativar sistema de deserção" />
     <string id="bo_config_description.2" text="Se ativado, grupos de desertores aparecerão após cada batalha com desertores." />
-    <string id="bo_config_title.3" text="Contagem para cada tropa na tela de grupo" />
-    <string id="bo_config_title.4" text="Contagem para cada item na tela de inventário" />
+    <string id="bo_config_title.3" text="Contagem para cada tropa na tela de grupo de trapaça" />
+    <string id="bo_config_title.4" text="Contagem para cada item na tela de inventário de trapaça" />
     <string id="bo_config_title.5" text="Ativar filtros na tela de grupo" />
     <string id="bo_config_title.6" text="Ativar mais filtros na tela de inventário" />
     <string id="bo_config_title.7" text="Permitir que notáveis se tornem governadores" />
@@ -39,11 +40,13 @@
     <string id="bo_config_title.14" text="Desativar introdução ao criar novo jogo" />
     <string id="bo_config_title.15" text="Mudar modo trapaça pela config do mod" />
     <string id="bo_config_description.15" text="Ative se você prefere mudar o modo trapaça pelo Basic Overhaul Campaign ao invés de mudar nos arquivos do jogo." />
-
+    <string id="bo_config_title.16" text="Limitar nível máximo de habilidades em 300" />
+    
     <!-- Campaign Save Settings -->
     <string id="bo_campaign_config_title.1" text="Multiplicador de Limite de Tropas no Grupo" />
     <string id="bo_campaign_config_desc.1" text="OBS: Colocar um valor alto causará lag no jogo. Deixe 0 para a chance padrão do jogo." />
     <string id="bo_campaign_config_title.2" text="Chance Global de Saque" />
+    <string id="bo_campaign_config_desc.2" text="Essa é a chance de cada item usado em uma batalha de poder ser saqueado, colocar 100 fará com que todos os itens usados em uma batalha pelo inimigo fiquem disponíveis para saque. Deixe 0 para a chance de jogo padrão." />
     <string id="bo_campaign_config_title.3" text="Multiplicador de Renome em Batalha" />
     <string id="bo_campaign_config_title.4" text="Multiplicador de Influência em Batalha" />
     <string id="bo_campaign_config_title.5" text="Multiplicador de Moral em Batalha" />
@@ -51,6 +54,9 @@
     <string id="bo_campaign_config_desc.6" text="Aumenta a quantidade que grupos podem recrutar de assentamentos e produção de voluntários. Deixe 0 para a chance padrão do jogo." />
     <string id="bo_campaign_config_title.7" text="Ativar trapaças" />
     <string id="bo_campaign_config_desc.7" text="Ative a opção 'mudar modo trapaça pela config do mod' na config global do B.O pra usar essa opção. Se você mudar isso durante a campanha reinicie o save para aplicar." />
+    <string id="bo_campaign_config_title.8" text="Multiplicador de ouro pra cidades" />
+    <string id="bo_campaign_config_title.9" text="Multiplicar de produção de items nas caravas" />
+    <string id="bo_campaign_config_desc.9" text="Aumenta a quantidade de items á venda nos mercados de cidades. Deixe 0 para o padrão." />
 
   </strings>
 

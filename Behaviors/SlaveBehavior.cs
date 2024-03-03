@@ -4,7 +4,6 @@ using System.Linq;
 using Helpers;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
-using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.GameMenus;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Roster;
@@ -23,65 +22,7 @@ namespace BasicOverhaul.Behaviors
         TownProsperity,
         Construction
     }
-    internal class SlaveSettlementProsperityModel : DefaultSettlementProsperityModel
-    {
-        public override ExplainedNumber CalculateProsperityChange(Town fortification, bool includeDescriptions = false)
-        {
-            ExplainedNumber baseNumber = base.CalculateProsperityChange(fortification, includeDescriptions);
-            Settlement settlement = fortification.Settlement;
 
-            if (settlement == null) return baseNumber;
-            string settlementId = settlement.StringId;
-            if (SlaveBehavior.Instance.SlaveData.ContainsKey(settlementId) && SlaveBehavior.Instance.SlaveData[settlementId].DestinationType == DestinationTypes.TownProsperity)
-            {
-                baseNumber.Add(SlaveBehavior.Instance.SlaveData[settlementId].SlaveAmount / 2f,
-                    new TextObject("{=bo_slavery}Slavery"));
-            }
-
-            return baseNumber;
-        }
-    }
-
-    internal class SlaveBuildingConstructionModel : DefaultBuildingConstructionModel
-    {
-        public override ExplainedNumber CalculateDailyConstructionPower(Town town, bool includeDescriptions = false)
-        {
-            ExplainedNumber baseNumber = base.CalculateDailyConstructionPower(town, includeDescriptions);
-            Settlement settlement = town.Settlement;
-            if (settlement == null)
-                return baseNumber;
-            string settlementId = settlement.StringId;
-            if (SlaveBehavior.Instance.SlaveData.ContainsKey(settlementId) && SlaveBehavior.Instance.SlaveData[settlementId].DestinationType == DestinationTypes.Construction)
-            {
-                baseNumber.Add(SlaveBehavior.Instance.SlaveData[settlementId].SlaveAmount / 10f,
-                    new TextObject("{=bo_slavery}Slavery"));
-            }
-
-            return baseNumber;
-        }
-    }
-
-    internal class SlaveClanFinanceModel : DefaultClanFinanceModel
-    {
-        public override ExplainedNumber CalculateClanGoldChange(Clan clan, bool includeDescriptions = false,
-            bool applyWithdrawals = false, bool includeDetails = false)
-        {
-            
-
-            ExplainedNumber baseNumber = base.CalculateClanIncome(clan, includeDescriptions, applyWithdrawals, includeDetails);
-            if (clan == Clan.PlayerClan)
-                foreach (Settlement settlement in clan.Settlements.Where(x =>
-                             x.IsTown && SlaveBehavior.Instance.SlaveData.ContainsKey(x.StringId) &&
-                             SlaveBehavior.Instance.SlaveData[x.StringId].DestinationType == DestinationTypes.Clan))
-                {
-                    float profit = SlaveBehavior.Instance.SlaveData[settlement.StringId].SlaveAmount * 4;
-                    baseNumber.Add(profit,
-                        new TextObject("{=bo_town_slavery}{TOWN} Slavery").SetTextVariable("TOWN", settlement.Name));
-                }
-
-            return baseNumber;
-        }
-    }
     internal class TownSlaveData
     {
         [SaveableField(1)]

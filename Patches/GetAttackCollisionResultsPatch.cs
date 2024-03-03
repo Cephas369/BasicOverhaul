@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using TaleWorlds.Core;
 using TaleWorlds.Engine;
+using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
 namespace BasicOverhaul.Patches;
@@ -26,17 +27,17 @@ public static class GetAttackCollisionResultsPatch
             crushedThrough = true;
             attackCollisionData.InflictedDamage = 1000;
             combatLog.InflictedDamage = 1000;
-        }
+        }   
     }
 }
 
-[HarmonyPatch(typeof(Mission), "GetDefendCollisionResults")]
+[HarmonyPatch(typeof(MissionCombatMechanicsHelper), "GetDefendCollisionResults")]
 public static class GetDefendCollisionResultsPatch
 {
     public static void Postfix(
         Agent attackerAgent,
         Agent defenderAgent,
-        CombatCollisionResult collisionResult,
+        ref CombatCollisionResult collisionResult,
         int attackerWeaponSlotIndex,
         bool isAlternativeAttack,
         StrikeType strikeType,
@@ -48,11 +49,20 @@ public static class GetDefendCollisionResultsPatch
         ref bool isHeavyAttack,
         ref float defenderStunPeriod,
         ref float attackerStunPeriod,
-        ref bool crushedThrough)
+        ref bool crushedThrough,
+        ref bool chamber)
     {
         if (attackerAgent.IsMainAgent && MissionCheats.IsPlayerDamageOp)
         {
             isHeavyAttack = true;
+            crushedThrough = true;
+        }
+
+        if (BasicOverhaulGlobalConfig.Instance?.DisableAllyCollision == true &&
+            defenderAgent?.IsFriendOf(attackerAgent) == true)
+        {
+            collisionResult = CombatCollisionResult.None;
+            chamber = true;
             crushedThrough = true;
         }
     }

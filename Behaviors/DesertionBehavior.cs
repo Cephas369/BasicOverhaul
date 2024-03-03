@@ -139,13 +139,17 @@ namespace BasicOverhaul.Behaviors
             {
                 foreach (var soldier in mobileParty.MemberRoster.GetTroopRoster())
                 {
-                    var newMilitias = CharacterObject.FindAll(x => !x.IsHero && x.IsSoldier && x.IsRegular && x.Culture == settlement.Culture &&
-                    x.DefaultFormationClass == soldier.Character.DefaultFormationClass && soldier.Character.Occupation == Occupation.Soldier).ToList();
+                    var newMilitias = CharacterObject.FindAll(x => !x.IsHero && x.Culture == settlement.Culture &&
+                    x.DefaultFormationClass == soldier.Character.DefaultFormationClass && (soldier.Character.Occupation == Occupation.Soldier || soldier.Character.Occupation == Occupation.Mercenary)).ToList();
                     
                     newMilitias.Randomize();
+                    CharacterObject newMilitia = null;
+                    var militias = newMilitias.OrderBy(x => Math.Abs(soldier.Character.Tier - x.Tier));
+                    if (militias?.Any() == true)
+                        newMilitia = militias.First();
+                    else
+                        continue;
                     
-                    var newMilitia = newMilitias.OrderBy(x => Math.Abs(soldier.Character.Tier - x.Tier)).First();
-
                     if (newMilitia == null)
                         newMilitia = CharacterObject
                             .FindAll(x => !x.IsHero && x.IsSoldier && x.Culture == settlement.Culture)

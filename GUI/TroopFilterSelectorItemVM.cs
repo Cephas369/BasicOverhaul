@@ -4,6 +4,7 @@
 // MVID: C2B4842E-B3B8-46FE-A96B-C6CECFB63981
 // Assembly location: C:\Program Files (x86)\Steam\steamapps\common\Mount & Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.CampaignSystem.ViewModelCollection.dll
 
+using BasicOverhaul.GUI;
 using BasicOverhaul.Patches;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.Core.ViewModelCollection.Selector;
