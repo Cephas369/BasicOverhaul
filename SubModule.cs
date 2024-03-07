@@ -49,6 +49,9 @@ namespace BasicOverhaul
             base.OnSubModuleLoad();
             Harmony = new Harmony("com.basic_overhaul");
             Harmony.PatchAll();
+
+            Harmony.Patch(AccessTools.Method(typeof(System.Xml.XmlNode).Assembly.GetTypes().First(x=>x.Name =="XmlLoader"), "Load"),
+                postfix: AccessTools.Method(typeof(XmlGUILoadPatch), "Postfix"));
         }
 
         private void MakeMenuFalse() => isMenuOpened = false;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml;
 using HarmonyLib;
@@ -17,5 +18,17 @@ public static class LoadXMLPatch
     {
         if (BasicOverhaulGlobalConfig.Instance?.EnableDeserterParties == false && XmlResource.XmlInformationList.Any(x => x.Name == "deserter_clan"))
             XmlResource.XmlInformationList.RemoveAll(x => x.Name == "deserter_clan");
+    }
+}
+
+[HarmonyPatch(typeof(Directory), "Exists")]
+public static class MBObjectManagerPatch
+{
+    public static void Prefix(string path)
+    {
+        if (path.Contains("Prefabs"))
+        {
+            int i = 0;
+        }
     }
 }
