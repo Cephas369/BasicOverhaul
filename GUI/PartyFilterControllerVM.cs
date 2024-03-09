@@ -16,15 +16,11 @@ namespace BasicOverhaul
     private readonly Action<Side, (FilterType filterType, object selected)> _onChange;
     private (FilterType filterType, object selected) _selectedItem;
     private bool _isCustomSort;
-    private int _marginLeft;
-    private int _marginRight;
-    private int _marginTop;
     private bool _isVisible;
     private readonly FilterType _filterType;
     private SelectorVM<TroopFilterSelectorItemVM> _sortOptions;
 
-    public PartyFilterControllerVM(Side rosterSide, Action<Side, (FilterType filterType, object selected)> onChange, List<TroopFilterSelectorItemVM> elements,
-      int marginLeft, int marginRight, int marginTop, FilterType filterType)
+    public PartyFilterControllerVM(Side rosterSide, Action<Side, (FilterType filterType, object selected)> onChange, List<TroopFilterSelectorItemVM> elements, FilterType filterType)
     {
       _filterType = filterType;
       _rosterSide = rosterSide;
@@ -37,9 +33,6 @@ namespace BasicOverhaul
 
       SortOptions.SelectedIndex = 0;
       _onChange = onChange;
-      MarginLeft = marginLeft;
-      MarginTop = marginTop;
-      MarginRight = marginRight;
       IsVisible = true;
     }
 
@@ -98,46 +91,6 @@ namespace BasicOverhaul
         if (value == _isVisible)
           return;
         _isVisible = value;
-        OnPropertyChangedWithValue(value);
-      }
-    }
-    [DataSourceProperty]
-    public int MarginLeft
-    {
-      get => _marginLeft;
-      set
-      {
-        if (value == _marginLeft)
-          return;
-        _marginLeft = value;
-        
-        OnPropertyChangedWithValue(value);
-      }
-    }
-    [DataSourceProperty]
-    public int MarginRight
-    {
-      get => _marginRight;
-      set
-      {
-        if (value == _marginRight)
-          return;
-        _marginRight = value;
-        
-        OnPropertyChangedWithValue(value);
-      }
-    }
-    
-    [DataSourceProperty]
-    public int MarginTop
-    {
-      get => _marginTop;
-      set
-      {
-        if (value == _marginTop)
-          return;
-        _marginTop = value;
-        
         OnPropertyChangedWithValue(value);
       }
     }

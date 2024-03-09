@@ -50,16 +50,13 @@ namespace BasicOverhaul.GUI
       for (int i = 0; i < 2; i++)
       {
         Side side = i == 0 ? Side.Left : Side.Right;
-        int marginTop = 300;
         _dataSources.Add(side, new());
 
         foreach (var filter in filters)
         {
-          var partyFilter = new PartyFilterControllerVM(side,
-            OnFilterChange, filter.Value, side == Side.Right ? 455 : 0,side == Side.Left ? 455 : 0, marginTop, filter.Key);
+          var partyFilter = new PartyFilterControllerVM(side, OnFilterChange, filter.Value, filter.Key);
                     
           _dataSources[side].Add(filter.Key, partyFilter);
-          marginTop -= 36;
         }
       }
     }

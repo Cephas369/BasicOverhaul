@@ -95,21 +95,25 @@ public static class XmlGUILoadPatch
 
             if (node != null)
             {
-                string[] partyVMNodes = new[]
+                XmlNode? beforeNode = node.SelectSingleNode("PartyTroopManagerPopUp");
+                if (beforeNode != null)
                 {
-                    "<PartyFilterController HorizontalAlignment=\"Center\" DataSource=\"{FilterCultureLeft}\"/>",
-                    "<PartyFilterController HorizontalAlignment=\"Center\" DataSource=\"{FilterClassLeft}\"/>",
-                    "<PartyFilterController HorizontalAlignment=\"Center\" DataSource=\"{FilterTierLeft}\"/>",
-                    "<PartyFilterController HorizontalAlignment=\"Center\" DataSource=\"{FilterCultureRight}\"/>",
-                    "<PartyFilterController HorizontalAlignment=\"Center\" DataSource=\"{FilterClassRight}\"/>",
-                    "<PartyFilterController HorizontalAlignment=\"Center\" DataSource=\"{FilterTierRight}\"/>"
-                };
+                    string[] partyVMNodes = 
+                    {
+                        "<PartyFilterController HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" MarginTop=\"300\" MarginLeft=\"!SidePanel.Width\" PositionXOffset=\"20\" DataSource=\"{FilterCultureLeft}\"/>",
+                        "<PartyFilterController HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" MarginTop=\"264\" MarginLeft=\"!SidePanel.Width\" PositionXOffset=\"20\"  DataSource=\"{FilterClassLeft}\"/>",
+                        "<PartyFilterController HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" MarginTop=\"228\" MarginLeft=\"!SidePanel.Width\" PositionXOffset=\"20\"  DataSource=\"{FilterTierLeft}\"/>",
+                        "<PartyFilterController HorizontalAlignment=\"Right\" VerticalAlignment=\"Top\" MarginTop=\"300\" MarginRight=\"!SidePanel.Width\" PositionXOffset=\"-20\"  DataSource=\"{FilterCultureRight}\"/>",
+                        "<PartyFilterController HorizontalAlignment=\"Right\" VerticalAlignment=\"Top\" MarginTop=\"264\" MarginRight=\"!SidePanel.Width\" PositionXOffset=\"-20\"  DataSource=\"{FilterClassRight}\"/>",
+                        "<PartyFilterController HorizontalAlignment=\"Right\" VerticalAlignment=\"Top\" MarginTop=\"228\" MarginRight=\"!SidePanel.Width\" PositionXOffset=\"-20\"  DataSource=\"{FilterTierRight}\"/>"
+                    };
                 
-                foreach (var element in partyVMNodes)
-                {
-                    XmlDocument document = new XmlDocument();
-                    document.LoadXml(element);
-                    node.AppendChild(doc.ImportNode(document.DocumentElement, true));
+                    foreach (var element in partyVMNodes)
+                    {
+                        XmlDocument document = new XmlDocument();
+                        document.LoadXml(element);
+                        node.InsertBefore(doc.ImportNode(document.DocumentElement, true), beforeNode);
+                    }
                 }
             }
         }
@@ -118,22 +122,26 @@ public static class XmlGUILoadPatch
         {
             XmlNode? node = doc.SelectSingleNode("Prefab")?.SelectSingleNode("Window")?.SelectSingleNode("InventoryScreenWidget")?
                 .SelectSingleNode("Children");
-
             if (node != null)
             {
-                string[] inventoryVMNodes = new[]
+                XmlNode? beforeNode = node.SelectSingleNode("InventoryTooltip");
+                if (beforeNode != null)
                 {
-                    "<PartyFilterController HorizontalAlignment=\"Center\" DataSource=\"{FilterTierLeft}\"/>",
-                    "<PartyFilterController HorizontalAlignment=\"Center\" DataSource=\"{FilterTypeLeft}\" />",
-                    "<PartyFilterController HorizontalAlignment=\"Center\" DataSource=\"{FilterTierRight}\"/>",
-                    "<PartyFilterController HorizontalAlignment=\"Center\" DataSource=\"{FilterTypeRight}\" />",
-                };
+                    string[] inventoryVMNodes = 
+                    {
+                        "<PartyFilterController HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" MarginTop=\"140\" MarginLeft=\"!SidePanel.Width\" PositionXOffset=\"22\" DataSource=\"{FilterTierLeft}\"/>",
+                        "<PartyFilterController HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" MarginTop=\"100\" MarginLeft=\"!SidePanel.Width\" PositionXOffset=\"22\"  DataSource=\"{FilterTypeLeft}\" />",
+                        "<PartyFilterController HorizontalAlignment=\"Right\" VerticalAlignment=\"Top\" MarginTop=\"140\" MarginRight=\"!SidePanel.Width\" PositionXOffset=\"-22\"  DataSource=\"{FilterTierRight}\"/>",
+                        "<PartyFilterController HorizontalAlignment=\"Right\" VerticalAlignment=\"Top\" MarginTop=\"100\" MarginRight=\"!SidePanel.Width\" PositionXOffset=\"-22\"  DataSource=\"{FilterTypeRight}\" />",
+                    };
                 
-                foreach (var element in inventoryVMNodes)
-                {
-                    XmlDocument document = new XmlDocument();
-                    document.LoadXml(element);
-                    node.AppendChild(doc.ImportNode(document.DocumentElement, true));
+                    foreach (var element in inventoryVMNodes)
+                    {
+                        XmlDocument document = new XmlDocument();
+                        document.LoadXml(element);
+                    
+                        node.InsertBefore(doc.ImportNode(document.DocumentElement, true), beforeNode);
+                    }
                 }
             }
         }
