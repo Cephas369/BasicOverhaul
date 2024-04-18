@@ -229,7 +229,18 @@ namespace BasicOverhaul
             
             return GameTexts.FindText("str_done").ToString();
         }
-        
+        [BasicCheat("{=cheat_desc.18}Speed up/slow down")]
+        [CommandLineFunctionality.CommandLineArgumentFunction("fast_forward", "bo_misson")]
+        [UsedImplicitly]
+        private static string FastForward(List<string> strings)
+        {
+            if (Mission.Current == null)
+                return "You must be in a mission!";
+
+            Mission.Current.SetFastForwardingFromUI(!Mission.Current.IsFastForward);
+            
+            return GameTexts.FindText("str_done").ToString();
+        }
         private static void SpawnCharacterAgent(BasicCharacterObject character, bool isAlly)
         {
             Monster monsterWithSuffix = FaceGen.GetMonsterWithSuffix(character.Race, FaceGen.MonsterSuffixSettlement);

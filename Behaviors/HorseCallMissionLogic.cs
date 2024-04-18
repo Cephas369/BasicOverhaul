@@ -10,9 +10,9 @@ namespace BasicOverhaul.Behaviors;
 
 internal class HorseCallMissionLogic : MissionLogic
 {
-    private readonly Timer keyPressTimer = new Timer(Time.ApplicationTime, 1f, false);
+    private readonly Timer keyPressTimer = new(Time.ApplicationTime, 1f, false);
     private Agent mainHorse;
-    
+    private readonly InputKey _callHorseKey = SubModule.PossibleKeys[BasicOverhaulGlobalConfig.Instance?.CallHorseKey?.SelectedValue ?? "X"];
     public override void OnAgentMount(Agent agent)
     {
         base.OnAgentMount(agent);
@@ -40,7 +40,7 @@ internal class HorseCallMissionLogic : MissionLogic
         if (mainHorse == null || BasicOverhaulGlobalConfig.Instance.HorseCallSkill < 0)
             return;
         
-        if (Input.IsKeyReleased(InputKey.X))    
+        if (Input.IsKeyReleased(_callHorseKey))    
         {
             if (Agent.Main?.Character.GetSkillValue(DefaultSkills.Riding) < BasicOverhaulGlobalConfig.Instance.HorseCallSkill)
             {

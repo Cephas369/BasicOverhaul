@@ -28,7 +28,7 @@
 
     <!-- In Battle -->
     <string id="bo_config_title.8" text="Desativar colisões de ataque para aliados" />
-    <string id="bo_config_title.9" text="Habilidade de montar necessária para chamar cavalo (Tecla X)" />
+    <string id="bo_config_title.9" text="Habilidade de montar necessária para chamar cavalo" />
     <string id="bo_config_description.9" text="Se estiver usando outro mod com essa mecânica, deixe 0 para desativá-la." />
     <string id="bo_config_title.10" text="Desativar limite de cenário para o jogador" />
     <string id="bo_config_title.11" text="Ativar animal de carga em batalhas para acessar inventário" />
@@ -41,6 +41,10 @@
     <string id="bo_config_title.15" text="Mudar modo trapaça pela config do mod" />
     <string id="bo_config_description.15" text="Ative se você prefere mudar o modo trapaça pelo Basic Overhaul Campaign ao invés de mudar nos arquivos do jogo." />
     <string id="bo_config_title.16" text="Limitar nível máximo de habilidades em 300" />
+
+    <!-- Hotkeys -->
+    <string id="bo_config_title.17" text="Tecla do menu" />
+    <string id="bo_config_title.18" text="Tecla de chamar o cavalo" />
     
     <!-- Campaign Save Settings -->
     <string id="bo_campaign_config_title.1" text="Multiplicador de Limite de Tropas no Grupo" />

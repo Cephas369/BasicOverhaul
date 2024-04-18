@@ -1,4 +1,5 @@
-﻿using TaleWorlds.CampaignSystem;
+﻿using System;
+using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Settlements;
 
@@ -20,9 +21,16 @@ internal class BOVolunteerModel : DefaultVolunteerModel
     }
     public override float GetDailyVolunteerProductionProbability(Hero hero, int index, Settlement settlement)
     {
-        float baseNumber = base.GetDailyVolunteerProductionProbability(hero, index, settlement);
-        if (BasicOverhaulCampaignConfig.Instance?.RecruitmentRate > 0)
-            baseNumber = BasicOverhaulCampaignConfig.Instance.RecruitmentRate * baseNumber;
-        return baseNumber;
+        try
+        {
+            float baseNumber = base.GetDailyVolunteerProductionProbability(hero, index, settlement);
+            if (BasicOverhaulCampaignConfig.Instance?.RecruitmentRate > 0)
+                baseNumber = BasicOverhaulCampaignConfig.Instance.RecruitmentRate * baseNumber;
+            return baseNumber;
+        }
+        catch (Exception e)
+        {
+            return 0;
+        }
     }
 }

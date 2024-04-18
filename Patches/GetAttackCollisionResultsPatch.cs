@@ -22,7 +22,7 @@ public static class GetAttackCollisionResultsPatch
         ref WeaponComponentData shieldOnBack,
         ref CombatLogData combatLog)
     {
-        if (attackerAgent.IsMainAgent && MissionCheats.IsPlayerDamageOp)
+        if (MissionCheats.IsPlayerDamageOp && attackerAgent.IsMainAgent && victimAgent?.IsMainAgent == false)
         {
             crushedThrough = true;
             attackCollisionData.InflictedDamage = 1000;
@@ -52,7 +52,7 @@ public static class GetDefendCollisionResultsPatch
         ref bool crushedThrough,
         ref bool chamber)
     {
-        if (attackerAgent.IsMainAgent && MissionCheats.IsPlayerDamageOp)
+        if (MissionCheats.IsPlayerDamageOp && attackerAgent.IsMainAgent)
         {
             isHeavyAttack = true;
             crushedThrough = true;

@@ -34,29 +34,26 @@ public static class LoadMoviePatch
     private static SPInventoryVM currentInventoryDataSource;
     public static void Prefix(ref string movieName, ref ViewModel dataSource)
     {
-        if (BasicOverhaulGlobalConfig.Instance?.EnablePartyScreenFilters == true)
+        if (BasicOverhaulGlobalConfig.Instance?.EnablePartyScreenFilters == true && movieName == "PartyScreen" && dataSource is PartyVM partyVm)
         {
-            if (movieName == "PartyScreen" && dataSource is PartyVM partyVm)
-            {
-                partyVm = new BOPartyVM(partyVm.PartyScreenLogic);
-                dataSource = partyVm;
-            }
+            partyVm = new BOPartyVM(partyVm.PartyScreenLogic);
+            dataSource = partyVm;
+        }
 
-            if (movieName == "Inventory" && dataSource is SPInventoryVM spInventoryVm)
-            {
-                InventoryLogic inventoryLogic =
-                    (InventoryLogic)AccessTools.Field(typeof(SPInventoryVM), "_inventoryLogic").GetValue(spInventoryVm);
-                Func<WeaponComponentData, ItemObject.ItemUsageSetFlags> _getItemUsageSetFlags = 
-                    (Func<WeaponComponentData, ItemObject.ItemUsageSetFlags>)AccessTools.Field(typeof(SPInventoryVM), "_getItemUsageSetFlags").GetValue(spInventoryVm);
-                string _fiveStackShortcutkeyText =
-                    (string)AccessTools.Field(typeof(SPInventoryVM), "_fiveStackShortcutkeyText").GetValue(spInventoryVm);
-                string _entireStackShortcutkeyText =
-                    (string)AccessTools.Field(typeof(SPInventoryVM), "_entireStackShortcutkeyText").GetValue(spInventoryVm);
-                
-                spInventoryVm = new BOInventoryVM(inventoryLogic, !spInventoryVm.IsInWarSet, _getItemUsageSetFlags, _fiveStackShortcutkeyText, _entireStackShortcutkeyText);
-                dataSource = spInventoryVm;
-                currentInventoryDataSource = dataSource as SPInventoryVM;
-            }
+        if (BasicOverhaulGlobalConfig.Instance?.EnableInventoryScreenFilters == true && movieName == "Inventory" && dataSource is SPInventoryVM spInventoryVm)
+        {
+            InventoryLogic inventoryLogic =
+                (InventoryLogic)AccessTools.Field(typeof(SPInventoryVM), "_inventoryLogic").GetValue(spInventoryVm);
+            Func<WeaponComponentData, ItemObject.ItemUsageSetFlags> _getItemUsageSetFlags = 
+                (Func<WeaponComponentData, ItemObject.ItemUsageSetFlags>)AccessTools.Field(typeof(SPInventoryVM), "_getItemUsageSetFlags").GetValue(spInventoryVm);
+            string _fiveStackShortcutkeyText =
+                (string)AccessTools.Field(typeof(SPInventoryVM), "_fiveStackShortcutkeyText").GetValue(spInventoryVm);
+            string _entireStackShortcutkeyText =
+                (string)AccessTools.Field(typeof(SPInventoryVM), "_entireStackShortcutkeyText").GetValue(spInventoryVm);
+            
+            spInventoryVm = new BOInventoryVM(inventoryLogic, !spInventoryVm.IsInWarSet, _getItemUsageSetFlags, _fiveStackShortcutkeyText, _entireStackShortcutkeyText);
+            dataSource = spInventoryVm;
+            currentInventoryDataSource = dataSource as SPInventoryVM;
         }
     }
     [HarmonyPatch(typeof(GauntletInventoryScreen), "OnInitialize")]
@@ -64,7 +61,8 @@ public static class LoadMoviePatch
     {
         public static void Postfix(ref SPInventoryVM ____dataSource)
         {
-            ____dataSource = currentInventoryDataSource;
+            if(BasicOverhaulGlobalConfig.Instance?.EnableInventoryScreenFilters == true)
+                ____dataSource = currentInventoryDataSource;
         }
     }
 }
@@ -78,7 +76,7 @@ public static class FixStackModifiersPatch
     private static FieldInfo dataSource = AccessTools.Field(typeof(GauntletPartyScreen), "_dataSource");
     public static void Prefix(ScreenLayer layer, ScreenBase __instance)
     {
-        if (__instance is GauntletPartyScreen gauntletPartyScreen && BOPartyVM.Instance != null)
+        if (BasicOverhaulGlobalConfig.Instance?.EnablePartyScreenFilters == true && __instance is GauntletPartyScreen gauntletPartyScreen && BOPartyVM.Instance != null)
         {
             dataSource.SetValue(__instance, BOPartyVM.Instance);
         }
@@ -88,7 +86,7 @@ public static class XmlGUILoadPatch
 {
     public static void Postfix(XmlDocument doc, XmlReader reader, bool preserveWhitespace)
     {
-        if (reader?.BaseURI?.Contains("Party") == true)
+        if (BasicOverhaulGlobalConfig.Instance?.EnablePartyScreenFilters == true && reader?.BaseURI?.Contains("Party") == true)
         {
             XmlNode? node = doc.SelectSingleNode("Prefab")?.SelectSingleNode("Window")?.SelectSingleNode("PartyScreenWidget")?
                 .SelectSingleNode("Children");
@@ -118,7 +116,7 @@ public static class XmlGUILoadPatch
             }
         }
         
-        if (reader?.BaseURI?.Contains("Inventory") == true)
+        if (BasicOverhaulGlobalConfig.Instance?.EnableInventoryScreenFilters == true && reader?.BaseURI?.Contains("Inventory") == true)
         {
             XmlNode? node = doc.SelectSingleNode("Prefab")?.SelectSingleNode("Window")?.SelectSingleNode("InventoryScreenWidget")?
                 .SelectSingleNode("Children");

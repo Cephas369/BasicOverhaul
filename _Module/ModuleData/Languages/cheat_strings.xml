@@ -23,6 +23,7 @@
 	  <string id="cheat_desc.15" text="Spawn weapon" />
 	  <string id="cheat_desc.16" text="Disable/enable agents AI" />
 	  <string id="cheat_desc.17" text="Enable/disable cheat mode ({VALUE})" />
+	  <string id="cheat_desc.18" text="Speed up/slow down" />
 	  
 
 	  <string id="speed" text="Speed" />

@@ -30,7 +30,7 @@
 
     <!-- In Battle -->
     <string id="bo_config_title.8" text="Disable attack collisions for allies" />
-    <string id="bo_config_title.9" text="Horse call required riding skill (Key X)" />
+    <string id="bo_config_title.9" text="Horse call required riding skill" />
     <string id="bo_config_description.9" text="If you're using another mod that have this mechanic just leave it 0 to disable it." />
     <string id="bo_config_title.10" text="Disable boundaries crossing for player" />
     <string id="bo_config_title.11" text="Enable spawn pack animal in battles for accessing inventory" />
@@ -43,10 +43,13 @@
     <string id="bo_config_title.15" text="Enable switch cheat mode by this mod config" />
     <string id="bo_config_description.15" text="Enable this if you want to change the cheat mode by the Basic Overhaul Campaign Configs instead of the game config files." />
     <string id="bo_config_title.16" text="Enable limit max skill levels at 300" />
-    
+
+
+    <!-- Hotkeys -->
+    <string id="bo_config_title.17" text="Open menu key" />
+    <string id="bo_config_title.18" text="Call horse key" />
     
     <!-- Campaign Save Settings -->
-    
     <string id="bo_campaign_config_title.1" text="Party Size Limit Multiplier" />
     <string id="bo_campaign_config_desc.1" text="OBS: Putting a high value will lag your game. Leave 0 for the default game chance." />
     <string id="bo_campaign_config_title.2" text="Global Loot Chance" />

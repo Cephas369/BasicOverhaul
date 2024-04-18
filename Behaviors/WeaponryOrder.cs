@@ -82,7 +82,7 @@ namespace BasicOverhaul.Behaviors
         
         public override void OnMissionTick(float dt)
         {
-            if (!isInquiryOpen && (Input.IsKeyDown(InputKey.LeftControl) || Input.IsKeyDown(InputKey.RightControl)) && Input.IsKeyReleased(InputKey.W) && _selectedFormations.Any())
+            if (!isInquiryOpen && (Input.IsKeyDown(InputKey.LeftControl) || Input.IsKeyDown(InputKey.RightControl)) && Input.IsKeyReleased(InputKey.W) && _selectedFormations?.Any() == true)
             {
                 List<InquiryElement> elements = new List<InquiryElement>();
 

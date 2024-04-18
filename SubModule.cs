@@ -43,6 +43,8 @@ namespace BasicOverhaul
         private static List<string> _currentParameters = new();
         private bool isMenuOpened = false;
         public static Harmony Harmony;
+        public static Dictionary<string, InputKey> PossibleKeys = new();
+        private InputKey menuKey = InputKey.U;
         
         protected override void OnSubModuleLoad()
         {
@@ -52,12 +54,16 @@ namespace BasicOverhaul
 
             Harmony.Patch(AccessTools.Method(typeof(System.Xml.XmlNode).Assembly.GetTypes().First(x=>x.Name =="XmlLoader"), "Load"),
                 postfix: AccessTools.Method(typeof(XmlGUILoadPatch), "Postfix"));
+            
+            foreach (string inputKey in Enum.GetNames(typeof(InputKey)))
+            {
+                PossibleKeys.Add(inputKey, (InputKey)Enum.Parse(typeof(InputKey), inputKey));
+            }
         }
-
-        private void MakeMenuFalse() => isMenuOpened = false;
+        private void MakeMenuClosed() => isMenuOpened = false;
         private void ApplyCheat(List<InquiryElement> inquiryElements)
         {
-            MakeMenuFalse();
+            MakeMenuClosed();
             if (!inquiryElements.Any())
                 return;
             InquiryElement inquiry = inquiryElements[0];
@@ -67,7 +73,7 @@ namespace BasicOverhaul
 
             if (parameters == null)
             {
-                MakeMenuFalse();
+                MakeMenuClosed();
                 InformationManager.DisplayMessage(new InformationMessage((string)cheatTuple.Method.Invoke(null, new object[]{ null })));
                 return;
             }
@@ -89,7 +95,7 @@ namespace BasicOverhaul
                 if (i == parameters.Length - 1)
                     currentAction += input =>
                     {
-                        MakeMenuFalse();
+                        MakeMenuClosed();
                         InformationManager.DisplayMessage(new InformationMessage((string)cheatTuple.Method.Invoke(null, new object[] { _currentParameters })));
                         _currentParameters.Clear();
                     };
@@ -109,7 +115,7 @@ namespace BasicOverhaul
                 "Ok", null, affirmativeActions[0], null));
         }
 
-        private bool IsHotKeyPressed => Input.IsKeyReleased(InputKey.U);
+        private bool IsHotKeyPressed => Input.IsKeyReleased(menuKey);
         protected override void OnApplicationTick(float dt)
         {
             base.OnApplicationTick(dt);
@@ -197,7 +203,7 @@ namespace BasicOverhaul
             }
 
             InitializeCheats();
-
+            PossibleKeys.TryGetValue(BasicOverhaulGlobalConfig.Instance?.MenuHotKey?.SelectedValue ?? "U", out menuKey);
         }
 
         private void InitializeCheats()

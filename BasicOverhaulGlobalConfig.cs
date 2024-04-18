@@ -3,9 +3,13 @@ using MCM.Abstractions.Attributes;
 using MCM.Abstractions.Base.Global;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using MCM.Common;
+using TaleWorlds.InputSystem;
+using TaleWorlds.Library;
 using TaleWorlds.ModuleManager;
 using TaleWorlds.MountAndBlade;
 
@@ -17,7 +21,6 @@ namespace BasicOverhaul
         public override string DisplayName => $"Basic Overhaul {Regex.Replace(ModuleHelper.GetModuleInfo(Assembly.GetExecutingAssembly().GetName().Name).Version.ToString(), @"v|\.0$", string.Empty)}";
         public override string FolderName => "BasicOverhaul";
         public override string FormatType => "json";
-        
         
         [SettingPropertyGroup("{=general}General", GroupOrder = 1)]
         [SettingPropertyBool("{=bo_config_title.1}Enable slave system", Order = 1, RequireRestart = true)]
@@ -82,5 +85,13 @@ namespace BasicOverhaul
         [SettingPropertyGroup("{=miscellaneous}Miscellaneous", GroupOrder = 3)]
         [SettingPropertyBool("{=bo_config_title.15}Enable switch cheat mode by this mod config", HintText = "{=bo_config_description.15}Enable this if you want to change the cheat mode by the Basic Overhaul Campaign Configs instead of the game config files.", Order = 3, RequireRestart = false)]
         public bool EnableSwitchCheatMode { get; set; } = false;
+        
+        [SettingPropertyGroup("{=hotkeys}Hotkeys", GroupOrder = 4)]
+        [SettingPropertyDropdown("{=bo_config_title.17}Open menu key", Order = 1, RequireRestart = true)]
+        public Dropdown<string> MenuHotKey { get; set; } = new(Enum.GetNames(typeof(InputKey)), selectedIndex: 21);
+        
+        [SettingPropertyGroup("{=hotkeys}Hotkeys", GroupOrder = 4)]
+        [SettingPropertyDropdown("{=bo_config_title.18}Call horse key", Order = 2, RequireRestart = true)]
+        public Dropdown<string> CallHorseKey { get; set; } = new(Enum.GetNames(typeof(InputKey)), selectedIndex: 44);
     }
 }
