@@ -33,7 +33,7 @@
     <string id="bo_config_title.10" text="Desativar limite de cenário para o jogador" />
     <string id="bo_config_title.11" text="Ativar animal de carga em batalhas para acessar inventário" />
     <string id="bo_config_description.11" text="Apenas na campanha." />
-    <string id="bo_config_title.12" text="Ativar ordem de armamento (CTRL + W)" />
+    <string id="bo_config_title.12" text="Ativar ordem de armamento" />
 
     <!-- Miscellaneous -->
     <string id="bo_config_title.13" text="Desativar vídeo de introdução" />
@@ -45,12 +45,14 @@
     <!-- Hotkeys -->
     <string id="bo_config_title.17" text="Tecla do menu" />
     <string id="bo_config_title.18" text="Tecla de chamar o cavalo" />
+    <string id="bo_config_title.19" text="Tecla de acelerar/desacelerar" />
+    <string id="bo_config_title.20" text="Tecla de ordem de armamento" />
     
     <!-- Campaign Save Settings -->
     <string id="bo_campaign_config_title.1" text="Multiplicador de Limite de Tropas no Grupo" />
     <string id="bo_campaign_config_desc.1" text="OBS: Colocar um valor alto causará lag no jogo. Deixe 0 para a chance padrão do jogo." />
     <string id="bo_campaign_config_title.2" text="Chance Global de Saque" />
-    <string id="bo_campaign_config_desc.2" text="Essa é a chance de cada item usado em uma batalha de poder ser saqueado, colocar 100 fará com que todos os itens usados em uma batalha pelo inimigo fiquem disponíveis para saque. Deixe 0 para a chance de jogo padrão." />
+    <string id="bo_campaign_config_desc.2" text="Esta é a quantidade de itens que podem ser saqueados de cada vítima inimiga pós batalha. Deixe 0 para o número do jogo padrão." />
     <string id="bo_campaign_config_title.3" text="Multiplicador de Renome em Batalha" />
     <string id="bo_campaign_config_title.4" text="Multiplicador de Influência em Batalha" />
     <string id="bo_campaign_config_title.5" text="Multiplicador de Moral em Batalha" />

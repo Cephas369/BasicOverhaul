@@ -15,6 +15,6 @@
 	  <string id="horse_call_warning.3" text="You don't have the required skill to call your horse." />
 	  
 	  <string id="bo_open_inventory" text="Press {KEY} to open your inventory" />
-	  <string id="all_cultures" text="Build" />
+	  <string id="event" text="Event" />
   </strings>
 </base>

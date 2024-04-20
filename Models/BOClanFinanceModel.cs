@@ -1,10 +1,11 @@
 ﻿using System.Linq;
+using BasicOverhaul.Behaviors;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Localization;
 
-namespace BasicOverhaul.Behaviors;
+namespace BasicOverhaul.Models;
 
 internal class BOClanFinanceModel : DefaultClanFinanceModel
 {

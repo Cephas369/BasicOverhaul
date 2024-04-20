@@ -22,9 +22,9 @@ using MissionWeapon = TaleWorlds.MountAndBlade.MissionWeapon;
 
 namespace BasicOverhaul
 {
-    public static class Cheats
+    public static class Options
     {
-        [BasicCheat("{=cheat_desc.1}Set campaign speed", new []{ "{=speed}Speed" })]
+        [BasicOption("{=cheat_desc.1}Set campaign speed", new []{ "{=speed}Speed" })]
         [CommandLineFunctionality.CommandLineArgumentFunction("set_campaign_speed", "bo")]
         [UsedImplicitly]
         public static string SetCampaignSpeed(List<string> strings)
@@ -46,7 +46,7 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("{=cheat_desc.2}Know all heroes")]
+        [BasicOption("{=cheat_desc.2}Know all heroes", isCheat: true)]
         [CommandLineFunctionality.CommandLineArgumentFunction("know_all_heroes", "bo")]
         [UsedImplicitly]
         public static string KnowAllHeroes(List<string> strings)
@@ -63,7 +63,7 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("{=cheat_desc.8}Add food to party")]
+        [BasicOption("{=cheat_desc.8}Add food to party", isCheat: true)]
         [CommandLineFunctionality.CommandLineArgumentFunction("add_food", "bo")]
         [UsedImplicitly]
         private static string SpawnWeapon(List<string> strings)
@@ -86,7 +86,7 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("{=cheat_desc.3}Destroy deserter parties")]
+        [BasicOption("{=cheat_desc.3}Destroy deserter parties")]
         [CommandLineFunctionality.CommandLineArgumentFunction("destroy_deserter_parties", "bo")]
         [UsedImplicitly]
         public static string DestroyDeserterParties(List<string> strings)
@@ -102,7 +102,7 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
 
-        [BasicCheat("{=cheat_desc.4}Maximize settlement walls", new []{ "{=settlement_name}Settlement name", "{=level}Level" })]
+        [BasicOption("{=cheat_desc.4}Maximize settlement walls", new []{ "{=settlement_name}Settlement name", "{=level}Level" }, isCheat: true)]
         [CommandLineFunctionality.CommandLineArgumentFunction("maximize_settlement_levels", "bo")]
         [UsedImplicitly]
         public static string MaximizeSettlementLevels(List<string> strings)
@@ -149,7 +149,7 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("{=cheat_desc.5}Maximize player stats")]
+        [BasicOption("{=cheat_desc.5}Maximize player stats", isCheat: true)]
         [CommandLineFunctionality.CommandLineArgumentFunction("maximize_player", "bo")]
         [UsedImplicitly]
         public static string MaximizePlayer(List<string> strings)
@@ -162,7 +162,7 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("{=cheat_desc.6}Maximize clan hero stats")]
+        [BasicOption("{=cheat_desc.6}Maximize clan hero stats", isCheat: true)]
         [CommandLineFunctionality.CommandLineArgumentFunction("maximize_clan_hero", "bo")]
         [UsedImplicitly]
         public static string MaximizeHero(List<string> strings)
@@ -186,7 +186,7 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("{=cheat_desc.17}Enable/disable cheat mode ({VALUE})")]
+        [BasicOption("{=cheat_desc.17}Enable/disable cheat mode ({VALUE})")]
         [CommandLineFunctionality.CommandLineArgumentFunction("switch_cheat_mode", "bo")]
         [UsedImplicitly]
         public static string SwitchCheatMode(List<string> strings)
@@ -205,7 +205,7 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("{=cheat_desc.7}Maximize every kingdom stats", new []{ "Kingdom Name" })]
+        [BasicOption("{=cheat_desc.7}Maximize every kingdom stats", new []{ "Kingdom Name" }, isCheat: true)]
         [CommandLineFunctionality.CommandLineArgumentFunction("maximize_kingdom", "bo")]
         [UsedImplicitly]
         private static string AddKingdomMoney(List<string> strings)

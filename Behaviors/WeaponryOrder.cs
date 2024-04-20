@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using TaleWorlds.Core;
@@ -36,6 +37,14 @@ namespace BasicOverhaul.Behaviors
         private readonly WeaponClass[] _weaponClasses = { WeaponClass.OneHandedAxe, WeaponClass.OneHandedPolearm, WeaponClass.OneHandedSword, WeaponClass.TwoHandedAxe, WeaponClass.TwoHandedMace,
             WeaponClass.TwoHandedPolearm, WeaponClass.TwoHandedSword, WeaponClass.Mace };
 
+        private InputKey _weaponryOrderKey = InputKey.Numpad5;
+
+        public override void OnCreated()
+        {
+            base.OnCreated();
+            _weaponryOrderKey = (InputKey)Enum.Parse(typeof(InputKey),
+                BasicOverhaulGlobalConfig.Instance?.WeaponryOrderKey?.SelectedValue ?? "Numpad5");
+        }
         private void ShowWeaponClassInquiry()
         {
             List<InquiryElement> elements = new List<InquiryElement>();
@@ -82,7 +91,7 @@ namespace BasicOverhaul.Behaviors
         
         public override void OnMissionTick(float dt)
         {
-            if (!isInquiryOpen && (Input.IsKeyDown(InputKey.LeftControl) || Input.IsKeyDown(InputKey.RightControl)) && Input.IsKeyReleased(InputKey.W) && _selectedFormations?.Any() == true)
+            if (!isInquiryOpen && Input.IsKeyReleased(_weaponryOrderKey) && _selectedFormations?.Any() == true)
             {
                 List<InquiryElement> elements = new List<InquiryElement>();
 

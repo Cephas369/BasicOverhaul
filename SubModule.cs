@@ -3,48 +3,32 @@ using HarmonyLib;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Bannerlord.ButterLib;
 using BasicOverhaul.Behaviors;
 using BasicOverhaul.Models;
 using BasicOverhaul.Patches;
-using Helpers;
-using SandBox;
-using SandBox.Conversation.MissionLogics;
-using SandBox.GauntletUI;
-using SandBox.Missions.AgentBehaviors;
-using SandBox.Missions.MissionLogics;
 using SandBox.Tournaments.MissionLogics;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.Map;
 using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
-using TaleWorlds.CampaignSystem.ViewModelCollection.Party;
 using TaleWorlds.Core;
-using TaleWorlds.Engine;
-using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.MountAndBlade.Missions.Handlers;
-using TaleWorlds.MountAndBlade.Source.Missions;
-using TaleWorlds.MountAndBlade.Source.Missions.Handlers.Logic;
-using TaleWorlds.ObjectSystem;
 using TaleWorlds.SaveSystem;
-using TaleWorlds.ScreenSystem;
 
 namespace BasicOverhaul
 {
     public class SubModule : MBSubModuleBase
     {
-        public static readonly List<(BasicCheat? Properties, MethodInfo Method)> CampaignCheats = new();
-        public static readonly List<(BasicCheat? Properties, MethodInfo Method)> MissionCheats = new();
+        private static readonly List<(BasicOption? Properties, MethodInfo Method)> CampaignCheats = new();
+        private static readonly List<(BasicOption? Properties, MethodInfo Method)> MissionCheats = new();
         private static List<string> _currentParameters = new();
         private bool isMenuOpened = false;
         public static Harmony Harmony;
         public static Dictionary<string, InputKey> PossibleKeys = new();
-        private InputKey menuKey = InputKey.U;
+        private InputKey _menuKey = InputKey.U;
         
         protected override void OnSubModuleLoad()
         {
@@ -54,6 +38,8 @@ namespace BasicOverhaul
 
             Harmony.Patch(AccessTools.Method(typeof(System.Xml.XmlNode).Assembly.GetTypes().First(x=>x.Name =="XmlLoader"), "Load"),
                 postfix: AccessTools.Method(typeof(XmlGUILoadPatch), "Postfix"));
+            Harmony.Patch(AccessTools.Method(typeof(MapEvent).Assembly.GetTypes().First(x => x.Name == "LootCollector"), "LootCasualties"),
+                prefix: AccessTools.Method(typeof(LootCollectorPatch), "Prefix"));
             
             foreach (string inputKey in Enum.GetNames(typeof(InputKey)))
             {
@@ -67,7 +53,7 @@ namespace BasicOverhaul
             if (!inquiryElements.Any())
                 return;
             InquiryElement inquiry = inquiryElements[0];
-            var cheatTuple = ((BasicCheat? Properties, MethodInfo Method))inquiry.Identifier;
+            var cheatTuple = ((BasicOption? Properties, MethodInfo Method))inquiry.Identifier;
             
             string[]? parameters = cheatTuple.Properties?.Parameters?.Select(text=>text.ToString()).ToArray();
 
@@ -115,7 +101,7 @@ namespace BasicOverhaul
                 "Ok", null, affirmativeActions[0], null));
         }
 
-        private bool IsHotKeyPressed => Input.IsKeyReleased(menuKey);
+        private bool IsHotKeyPressed => Input.IsKeyReleased(_menuKey);
         protected override void OnApplicationTick(float dt)
         {
             base.OnApplicationTick(dt);
@@ -126,16 +112,7 @@ namespace BasicOverhaul
                 if (elementCheats == null)
                     return;
                 
-                List<InquiryElement> inquiryElements = elementCheats.Select(element =>
-                    {
-                        if (element.Properties?.Description.Value.Contains("{VALUE}") == true &&
-                            Helpers.CheatDescriptionAttributes.TryGetValue(element.Properties.Description.GetID(), out Delegate del))
-                        {
-                            element.Properties.Description.SetTextVariable("VALUE", (string)del.DynamicInvoke());
-                        }
-                        return new InquiryElement(element, element.Properties?.Description.ToString(), null);
-                        
-                    }).ToList();
+                List<InquiryElement> inquiryElements = elementCheats.Select(element => new InquiryElement(element, element.Properties?.Description, null)).ToList();
 
                 MultiSelectionInquiryData inquiryData = new("Basic Overhaul", new TextObject("{=select_option}Select a option to apply.").ToString(), 
                     inquiryElements, false, 0,1, "Done", "Cancel",
@@ -203,7 +180,7 @@ namespace BasicOverhaul
             }
 
             InitializeCheats();
-            PossibleKeys.TryGetValue(BasicOverhaulGlobalConfig.Instance?.MenuHotKey?.SelectedValue ?? "U", out menuKey);
+            PossibleKeys.TryGetValue(BasicOverhaulGlobalConfig.Instance?.MenuHotKey?.SelectedValue ?? "U", out _menuKey);
         }
 
         private void InitializeCheats()
@@ -211,25 +188,20 @@ namespace BasicOverhaul
             if(!CampaignCheats.Any())
             {
                 CampaignCheats.AddRange(
-                    from method in AccessTools.GetDeclaredMethods(typeof(Cheats))
-                    let basicCheat = Attribute.GetCustomAttribute(method, typeof(BasicCheat)) as BasicCheat
+                    from method in AccessTools.GetDeclaredMethods(typeof(Options)).Concat(AccessTools.GetDeclaredMethods(typeof(NativeCheats)))
+                    let basicCheat = Attribute.GetCustomAttribute(method, typeof(BasicOption)) as BasicOption
                     where basicCheat != null
-                    orderby basicCheat.Description.ToString()
+                    orderby basicCheat.Description.StartsWith("[")
                     select (basicCheat, method)
                 );
-
-                CampaignCheats.AddRange(
-                    from method in AccessTools.GetDeclaredMethods(typeof(NativeCheats))
-                    where Attribute.GetCustomAttribute(method, typeof(BasicCheat)) is BasicCheat
-                    select (Attribute.GetCustomAttribute(method, typeof(BasicCheat)) as BasicCheat, method)
-                );
             }
+            
             if(!MissionCheats.Any())
                 MissionCheats.AddRange(
-                    from method in AccessTools.GetDeclaredMethods(typeof(MissionCheats))
-                    let basicCheat = Attribute.GetCustomAttribute(method, typeof(BasicCheat)) as BasicCheat
+                    from method in AccessTools.GetDeclaredMethods(typeof(MissionOptions))
+                    let basicCheat = Attribute.GetCustomAttribute(method, typeof(BasicOption)) as BasicOption
                     where basicCheat != null
-                    orderby basicCheat.Description.ToString()
+                    orderby basicCheat.Description.StartsWith("[")
                     select (basicCheat, method)
                 );
         }

@@ -9,10 +9,10 @@ internal class BOAgentStatCalculateModel : SandboxAgentStatCalculateModel
     public override void UpdateAgentStats(Agent agent, AgentDrivenProperties agentDrivenProperties)
     {
         base.UpdateAgentStats(agent, agentDrivenProperties);
-        if (MissionCheats.SpeedOnCheat.max > 1 && Agent.Main != null)
+        if (MissionOptions.SpeedOnCheat.max > 1 && Agent.Main != null)
         {
-            Agent.Main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.MaxSpeedMultiplier, MissionCheats.SpeedOnCheat.max);
-            Agent.Main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.CombatMaxSpeedMultiplier, MissionCheats.SpeedOnCheat.combatmax);
+            Agent.Main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.MaxSpeedMultiplier, MissionOptions.SpeedOnCheat.max);
+            Agent.Main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.CombatMaxSpeedMultiplier, MissionOptions.SpeedOnCheat.combatmax);
             Agent.Main.UpdateCustomDrivenProperties();
         }
     }
@@ -23,10 +23,10 @@ internal class BOCustomAgentStatCalculateModel : CustomBattleAgentStatCalculateM
     public override void UpdateAgentStats(Agent agent, AgentDrivenProperties agentDrivenProperties)
     {
         base.UpdateAgentStats(agent, agentDrivenProperties);
-        if (MissionCheats.SpeedOnCheat.max > 1 && agent == Agent.Main)
+        if (MissionOptions.SpeedOnCheat.max > 1 && agent == Agent.Main)
         {
-            Agent.Main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.MaxSpeedMultiplier, MissionCheats.SpeedOnCheat.max);
-            Agent.Main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.CombatMaxSpeedMultiplier, MissionCheats.SpeedOnCheat.combatmax);
+            Agent.Main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.MaxSpeedMultiplier, MissionOptions.SpeedOnCheat.max);
+            Agent.Main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.CombatMaxSpeedMultiplier, MissionOptions.SpeedOnCheat.combatmax);
             Agent.Main.UpdateCustomDrivenProperties();
         }
     }

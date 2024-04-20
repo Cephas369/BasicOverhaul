@@ -35,7 +35,7 @@
     <string id="bo_config_title.10" text="Disable boundaries crossing for player" />
     <string id="bo_config_title.11" text="Enable spawn pack animal in battles for accessing inventory" />
     <string id="bo_config_description.11" text="Campaign only." />
-    <string id="bo_config_title.12" text="Enable weaponry order (CTRL + W)" />
+    <string id="bo_config_title.12" text="Enable weaponry order" />
 
     <!-- Miscellaneous -->
     <string id="bo_config_title.13" text="Disable intro" />
@@ -48,12 +48,14 @@
     <!-- Hotkeys -->
     <string id="bo_config_title.17" text="Open menu key" />
     <string id="bo_config_title.18" text="Call horse key" />
+    <string id="bo_config_title.19" text="Speed up/slow down key" />
+    <string id="bo_config_title.20" text="Weaponry order key" />
     
     <!-- Campaign Save Settings -->
     <string id="bo_campaign_config_title.1" text="Party Size Limit Multiplier" />
     <string id="bo_campaign_config_desc.1" text="OBS: Putting a high value will lag your game. Leave 0 for the default game chance." />
     <string id="bo_campaign_config_title.2" text="Global Loot Chance" />
-    <string id="bo_campaign_config_desc.2" text="This is the chance that each item used in a battle have to be looted, putting 100 will make all items used in a battle by the enemy available to loot. Leave 0 for the default game chance." />
+    <string id="bo_campaign_config_desc.2" text="This is the amount of items that can be looted from each enemy casualty after a battle. Leave 0 for the default game number." />
     <string id="bo_campaign_config_title.3" text="Battle Renown Gain Multiplier" />
     <string id="bo_campaign_config_title.4" text="Battle Influence Gain Multiplier" />
     <string id="bo_campaign_config_title.5" text="Battle Morale Gain Multiplier" />

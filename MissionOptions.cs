@@ -24,14 +24,14 @@ using TaleWorlds.MountAndBlade.CustomBattle.CustomBattle;
 
 namespace BasicOverhaul
 {
-    public static class MissionCheats
+    public static class MissionOptions
     {
         public static (float combatmax, float max) SpeedOnCheat;
         public static bool IsPlayerDamageOp;
         public static bool PlayerInvincible;
         public static bool MountInvincible;
         
-        [BasicCheat("{=cheat_desc.9}Set player speed", new []{ "{=speed_amount}Speed amount" })]
+        [BasicOption("{=cheat_desc.9}Set player speed", new []{ "{=speed_amount}Speed amount" }, true)]
         [CommandLineFunctionality.CommandLineArgumentFunction("increase_player_speed", "bo_misson")]
         [UsedImplicitly]
         private static string SetPlayerSpeed(List<string> strings)
@@ -59,7 +59,7 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("{=cheat_desc.10}Increase mount speed", new []{ "{=speed_amount}Speed amount" })]
+        [BasicOption("{=cheat_desc.10}Increase mount speed", new []{ "{=speed_amount}Speed amount" }, true)]
         [CommandLineFunctionality.CommandLineArgumentFunction("increase_mount_speed", "bo_misson")]
         [UsedImplicitly]
         private static string IncreaseMountSpeed(List<string> strings)
@@ -87,7 +87,7 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("{=cheat_desc.11}Enabe/disable mount invincible ({VALUE})")]
+        [BasicOption("{=cheat_desc.11}Enabe/disable mount invincible ({VALUE})", isCheat: true)]
         [CommandLineFunctionality.CommandLineArgumentFunction("make_mount_invincible", "bo_misson")]
         [UsedImplicitly]
         private static string MakeHorseInvincible(List<string> strings)
@@ -107,7 +107,7 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("{=cheat_desc.12}Enabe/disable player invincible ({VALUE})")]
+        [BasicOption("{=cheat_desc.12}Enabe/disable player invincible ({VALUE})", isCheat: true)]
         [CommandLineFunctionality.CommandLineArgumentFunction("make_player_invincible", "bo_misson")]
         [UsedImplicitly]
         private static string MakePlayerInvincible(List<string> strings)
@@ -120,7 +120,7 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("{=cheat_desc.13}Enable/disable OP player damage ({VALUE})")]
+        [BasicOption("{=cheat_desc.13}Enable/disable OP player damage ({VALUE})", isCheat: true)]
         [CommandLineFunctionality.CommandLineArgumentFunction("switch_player_damage_op", "bo_misson")]
         [UsedImplicitly]
         private static string MakePlayerDamageOP(List<string> strings)
@@ -133,7 +133,7 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("{=cheat_desc.14}Spawn character")]
+        [BasicOption("{=cheat_desc.14}Spawn character", isCheat: true)]
         [CommandLineFunctionality.CommandLineArgumentFunction("spawn_character", "bo_misson")]
         [UsedImplicitly]
         private static string SpawnCharacter(List<string> strings)
@@ -176,7 +176,7 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicCheat("{=cheat_desc.15}Spawn weapon")]
+        [BasicOption("{=cheat_desc.15}Spawn weapon", isCheat: true)]
         [CommandLineFunctionality.CommandLineArgumentFunction("spawn_weapon", "bo_misson")]
         [UsedImplicitly]
         private static string SpawnWeapon(List<string> strings)
@@ -204,7 +204,7 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
 
-        [BasicCheat("{=cheat_desc.16}Disable/enable agents AI", new []{ "{=0_disable_1_enable}0 = Disable | 1 = Enable" })]
+        [BasicOption("{=cheat_desc.16}Disable/enable agents AI", new []{ "{=0_disable_1_enable}0 = Disable | 1 = Enable" }, isCheat: true)]
         [CommandLineFunctionality.CommandLineArgumentFunction("disable_agents_ai", "bo_misson")]
         [UsedImplicitly]
         private static string DisableAi(List<string> strings)
@@ -226,18 +226,6 @@ namespace BasicOverhaul
             {
                 agent.SetIsAIPaused(boolean);
             }
-            
-            return GameTexts.FindText("str_done").ToString();
-        }
-        [BasicCheat("{=cheat_desc.18}Speed up/slow down")]
-        [CommandLineFunctionality.CommandLineArgumentFunction("fast_forward", "bo_misson")]
-        [UsedImplicitly]
-        private static string FastForward(List<string> strings)
-        {
-            if (Mission.Current == null)
-                return "You must be in a mission!";
-
-            Mission.Current.SetFastForwardingFromUI(!Mission.Current.IsFastForward);
             
             return GameTexts.FindText("str_done").ToString();
         }

@@ -22,6 +22,22 @@ namespace BasicOverhaul
         public override string FolderName => "BasicOverhaul";
         public override string FormatType => "json";
         
+        [SettingPropertyGroup("{=hotkeys}Hotkeys", GroupOrder = 0)]
+        [SettingPropertyDropdown("{=bo_config_title.17}Open menu key", Order = 1, RequireRestart = true)]
+        public Dropdown<string> MenuHotKey { get; set; } = new(Enum.GetNames(typeof(InputKey)), selectedIndex: 21);
+        
+        [SettingPropertyGroup("{=hotkeys}Hotkeys", GroupOrder = 0)]
+        [SettingPropertyDropdown("{=bo_config_title.18}Call horse key", Order = 2, RequireRestart = true)]
+        public Dropdown<string> CallHorseKey { get; set; } = new(Enum.GetNames(typeof(InputKey)), selectedIndex: 44);
+        
+        [SettingPropertyGroup("{=hotkeys}Hotkeys", GroupOrder = 0)]
+        [SettingPropertyDropdown("{=bo_config_title.20}Weaponry order key", Order = 3, RequireRestart = true)]
+        public Dropdown<string> WeaponryOrderKey { get; set; } = new(Enum.GetNames(typeof(InputKey)), selectedIndex: 73);
+        
+        [SettingPropertyGroup("{=hotkeys}Hotkeys", GroupOrder = 0)]
+        [SettingPropertyDropdown("{=bo_config_title.19}Speed up/Slow down key", Order = 4, RequireRestart = true)]
+        public Dropdown<string> FastForwardMissionKey { get; set; } = new(Enum.GetNames(typeof(InputKey)), selectedIndex: 72);
+        
         [SettingPropertyGroup("{=general}General", GroupOrder = 1)]
         [SettingPropertyBool("{=bo_config_title.1}Enable slave system", Order = 1, RequireRestart = true)]
         public bool EnableSlaveSystem { get; set; } = true;
@@ -59,7 +75,7 @@ namespace BasicOverhaul
         public bool DisableAllyCollision { get; set; } = true;
         
         [SettingPropertyGroup("{=in_battle}In Battle", GroupOrder = 2)]
-        [SettingPropertyInteger("{=bo_config_title.9}Horse call required riding skill (Key X)", minValue: -1, maxValue: 300, Order = 2, RequireRestart = false, HintText = "{=bo_config_description.9}If you're using another mod that have this mechanic just leave it 0 to disable it.")]
+        [SettingPropertyInteger("{=bo_config_title.9}Horse call required riding skill", minValue: -1, maxValue: 300, Order = 2, RequireRestart = false, HintText = "{=bo_config_description.9}If you're using another mod that have this mechanic just leave it 0 to disable it.")]
         public int HorseCallSkill { get; set; } = 0;
         
         [SettingPropertyGroup("{=in_battle}In Battle", GroupOrder = 2)]
@@ -71,7 +87,7 @@ namespace BasicOverhaul
         public bool EnablePackMule { get; set; } = false;
         
         [SettingPropertyGroup("{=in_battle}In Battle", GroupOrder = 2)]
-        [SettingPropertyBool("{=bo_config_title.12}Enable weaponry order (CTRL + W)", HintText = "", Order = 5, RequireRestart = false)]
+        [SettingPropertyBool("{=bo_config_title.12}Enable weaponry order", HintText = "", Order = 5, RequireRestart = false)]
         public bool EnableWeaponryOrder { get; set; } = true;
 
         [SettingPropertyBool("{=bo_config_title.13}Disable intro", Order = 1, RequireRestart = false)]
@@ -85,13 +101,5 @@ namespace BasicOverhaul
         [SettingPropertyGroup("{=miscellaneous}Miscellaneous", GroupOrder = 3)]
         [SettingPropertyBool("{=bo_config_title.15}Enable switch cheat mode by this mod config", HintText = "{=bo_config_description.15}Enable this if you want to change the cheat mode by the Basic Overhaul Campaign Configs instead of the game config files.", Order = 3, RequireRestart = false)]
         public bool EnableSwitchCheatMode { get; set; } = false;
-        
-        [SettingPropertyGroup("{=hotkeys}Hotkeys", GroupOrder = 4)]
-        [SettingPropertyDropdown("{=bo_config_title.17}Open menu key", Order = 1, RequireRestart = true)]
-        public Dropdown<string> MenuHotKey { get; set; } = new(Enum.GetNames(typeof(InputKey)), selectedIndex: 21);
-        
-        [SettingPropertyGroup("{=hotkeys}Hotkeys", GroupOrder = 4)]
-        [SettingPropertyDropdown("{=bo_config_title.18}Call horse key", Order = 2, RequireRestart = true)]
-        public Dropdown<string> CallHorseKey { get; set; } = new(Enum.GetNames(typeof(InputKey)), selectedIndex: 44);
     }
 }

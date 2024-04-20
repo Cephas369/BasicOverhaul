@@ -20,7 +20,7 @@ internal sealed class BasicOverhaulCampaignConfig : AttributePerCampaignSettings
     public int PartySizeLimitMultiplier { get; set; } = 0;
     
     [SettingPropertyGroup("{=campaign_modifiers}Campaign Modifiers", GroupOrder = 1)]
-    [SettingPropertyFloatingInteger("{=bo_campaign_config_title.2}Global Loot Chance", minValue: 0f, maxValue: 1f, "#0%", Order = 2, RequireRestart = false, HintText = "{=bo_campaign_config_desc.2}This is the chance that each item used in a battle have to be looted, putting 100 will make all items used in a battle by the enemy available to loot. Leave 0 for the default game chance.")]
+    [SettingPropertyFloatingInteger("{=bo_campaign_config_title.2}Global Loot Chance", minValue: 0f, maxValue: 100f, Order = 2, RequireRestart = false, HintText = "{=bo_campaign_config_desc.2}This is the amount of items that can be looted from each enemy casualty after a battle. Leave 0 for the default game number.")]
     public float GlobalLootChance { get; set; } = 0;
     
     [SettingPropertyGroup("{=campaign_modifiers}Campaign Modifiers", GroupOrder = 1)]

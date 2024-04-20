@@ -1,21 +1,13 @@
 ﻿using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.GameComponents;
+using TaleWorlds.CampaignSystem.Inventory;
 using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.ViewModelCollection.Inventory;
 
 namespace BasicOverhaul.Models;
 
 internal class BOBattleRewardModel : DefaultBattleRewardModel
 {
-    private float GlobalChance => BasicOverhaulCampaignConfig.Instance?.GlobalLootChance ?? 0;
-    public override float DestroyHideoutBannerLootChance => GlobalChance > 0 ? GlobalChance : base.DestroyHideoutBannerLootChance;
-
-    public override float CaptureSettlementBannerLootChance => GlobalChance > 0 ? GlobalChance : base.CaptureSettlementBannerLootChance;
-
-    public override float DefeatRegularHeroBannerLootChance => GlobalChance > 0 ? GlobalChance : base.DefeatRegularHeroBannerLootChance;
-
-    public override float DefeatClanLeaderBannerLootChance => GlobalChance > 0 ? GlobalChance : base.DefeatClanLeaderBannerLootChance;
-
-    public override float DefeatKingdomRulerBannerLootChance => GlobalChance > 0 ? GlobalChance : base.DefeatKingdomRulerBannerLootChance;
     public override ExplainedNumber CalculateRenownGain(PartyBase party, float renownValueOfBattle,
         float contributionShare)
     {
