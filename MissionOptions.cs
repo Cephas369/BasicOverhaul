@@ -150,7 +150,7 @@ namespace BasicOverhaul
                 new MultiSelectionInquiryData("Characters", "", characterElements, true, 0, 1,
                     "Select", "", elements =>
                     {
-                        if (Agent.Main == null)
+                        if (Agent.Main == null || elements.IsEmpty())
                             return;
                         
                         BasicCharacterObject characterObject = (BasicCharacterObject)elements[0].Identifier;

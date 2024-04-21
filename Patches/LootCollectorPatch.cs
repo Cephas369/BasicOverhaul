@@ -12,7 +12,7 @@ public static class LootCollectorPatch
         ICollection<TroopRosterElement> shareFromCasualties,
         ref float lootFactor)
     {
-        if (BasicOverhaulCampaignConfig.Instance?.GlobalLootChance >= 0)
+        if (BasicOverhaulCampaignConfig.Instance?.GlobalLootChance > 0)
             lootFactor = BasicOverhaulCampaignConfig.Instance.GlobalLootChance;
     }
 }
