@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BasicOverhaul.Models;
 using SandBox.GameComponents;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem;
@@ -26,7 +27,6 @@ namespace BasicOverhaul
 {
     public static class MissionOptions
     {
-        public static (float combatmax, float max) SpeedOnCheat;
         public static bool IsPlayerDamageOp;
         public static bool PlayerInvincible;
         public static bool MountInvincible;
@@ -37,7 +37,7 @@ namespace BasicOverhaul
         private static string SetPlayerSpeed(List<string> strings)
         {
             if (!CampaignCheats.CheckParameters(strings, 1) || CampaignCheats.CheckHelp(strings))
-                return "Format uses 1 parameter: bo_misson.increase_player_speed [Amount]";
+                return "Format uses 1 parameter: bo_misson.set_player_speed [Amount]";
 
             if (Mission.Current == null || Agent.Main == null)
                 return "You must be in a mission and your character must be alive!";
@@ -50,10 +50,13 @@ namespace BasicOverhaul
             if (Agent.Main != null)
             {
                 Agent main = Agent.Main;
-                main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.MaxSpeedMultiplier, amount);
-                main.SetAgentDrivenPropertyValueFromConsole(DrivenProperty.CombatMaxSpeedMultiplier, amount);
-                main.UpdateCustomDrivenProperties();
-                SpeedOnCheat = (main.AgentDrivenProperties.CombatMaxSpeedMultiplier, main.AgentDrivenProperties.MaxSpeedMultiplier);
+                (DrivenProperty property, float value)[] properties = new[]
+                {
+                    (DrivenProperty.MaxSpeedMultiplier, (float)amount),
+                    (DrivenProperty.CombatMaxSpeedMultiplier, (float)amount),
+                };
+                BasicStatCalculateModel.Add(main, properties);
+                BasicStatCalculateModel.ModifyAgentProperties(main);
             }
             
             return GameTexts.FindText("str_done").ToString();
@@ -193,7 +196,7 @@ namespace BasicOverhaul
                 new MultiSelectionInquiryData("Weapons", "", weaponElements, true, 0, 1,
                     "Spawn", "", elements =>
                     {
-                        if (Agent.Main == null)
+                        if (Agent.Main == null || elements.IsEmpty())
                             return;
                         ItemObject itemObject = (ItemObject)elements[0].Identifier;
                         MissionWeapon missionWeapon = new MissionWeapon(itemObject, new ItemModifier(), Banner.CreateOneColoredEmptyBanner(1));

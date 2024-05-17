@@ -16,5 +16,6 @@
 	  
 	  <string id="bo_open_inventory" text="Press {KEY} to open your inventory" />
 	  <string id="event" text="Event" />
+	  <string id="are_you_sure" text="Are you sure ? This is irreversible." />
   </strings>
 </base>

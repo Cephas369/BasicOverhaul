@@ -21,22 +21,24 @@ namespace BasicOverhaul
         public override string DisplayName => $"Basic Overhaul {Regex.Replace(ModuleHelper.GetModuleInfo(Assembly.GetExecutingAssembly().GetName().Name).Version.ToString(), @"v|\.0$", string.Empty)}";
         public override string FolderName => "BasicOverhaul";
         public override string FormatType => "json";
+
+        public static string[] AllInputKeys => Enum.GetNames(typeof(InputKey));
         
         [SettingPropertyGroup("{=hotkeys}Hotkeys", GroupOrder = 0)]
         [SettingPropertyDropdown("{=bo_config_title.17}Open menu key", Order = 1, RequireRestart = true)]
-        public Dropdown<string> MenuHotKey { get; set; } = new(Enum.GetNames(typeof(InputKey)), selectedIndex: 21);
+        public Dropdown<string> MenuHotKey { get; set; } = new(AllInputKeys, selectedIndex: 21);
         
         [SettingPropertyGroup("{=hotkeys}Hotkeys", GroupOrder = 0)]
         [SettingPropertyDropdown("{=bo_config_title.18}Call horse key", Order = 2, RequireRestart = true)]
-        public Dropdown<string> CallHorseKey { get; set; } = new(Enum.GetNames(typeof(InputKey)), selectedIndex: 44);
+        public Dropdown<string> CallHorseKey { get; set; } = new(AllInputKeys, selectedIndex: 44);
         
         [SettingPropertyGroup("{=hotkeys}Hotkeys", GroupOrder = 0)]
         [SettingPropertyDropdown("{=bo_config_title.20}Weaponry order key", Order = 3, RequireRestart = true)]
-        public Dropdown<string> WeaponryOrderKey { get; set; } = new(Enum.GetNames(typeof(InputKey)), selectedIndex: 73);
+        public Dropdown<string> WeaponryOrderKey { get; set; } = new(AllInputKeys, selectedIndex: 73);
         
         [SettingPropertyGroup("{=hotkeys}Hotkeys", GroupOrder = 0)]
         [SettingPropertyDropdown("{=bo_config_title.19}Speed up/Slow down key", Order = 4, RequireRestart = true)]
-        public Dropdown<string> FastForwardMissionKey { get; set; } = new(Enum.GetNames(typeof(InputKey)), selectedIndex: 72);
+        public Dropdown<string> FastForwardMissionKey { get; set; } = new(AllInputKeys, selectedIndex: 72);
         
         [SettingPropertyGroup("{=general}General", GroupOrder = 1)]
         [SettingPropertyBool("{=bo_config_title.1}Enable slave system", Order = 1, RequireRestart = true)]
@@ -89,6 +91,14 @@ namespace BasicOverhaul
         [SettingPropertyGroup("{=in_battle}In Battle", GroupOrder = 2)]
         [SettingPropertyBool("{=bo_config_title.12}Enable weaponry order", HintText = "", Order = 5, RequireRestart = false)]
         public bool EnableWeaponryOrder { get; set; } = true;
+        
+        [SettingPropertyGroup("{=in_battle}In Battle", GroupOrder = 2)]
+        [SettingPropertyBool("{=bo_config_title.21}Enable random weights and builds for humans", HintText = "", Order = 6, RequireRestart = false)]
+        public bool EnableRandomHumanSizes { get; set; } = true;
+        
+        [SettingPropertyGroup("{=in_battle}In Battle", GroupOrder = 2)]
+        [SettingPropertyBool("{=bo_config_title.22}Enable random sizes for mounts", HintText = "", Order = 7, RequireRestart = false)]
+        public bool EnableRandomMountSizes { get; set; } = true;
 
         [SettingPropertyBool("{=bo_config_title.13}Disable intro", Order = 1, RequireRestart = false)]
         [SettingPropertyGroup("{=miscellaneous}Miscellaneous", GroupOrder = 3)]

@@ -5,6 +5,8 @@ using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.MountAndBlade.ViewModelCollection.FaceGenerator;
+using FaceGen = TaleWorlds.Core.FaceGen;
 
 namespace BasicOverhaul.Behaviors;
 
@@ -39,10 +41,10 @@ internal class HorseCallMissionLogic : MissionLogic
         base.OnMissionTick(dt);
         if (mainHorse == null || BasicOverhaulGlobalConfig.Instance.HorseCallSkill < 0)
             return;
-        
+
         if (Input.IsKeyReleased(_callHorseKey))    
         {
-            if (Agent.Main?.Character.GetSkillValue(DefaultSkills.Riding) < BasicOverhaulGlobalConfig.Instance.HorseCallSkill)
+            if (Agent.Main?.Controller == Agent.ControllerType.Player && Agent.Main.Character.GetSkillValue(DefaultSkills.Riding) < BasicOverhaulGlobalConfig.Instance.HorseCallSkill)
             {
                 InformationManager.DisplayMessage(new InformationMessage(new TextObject("{=horse_call_warning.3}You don't have the required skill to call your horse.").ToString()));
                 return;

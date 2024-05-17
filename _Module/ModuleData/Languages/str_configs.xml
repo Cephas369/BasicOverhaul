@@ -50,6 +50,8 @@
     <string id="bo_config_title.18" text="Call horse key" />
     <string id="bo_config_title.19" text="Speed up/slow down key" />
     <string id="bo_config_title.20" text="Weaponry order key" />
+    <string id="bo_config_title.21" text="Enable random weights and builds for humans" />
+    <string id="bo_config_title.22" text="Enable random sizes for mounts" />
     
     <!-- Campaign Save Settings -->
     <string id="bo_campaign_config_title.1" text="Party Size Limit Multiplier" />

@@ -25,9 +25,9 @@ namespace BasicOverhaul
         private static readonly List<(BasicOption? Properties, MethodInfo Method)> CampaignCheats = new();
         private static readonly List<(BasicOption? Properties, MethodInfo Method)> MissionCheats = new();
         private static List<string> _currentParameters = new();
-        private bool isMenuOpened = false;
-        public static Harmony Harmony;
-        public static Dictionary<string, InputKey> PossibleKeys = new();
+        private bool _isMenuOpened = false;
+        private static Harmony Harmony;
+        public static readonly Dictionary<string, InputKey> PossibleKeys = new();
         private InputKey _menuKey = InputKey.U;
         
         protected override void OnSubModuleLoad()
@@ -46,7 +46,7 @@ namespace BasicOverhaul
                 PossibleKeys.Add(inputKey, (InputKey)Enum.Parse(typeof(InputKey), inputKey));
             }
         }
-        private void MakeMenuClosed() => isMenuOpened = false;
+        private void MakeMenuClosed() => _isMenuOpened = false;
         private void ApplyCheat(List<InquiryElement> inquiryElements)
         {
             MakeMenuClosed();
@@ -105,7 +105,7 @@ namespace BasicOverhaul
         protected override void OnApplicationTick(float dt)
         {
             base.OnApplicationTick(dt);
-            if (!MBCommon.IsPaused && IsHotKeyPressed && Mission.Current?.IsInPhotoMode != true && !CampaignCheats.IsEmpty() && !isMenuOpened)
+            if (!MBCommon.IsPaused && IsHotKeyPressed && Mission.Current?.IsInPhotoMode != true && !CampaignCheats.IsEmpty() && !_isMenuOpened)
             {
                 var elementCheats = Mission.Current != null ? MissionCheats : Campaign.Current != null ? CampaignCheats : null;
 
@@ -116,10 +116,10 @@ namespace BasicOverhaul
 
                 MultiSelectionInquiryData inquiryData = new("Basic Overhaul", new TextObject("{=select_option}Select a option to apply.").ToString(), 
                     inquiryElements, false, 0,1, "Done", "Cancel",
-                    ApplyCheat, elements => isMenuOpened = false);
+                    ApplyCheat, elements => _isMenuOpened = false);
                 
                 MBInformationManager.ShowMultiSelectionInquiry(inquiryData, true);
-                isMenuOpened = true;
+                _isMenuOpened = true;
             }
         }
 

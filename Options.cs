@@ -86,18 +86,24 @@ namespace BasicOverhaul
             return GameTexts.FindText("str_done").ToString();
         }
         
-        [BasicOption("{=cheat_desc.3}Destroy deserter parties")]
-        [CommandLineFunctionality.CommandLineArgumentFunction("destroy_deserter_parties", "bo")]
+        [BasicOption("{=cheat_desc.3}Remove desertion system")]
+        [CommandLineFunctionality.CommandLineArgumentFunction("destroy_desertion_system", "bo")]
         [UsedImplicitly]
         public static string DestroyDeserterParties(List<string> strings)
         {
             if (Campaign.Current == null)
                 return "Campaign was not started.";
             
-            List<MobileParty> deserterParties = MobileParty.All.Where(x => x.StringId.Contains("deserter")).ToList();
+            InformationManager.ShowInquiry(new InquiryData(new TextObject("{=are_you_sure}Are you sure ? This is irreversible.").ToString(), null, true, true,
+                new TextObject("{=bo_yes}Yes").ToString(), new TextObject("{=bo_no}No").ToString(), () =>
+                {
+                    List<MobileParty> deserterParties = MobileParty.All.Where(x => x.StringId.Contains("deserter")).ToList();
             
-            for(int i = deserterParties.Count() - 1; i >= 0; i--)
-                DestroyPartyAction.Apply(PartyBase.MainParty, deserterParties[i]);
+                    for(int i = deserterParties.Count() - 1; i >= 0; i--)
+                        DestroyPartyAction.Apply(PartyBase.MainParty, deserterParties[i]);
+
+                    Clan.All.Remove(Clan.FindFirst(x => x.StringId == "deserters"));
+                }, null));
 
             return GameTexts.FindText("str_done").ToString();
         }

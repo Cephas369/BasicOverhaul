@@ -21,12 +21,12 @@ namespace BasicOverhaul.Behaviors
     
     internal class WeaponryOrderMissionBehavior : MissionBehavior
     {
-        public static TextObject WeaponryOrderTitle => new("{=str_title_weaponry_order}Restrict weapon use");
-        public static TextObject DismissOrderText => new("{=str_dismiss_order}Dismiss Order");
-        public static TextObject WeaponClassesText => new("{=str_weapon_classes}By weapon class -->");
-        public static TextObject DamageTypesText => new("{=str_damage_types_inquiry}By damage type -->");
-        public static TextObject Done => GameTexts.FindText("str_done");
-        public static TextObject Cancel => GameTexts.FindText("str_cancel");
+        private static readonly TextObject WeaponryOrderTitle = new("{=str_title_weaponry_order}Restrict weapon use");
+        private static readonly TextObject DismissOrderText = new("{=str_dismiss_order}Dismiss Order");
+        private static readonly TextObject WeaponClassesText = new("{=str_weapon_classes}By weapon class -->");
+        private static readonly TextObject DamageTypesText = new("{=str_damage_types_inquiry}By damage type -->");
+        private static readonly TextObject Done = GameTexts.FindText("str_done");
+        private static readonly TextObject Cancel = GameTexts.FindText("str_cancel");
         
         public override MissionBehaviorType BehaviorType => MissionBehaviorType.Other;
 

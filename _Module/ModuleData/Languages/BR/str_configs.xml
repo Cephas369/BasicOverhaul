@@ -47,6 +47,8 @@
     <string id="bo_config_title.18" text="Tecla de chamar o cavalo" />
     <string id="bo_config_title.19" text="Tecla de acelerar/desacelerar" />
     <string id="bo_config_title.20" text="Tecla de ordem de armamento" />
+    <string id="bo_config_title.21" text="Permitir tamanhos aleatórios em humanos" />
+    <string id="bo_config_title.22" text="Permitir tamanhos aleatórias pra montarias" />
     
     <!-- Campaign Save Settings -->
     <string id="bo_campaign_config_title.1" text="Multiplicador de Limite de Tropas no Grupo" />

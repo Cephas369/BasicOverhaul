@@ -11,6 +11,7 @@ using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
+using TaleWorlds.MountAndBlade;
 using TaleWorlds.SaveSystem;
 using TaleWorlds.TwoDimension;
 
@@ -40,8 +41,8 @@ namespace BasicOverhaul.Behaviors
         public Dictionary<string, TownSlaveData> SlaveData = new();
 
         private Dictionary<Settlement, CampaignTime> _buildEndDates = new();
-
-        public static SlaveBehavior? Instance;
+        private const int PlantationBuildDuration = 6; 
+        public static SlaveBehavior? Instance { get; private set; }
 
         private readonly int _slavePlantationCost = 50000;
 
@@ -90,7 +91,7 @@ namespace BasicOverhaul.Behaviors
                 {
                     float factor = MBRandom.RandomFloat;
                     int lostSlaves = (int)(0.1f * SlaveData[settlementId].SlaveAmount * factor);
-                    SlaveData[settlementId].SlaveAmount =- lostSlaves;
+                    SlaveData[settlementId].SlaveAmount -= lostSlaves;
                     if(lostSlaves > 0)
                         InformationManager.ShowInquiry(new InquiryData(new TextObject("{=bo_slave_loss_title}Exhaustion").ToString(),
                             new TextObject("{=bo_slave_loss_description}{AMOUNT} slaves prisoners have died this week.").SetTextVariable("AMOUNT", lostSlaves).ToString(),
@@ -135,7 +136,7 @@ namespace BasicOverhaul.Behaviors
                     return !_buildEndDates.ContainsKey(Settlement.CurrentSettlement) && IsBuildSlaveryPossible;
                 }, args =>
                 {
-                    _buildEndDates.Add(Settlement.CurrentSettlement, CampaignTime.DaysFromNow(8));
+                    _buildEndDates.Add(Settlement.CurrentSettlement, CampaignTime.DaysFromNow(PlantationBuildDuration));
                     GiveGoldAction.ApplyBetweenCharacters(null, Hero.MainHero, -_slavePlantationCost);
                     args.MenuContext.Refresh();
                 }, false, 4);
