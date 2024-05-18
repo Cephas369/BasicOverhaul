@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using HarmonyLib;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Party;
@@ -8,6 +9,24 @@ using TaleWorlds.MountAndBlade;
 
 namespace BasicOverhaul.Patches;
 
+[HarmonyPatch(typeof(Agent), "UpdateBodyProperties")]
+public static class UpdateBodyPropertiesPatch
+{
+    private static PropertyInfo BodyPropertiesValue = AccessTools.Property(typeof(Agent), "BodyPropertiesValue");
+    public static void Postfix(BodyProperties bodyProperties, Agent __instance)
+    {
+        if (BasicOverhaulGlobalConfig.Instance?.EnableRandomHumanSizes == true && __instance.IsHuman && !__instance.IsHero)
+        {
+            FaceGenerationParams faceGenerationParams = FaceGenerationParams.Create();
+            MBBodyProperties.GetParamsFromKey(ref faceGenerationParams, __instance.BodyPropertiesValue, true, true);
+            faceGenerationParams.HeightMultiplier = MBRandom.RandomFloatRanged(0.2f, 1f);
+            BodyProperties propertiesValue = __instance.BodyPropertiesValue;
+            MBBodyProperties.ProduceNumericKeyWithParams(faceGenerationParams, true, true, ref propertiesValue);
+            
+            BodyPropertiesValue.SetValue(__instance, propertiesValue);
+        }
+    }
+}
 
 [HarmonyPatch(typeof(BasicCharacterObject), "GetBodyProperties")]
 public static class BasicCharacterObjectGetBodyPropertiesPatch

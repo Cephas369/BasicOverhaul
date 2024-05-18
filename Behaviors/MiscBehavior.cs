@@ -54,32 +54,6 @@ internal class MiscMissionLogic : MissionLogic
         BasicStatCalculateModel.ModifiedAgents.Clear();
     }
 
-    public override void OnAgentBuild(Agent agent, Banner banner)
-    {
-        base.OnAgentBuild(agent, banner);
-        if (BasicOverhaulGlobalConfig.Instance?.EnableRandomHumanSizes == true && agent.IsHuman)
-        {       
-            FaceGenerationParams faceGenerationParams = FaceGenerationParams.Create();
-            MBBodyProperties.GetParamsFromKey(ref faceGenerationParams, agent.BodyPropertiesValue, true, true);
-            faceGenerationParams.HeightMultiplier = MBRandom.RandomFloatRanged(0.2f, 1f);
-            BodyProperties bodyProperties = agent.BodyPropertiesValue;
-            MBBodyProperties.ProduceNumericKeyWithParams(faceGenerationParams, true, true, ref bodyProperties);
-            agent.UpdateBodyProperties(bodyProperties);
-            agent.UpdateSpawnEquipmentAndRefreshVisuals(agent.SpawnEquipment);
-        }
-        
-        if (BasicOverhaulGlobalConfig.Instance?.EnableRandomMountSizes == true && agent.IsMount && agent.RiderAgent?.IsHero == false)
-        {
-            EquipmentElement equipmentElement = agent.SpawnEquipment[EquipmentIndex.ArmorItemEndSlot];
-            if (equipmentElement.Item.HorseComponent.BodyLength != 0)
-            {
-                float initialScale = (0.01f * (float)equipmentElement.Item.HorseComponent.BodyLength);
-                SetInitialAgentScale.Invoke(agent, new object[] {
-                    MBRandom.RandomFloatRanged(initialScale * 0.835f, initialScale * 1.08f)});
-            }
-        }
-    }
-
     public override void OnMissionTick(float dt)
     {
         base.OnMissionTick(dt);
