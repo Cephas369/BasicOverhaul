@@ -12,6 +12,15 @@ using TaleWorlds.MountAndBlade;
 
 namespace BasicOverhaul.Behaviors;
 
+[HarmonyPatch(typeof(NativeConfig), "CheatMode", MethodType.Setter)]
+public static class NativeConfigPatch
+{
+    public static void Prefix(ref bool value)
+    {
+        if (BasicOverhaulCampaignConfig.Instance != null)
+            value = BasicOverhaulCampaignConfig.Instance.CheatModeEnabled;
+    }
+}
 internal class MiscBehavior : CampaignBehaviorBase
 {
     public override void RegisterEvents()
