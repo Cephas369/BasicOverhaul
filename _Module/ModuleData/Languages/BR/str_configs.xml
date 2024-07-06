@@ -49,6 +49,9 @@
     <string id="bo_config_title.20" text="Tecla de ordem de armamento" />
     <string id="bo_config_title.21" text="Permitir tamanhos aleatórios em humanos" />
     <string id="bo_config_title.22" text="Permitir tamanhos aleatórias pra montarias" />
+
+    <!-- Debugging -->
+    <string id="bo_config_title.23" text="Ver o id de tudo no nome" />
     
     <!-- Campaign Save Settings -->
     <string id="bo_campaign_config_title.1" text="Multiplicador de Limite de Tropas no Grupo" />

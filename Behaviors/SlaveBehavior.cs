@@ -41,10 +41,10 @@ namespace BasicOverhaul.Behaviors
         public Dictionary<string, TownSlaveData> SlaveData = new();
 
         private Dictionary<Settlement, CampaignTime> _buildEndDates = new();
-        private const int PlantationBuildDuration = 6; 
+        private const int PlantationBuildDuration = 4; 
         public static SlaveBehavior? Instance { get; private set; }
 
-        private readonly int _slavePlantationCost = 50000;
+        private const int SlavePlantationFactor = 6;
 
         public SlaveBehavior()
         {
@@ -85,19 +85,20 @@ namespace BasicOverhaul.Behaviors
 
         private void WeeklyTick()
         {
+            int lostSlaves = 0;
             foreach (string settlementId in SlaveData.Keys)
             {
                 if (MBRandom.RandomFloat > 0.1f)
                 {
                     float factor = MBRandom.RandomFloat;
-                    int lostSlaves = (int)(0.1f * SlaveData[settlementId].SlaveAmount * factor);
+                    lostSlaves += (int)(0.1f * SlaveData[settlementId].SlaveAmount * factor);
                     SlaveData[settlementId].SlaveAmount -= lostSlaves;
-                    if(lostSlaves > 0)
-                        InformationManager.ShowInquiry(new InquiryData(new TextObject("{=bo_slave_loss_title}Exhaustion").ToString(),
-                            new TextObject("{=bo_slave_loss_description}{AMOUNT} slaves prisoners have died this week.").SetTextVariable("AMOUNT", lostSlaves).ToString(),
-                            true, false, "Done", "", null, null), true);
                 }
             }
+            if(lostSlaves > 0)
+                InformationManager.ShowInquiry(new InquiryData(new TextObject("{=bo_slave_loss_title}Exhaustion").ToString(),
+                    new TextObject("{=bo_slave_loss_description}{AMOUNT} slaves prisoners have died this week.").SetTextVariable("AMOUNT", lostSlaves).ToString(),
+                    true, false, "Done", "", null, null), true);
         }
 
         private void OnSettlementOwnerChanged(Settlement settlement, bool openToClaim, Hero newOwner, Hero oldOwner, Hero capturerHero, ChangeOwnerOfSettlementAction.ChangeOwnerOfSettlementDetail detail)
@@ -119,9 +120,10 @@ namespace BasicOverhaul.Behaviors
             campaignGameStarter.AddGameMenuOption("town", "town_build_slave",
                 "{=bo_introduce_slavery}Build plantation ({COST}{GOLD_ICON})", args =>
                 {
-                    MBTextManager.SetTextVariable("COST", string.Format("{0:n0}", _slavePlantationCost));
+                    float totalCost = Settlement.CurrentSettlement.Town.Prosperity * SlavePlantationFactor;
+                    MBTextManager.SetTextVariable("COST", string.Format("{0:n0}", totalCost));
                     args.optionLeaveType = GameMenuOption.LeaveType.Submenu;
-                    if (Hero.MainHero.Gold < _slavePlantationCost)
+                    if (Hero.MainHero.Gold < totalCost)
                     {
                         args.IsEnabled = false;
                         args.Tooltip = new TextObject("{=bo_not_enough_money.1}You don't have enough money");
@@ -137,7 +139,7 @@ namespace BasicOverhaul.Behaviors
                 }, args =>
                 {
                     _buildEndDates.Add(Settlement.CurrentSettlement, CampaignTime.DaysFromNow(PlantationBuildDuration));
-                    GiveGoldAction.ApplyBetweenCharacters(null, Hero.MainHero, -_slavePlantationCost);
+                    GiveGoldAction.ApplyBetweenCharacters(null, Hero.MainHero, -(int)(Settlement.CurrentSettlement.Town.Prosperity * SlavePlantationFactor));
                     args.MenuContext.Refresh();
                 }, false, 4);
             

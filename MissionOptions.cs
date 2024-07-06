@@ -1,12 +1,8 @@
-﻿using HarmonyLib;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using BasicOverhaul.Models;
-using SandBox.GameComponents;
-using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.AgentOrigins;
 using TaleWorlds.CampaignSystem.Party;
@@ -16,11 +12,6 @@ using TaleWorlds.MountAndBlade;
 using TaleWorlds.ObjectSystem;
 using FaceGen = TaleWorlds.Core.FaceGen;
 using TaleWorlds.CampaignSystem.Encounters;
-using TaleWorlds.CampaignSystem.Inventory;
-using TaleWorlds.CampaignSystem.Roster;
-using TaleWorlds.Engine;
-using TaleWorlds.Localization;
-using TaleWorlds.MountAndBlade.CustomBattle.CustomBattle;
 // ReSharper disable All
 
 namespace BasicOverhaul

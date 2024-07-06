@@ -111,5 +111,9 @@ namespace BasicOverhaul
         [SettingPropertyGroup("{=miscellaneous}Miscellaneous", GroupOrder = 3)]
         [SettingPropertyBool("{=bo_config_title.15}Enable switch cheat mode by this mod config", HintText = "{=bo_config_description.15}Enable this if you want to change the cheat mode by the Basic Overhaul Campaign Configs instead of the game config files.", Order = 3, RequireRestart = false)]
         public bool EnableSwitchCheatMode { get; set; } = false;
+        
+        [SettingPropertyGroup("{=Debugging}Debugging", GroupOrder = 4)]
+        [SettingPropertyBool("{=bo_config_title.15}See the id of everything the name", Order = 1, RequireRestart = false)]
+        public bool EnableSeeIds { get; set; } = false;
     }
 }

@@ -52,6 +52,9 @@
     <string id="bo_config_title.20" text="Weaponry order key" />
     <string id="bo_config_title.21" text="Enable random weights and builds for humans" />
     <string id="bo_config_title.22" text="Enable random sizes for mounts" />
+
+    <!-- Debugging -->
+    <string id="bo_config_title.23" text="See the id of everything the name" />
     
     <!-- Campaign Save Settings -->
     <string id="bo_campaign_config_title.1" text="Party Size Limit Multiplier" />
