@@ -1,24 +1,18 @@
 ﻿using HarmonyLib;
 using JetBrains.Annotations;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.CharacterDevelopment;
-using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.Settlements.Buildings;
 using TaleWorlds.Core;
-using TaleWorlds.Engine;
-using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.ObjectSystem;
-using Agent = TaleWorlds.MountAndBlade.Agent;
 using Mission = TaleWorlds.MountAndBlade.Mission;
-using MissionWeapon = TaleWorlds.MountAndBlade.MissionWeapon;
 
 namespace BasicOverhaul
 {
@@ -204,9 +198,8 @@ namespace BasicOverhaul
                 return "You must activate the enable switch cheat mode in the mod config to use this.";
 
             bool current = (bool)Helpers.CheatModeField.GetValue(null);
-            Helpers.CheatModeField.SetValue(null, !current);
-
             BasicOverhaulCampaignConfig.Instance.CheatModeEnabled = !current;
+            Helpers.CheatModeField.SetValue(null, !current);
 
             return GameTexts.FindText("str_done").ToString();
         }
@@ -259,7 +252,7 @@ namespace BasicOverhaul
 
         private static void MaximizeHero(Hero hero)
         {
-            hero.ChangeHeroGold(999999999);
+            hero.ChangeHeroGold(999999999-hero.Gold);
 
             if (hero.Clan != null)
             {

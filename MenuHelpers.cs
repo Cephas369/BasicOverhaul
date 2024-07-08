@@ -5,7 +5,6 @@ using System.Reflection;
 using HarmonyLib;
 using TaleWorlds.Engine;
 using TaleWorlds.Localization;
-using TaleWorlds.MountAndBlade;
 
 namespace BasicOverhaul;
 

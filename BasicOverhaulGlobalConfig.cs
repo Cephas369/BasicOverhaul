@@ -71,6 +71,10 @@ namespace BasicOverhaul
         [SettingPropertyGroup("{=general}General", GroupOrder = 1)]
         [SettingPropertyBool("{=bo_config_title.16}Enable limit max skill levels at 300", RequireRestart = false, Order = 8)]
         public bool EnableLimitSkill { get; set; } = true;
+        
+        [SettingPropertyGroup("{=general}General", GroupOrder = 1)]
+        [SettingPropertyBool("{=bo_config_title.24}Disable relationship losses on executions", RequireRestart = false, Order = 9)]
+        public bool DisableExecutionRelationPenalty { get; set; } = true;
 
         [SettingPropertyGroup("{=in_battle}In Battle", GroupOrder = 2)]
         [SettingPropertyBool("{=bo_config_title.8}Disable attack collisions for allies", Order = 1, RequireRestart = false)]
@@ -113,7 +117,7 @@ namespace BasicOverhaul
         public bool EnableSwitchCheatMode { get; set; } = false;
         
         [SettingPropertyGroup("{=Debugging}Debugging", GroupOrder = 4)]
-        [SettingPropertyBool("{=bo_config_title.15}See the id of everything the name", Order = 1, RequireRestart = false)]
+        [SettingPropertyBool("{=bo_config_title.23}See the id of everything the name", Order = 1, RequireRestart = false)]
         public bool EnableSeeIds { get; set; } = false;
     }
 }

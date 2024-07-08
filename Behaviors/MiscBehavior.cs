@@ -43,7 +43,6 @@ internal class MiscBehavior : CampaignBehaviorBase
 internal class MiscMissionLogic : MissionLogic
 {
     private InputKey _fastForwardKey = InputKey.Numpad9;
-    private MethodInfo SetInitialAgentScale = AccessTools.Method(typeof(Agent), "SetInitialAgentScale");
     public override void OnAgentHit(Agent affectedAgent, Agent affectorAgent, in MissionWeapon affectorWeapon, in Blow blow,
         in AttackCollisionData attackCollisionData)
     {

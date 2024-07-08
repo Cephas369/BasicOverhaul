@@ -25,6 +25,7 @@
     <string id="bo_config_title.5" text="Ativar filtros na tela de grupo" />
     <string id="bo_config_title.6" text="Ativar mais filtros na tela de inventário" />
     <string id="bo_config_title.7" text="Permitir que notáveis se tornem governadores" />
+    <string id="bo_config_title.24" text="Desativar perda de relação em execuções" />
 
     <!-- In Battle -->
     <string id="bo_config_title.8" text="Desativar colisões de ataque para aliados" />

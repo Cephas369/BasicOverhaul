@@ -27,6 +27,7 @@
     <string id="bo_config_title.5" text="Enable filters on party screen" />
     <string id="bo_config_title.6" text="Enable more filters on inventory screen" />
     <string id="bo_config_title.7" text="Enable being possible for notables being governors" />
+    <string id="bo_config_title.24" text="Disable relationship losses on executions" />
 
     <!-- In Battle -->
     <string id="bo_config_title.8" text="Disable attack collisions for allies" />
@@ -52,6 +53,7 @@
     <string id="bo_config_title.20" text="Weaponry order key" />
     <string id="bo_config_title.21" text="Enable random weights and builds for humans" />
     <string id="bo_config_title.22" text="Enable random sizes for mounts" />
+    
 
     <!-- Debugging -->
     <string id="bo_config_title.23" text="See the id of everything the name" />
