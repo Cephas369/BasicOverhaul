@@ -21,14 +21,24 @@ public static class BasicStatCalculateModel
     }
     public static void ModifyAgentProperties(Agent agent)
     {
-        if (!agent.IsHuman || !ModifiedAgents.TryGetValue(agent, out var properties)) 
+        if (!agent.IsHuman) 
             return;
-        
-        foreach (var tuple in properties)
+
+        if (agent.Character.DefaultFormationClass == FormationClass.Cavalry)
         {
-            agent.SetAgentDrivenPropertyValueFromConsole(tuple.property, tuple.value);
-            agent.UpdateCustomDrivenProperties();
+            agent.AgentDrivenProperties.WeaponInaccuracy = 0;
+            agent.AgentDrivenProperties.WeaponRotationalAccuracyPenaltyInRadians = 0;
+            agent.AgentDrivenProperties.WeaponBestAccuracyWaitTime = 0.5f;
         }
+        
+        if (ModifiedAgents.TryGetValue(agent, out var properties))
+        {
+            foreach (var tuple in properties)
+            {
+                agent.SetAgentDrivenPropertyValueFromConsole(tuple.property, tuple.value);
+            }
+        }
+        agent.UpdateCustomDrivenProperties();
     }
 }
 internal class BOAgentStatCalculateModel : SandboxAgentStatCalculateModel

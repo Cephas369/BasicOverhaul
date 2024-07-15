@@ -10,7 +10,7 @@
 	<string id="bo_manage_slavery" text="Manage plantation" />
 	<string id="bo_enslave_prisoners" text="Enslave prisoners" />
 	<string id="bo_profit_allocation" text="Profit allocation" />
-	<string id="bo_profit_allocation_description" text="Choose where your slavery profit will be spent" />
+	<string id="bo_profit_allocation_description" text="Current: {PROFIT}" />
 	<string id="bo_player_income" text="Player Income" />
 	<string id="bo_town_prosperity" text="Town Prosperity" />
 	<string id="bo_construction" text="Construction" />

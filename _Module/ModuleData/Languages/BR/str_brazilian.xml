@@ -10,7 +10,7 @@
 		<string id="bo_manage_slavery" text="Gerenciar plantação" />
 		<string id="bo_enslave_prisoners" text="Escravizar prisioneiros" />
 		<string id="bo_profit_allocation" text="Alocação de lucros" />
-		<string id="bo_profit_allocation_description" text="Escolha onde seus lucros da escravidão serão gastos" />
+		<string id="bo_profit_allocation_description" text="Atual: {PROFIT}" />
 		<string id="bo_player_income" text="Renda do jogador" />
 		<string id="bo_town_prosperity" text="Prosperidade da cidade" />
 		<string id="bo_construction" text="Construção" />

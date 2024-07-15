@@ -86,7 +86,7 @@ namespace BasicOverhaul.Behaviors
 
 
                 List<(FlattenedTroopRosterElement, string)> allTroops = defeatedSide.Parties.SelectMany(mapeventParty => mapeventParty.Troops.Select(troop => (troop, mapeventParty.Party.MobileParty.StringId))).ToList();
-                allTroops.RemoveAll(x => x.Item1.IsKilled);
+                allTroops.RemoveAll(x => x.Item1.IsKilled || x.Item1.Troop?.IsHero == true);
 
                 if (allTroops.Count == 0) return;
 

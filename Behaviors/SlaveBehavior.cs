@@ -46,6 +46,13 @@ namespace BasicOverhaul.Behaviors
 
         private const int SlavePlantationFactor = 6;
 
+        private readonly Dictionary<DestinationTypes, string> _destinationNames = new()
+        {
+            { DestinationTypes.Clan, "Player Income" },
+            { DestinationTypes.Construction, "Town Constructions" },
+            { DestinationTypes.TownProsperity, "Town Prosperity" },
+        };
+
         public SlaveBehavior()
         {
             Instance = this;
@@ -202,12 +209,14 @@ namespace BasicOverhaul.Behaviors
                         new(DestinationTypes.Construction,
                             new TextObject("{=bo_construction}Town Constructions").ToString(), null)
                     };
+                    TextObject description = new TextObject(
+                        "{=bo_profit_allocation_description}Current: {PROFIT}");
 
+                    description.SetTextVariable("PROFIT",
+                        _destinationNames[SlaveData[Settlement.CurrentSettlement.StringId].DestinationType]);
+                    
                     MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData(
-                        new TextObject("{=bo_profit_allocation}Profit allocation").ToString(),
-                        new TextObject(
-                                "{=bo_profit_allocation_description}Choose where your slavery profit will be spent")
-                            .ToString(), elements
+                        new TextObject("{=bo_profit_allocation}Profit allocation").ToString(), description.ToString(), elements
                         , true, 1, 1, GameTexts.FindText("str_done").ToString(), string.Empty,
                         doneElements =>
                         {
