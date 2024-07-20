@@ -5,6 +5,7 @@
   </tags>
   <strings>
 	  <string id="all_cultures" text="All Cultures" />
+	  <string id="no_culture" text="No Culture" />
 	  <string id="all_classes" text="All Classes" />
 	  <string id="all_tiers" text="All Tiers" />
 	  <string id="all_types" text="All Types" />

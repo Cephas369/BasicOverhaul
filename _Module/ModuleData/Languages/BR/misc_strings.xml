@@ -6,6 +6,7 @@
   <strings>
 	  <string id="all_cultures" text="Todas as Culturas" />
 	  <string id="all_classes" text="Todas as Classes" />
+	  <string id="no_culture" text="Sem Cultura" />
 	  <string id="all_tiers" text="Todos os Níveis" />
 	  <string id="all_types" text="Todos os Tipos" />
 
