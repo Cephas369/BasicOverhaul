@@ -35,7 +35,8 @@ namespace BasicOverhaul.GUI
     private static Dictionary<FilterType, Delegate> _filterMethods = new()
     {
       { FilterType.Tier, null },
-      { FilterType.Type, null }
+      { FilterType.Type, null },
+      { FilterType.Culture, null }
     };
     public static BOInventoryVM? Instance { get; private set; }
     
@@ -75,7 +76,8 @@ namespace BasicOverhaul.GUI
       _filterMethods = new()
       {
         { FilterType.Tier, null },
-        { FilterType.Type, null }
+        { FilterType.Type, null },
+        { FilterType.Culture , null }
       };
       _dataSources = null;
     }
@@ -120,6 +122,18 @@ namespace BasicOverhaul.GUI
               }
             };
             break;
+          
+          case FilterType.Culture:
+            string culture = (string)selected.selected;
+            _filterMethods[selected.filterType] = () =>
+            {
+              for (int i = items.Count - 1; i >= 0; i--)
+              {
+                if ((items[i].ItemRosterElement.EquipmentElement.Item?.Culture?.StringId ?? "none") != culture)
+                  items[i].IsFiltered = true;
+              }
+            };
+            break;
         }
       }
 
@@ -135,11 +149,15 @@ namespace BasicOverhaul.GUI
       Dictionary<FilterType, List<TroopFilterSelectorItemVM>> filters = new()
       {
         { FilterType.Type, new() },
-        { FilterType.Tier, new() }
+        { FilterType.Tier, new() },
+        { FilterType.Culture, new() }
       };
         
-      filters[FilterType.Type].Add(new TroopFilterSelectorItemVM(new TextObject("{=all_types}All Types"), FilterType.Type,"all"));
-      filters[FilterType.Tier].Add(new TroopFilterSelectorItemVM(new TextObject("{=all_tiers}All Tiers"), FilterType.Tier,"all"));
+      filters[FilterType.Type].Add(new TroopFilterSelectorItemVM(new TextObject("{=all_types}All Types"), FilterType.Type, "all"));
+      filters[FilterType.Tier].Add(new TroopFilterSelectorItemVM(new TextObject("{=all_tiers}All Tiers"), FilterType.Tier, "all"));
+      
+      filters[FilterType.Culture].Add(new TroopFilterSelectorItemVM(new TextObject("{=all_cultures}All Cultures"), FilterType.Culture, "all"));
+      filters[FilterType.Culture].Add(new TroopFilterSelectorItemVM(new TextObject("{=no_culture}No Culture"), FilterType.Culture, "none"));
 
       for (int i = 1; i <= 24; i++)
       {
@@ -149,6 +167,12 @@ namespace BasicOverhaul.GUI
 
       for (int i = 0; i <= 5; i++)
         filters[FilterType.Tier].Add(new TroopFilterSelectorItemVM(new TextObject(i), FilterType.Tier, i));
+
+      var allCultures = MBObjectManager.Instance.GetObjectTypeList<CultureObject>();
+      foreach (var culture in allCultures)
+      { 
+        filters[FilterType.Culture].Add(new TroopFilterSelectorItemVM(culture.GetName(), FilterType.Culture, culture.StringId));
+      }
 
       return filters;
     }
@@ -178,6 +202,19 @@ namespace BasicOverhaul.GUI
         OnPropertyChangedWithValue(value);
       }
     }
+    
+    [DataSourceProperty]
+    public PartyFilterControllerVM FilterCultureLeft
+    {
+      get => _dataSources[Side.Left][FilterType.Culture];
+      set
+      {
+        if (value == _dataSources[Side.Left][FilterType.Culture])
+          return;
+        _dataSources[Side.Left][FilterType.Culture] = value;
+        OnPropertyChangedWithValue(value);
+      }
+    }
 
     [DataSourceProperty]
     public PartyFilterControllerVM FilterTierRight
@@ -201,6 +238,19 @@ namespace BasicOverhaul.GUI
         if (value == _dataSources[Side.Right][FilterType.Type])
           return;
         _dataSources[Side.Right][FilterType.Type] = value;
+        OnPropertyChangedWithValue(value);
+      }
+    }
+    
+    [DataSourceProperty]
+    public PartyFilterControllerVM FilterCultureRight
+    {
+      get => _dataSources[Side.Right][FilterType.Culture];
+      set
+      {
+        if (value == _dataSources[Side.Right][FilterType.Culture])
+          return;
+        _dataSources[Side.Right][FilterType.Culture] = value;
         OnPropertyChangedWithValue(value);
       }
     }

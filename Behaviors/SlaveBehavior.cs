@@ -46,11 +46,11 @@ namespace BasicOverhaul.Behaviors
 
         private const int SlavePlantationFactor = 6;
 
-        private readonly Dictionary<DestinationTypes, string> _destinationNames = new()
+        private readonly Dictionary<DestinationTypes, TextObject> _destinationNames = new()
         {
-            { DestinationTypes.Clan, "Player Income" },
-            { DestinationTypes.Construction, "Town Constructions" },
-            { DestinationTypes.TownProsperity, "Town Prosperity" },
+            { DestinationTypes.Clan, new TextObject("{=bo_player_income}Player Income") },
+            { DestinationTypes.Construction, new TextObject("{=bo_construction}Town Constructions") },
+            { DestinationTypes.TownProsperity, new TextObject("{=bo_town_prosperity}Town Prosperity") },
         };
 
         public SlaveBehavior()
@@ -201,13 +201,13 @@ namespace BasicOverhaul.Behaviors
                     List<InquiryElement> elements = new List<InquiryElement>()
                     {
                         new(DestinationTypes.Clan,
-                            new TextObject("{=bo_player_income}Player Income").ToString(), null),
+                            _destinationNames[DestinationTypes.Clan].ToString(), null),
 
                         new(DestinationTypes.TownProsperity,
-                            new TextObject("{=bo_town_prosperity}Town Prosperity").ToString(), null),
+                            _destinationNames[DestinationTypes.TownProsperity].ToString(), null),
 
                         new(DestinationTypes.Construction,
-                            new TextObject("{=bo_construction}Town Constructions").ToString(), null)
+                            _destinationNames[DestinationTypes.Construction].ToString(), null)
                     };
                     TextObject description = new TextObject(
                         "{=bo_profit_allocation_description}Current: {PROFIT}");

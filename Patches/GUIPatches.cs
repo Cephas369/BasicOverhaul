@@ -127,10 +127,12 @@ public static class XmlGUILoadPatch
                 {
                     string[] inventoryVMNodes = 
                     {
-                        "<PartyFilterController HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" MarginTop=\"140\" MarginLeft=\"!SidePanel.Width\" PositionXOffset=\"22\" DataSource=\"{FilterTierLeft}\"/>",
-                        "<PartyFilterController HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" MarginTop=\"100\" MarginLeft=\"!SidePanel.Width\" PositionXOffset=\"22\"  DataSource=\"{FilterTypeLeft}\" />",
-                        "<PartyFilterController HorizontalAlignment=\"Right\" VerticalAlignment=\"Top\" MarginTop=\"140\" MarginRight=\"!SidePanel.Width\" PositionXOffset=\"-22\"  DataSource=\"{FilterTierRight}\"/>",
-                        "<PartyFilterController HorizontalAlignment=\"Right\" VerticalAlignment=\"Top\" MarginTop=\"100\" MarginRight=\"!SidePanel.Width\" PositionXOffset=\"-22\"  DataSource=\"{FilterTypeRight}\" />",
+                        "<PartyFilterController HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" MarginTop=\"90\" MarginLeft=\"!SidePanel.Width\" PositionXOffset=\"22\" Parameter.Height=\"25\" DataSource=\"{FilterTypeLeft}\" />",
+                        "<PartyFilterController HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" MarginTop=\"120\" MarginLeft=\"!SidePanel.Width\" PositionXOffset=\"22\" Parameter.Height=\"25\" DataSource=\"{FilterTierLeft}\"/>",
+                        "<PartyFilterController HorizontalAlignment=\"Left\" VerticalAlignment=\"Top\" MarginTop=\"150\" MarginLeft=\"!SidePanel.Width\" PositionXOffset=\"22\" Parameter.Height=\"25\" DataSource=\"{FilterCultureLeft}\" />",
+                        "<PartyFilterController HorizontalAlignment=\"Right\" VerticalAlignment=\"Top\" MarginTop=\"90\" MarginRight=\"!SidePanel.Width\" PositionXOffset=\"-22\" Parameter.Height=\"25\" DataSource=\"{FilterTypeRight}\" />",
+                        "<PartyFilterController HorizontalAlignment=\"Right\" VerticalAlignment=\"Top\" MarginTop=\"120\" MarginRight=\"!SidePanel.Width\" PositionXOffset=\"-22\" Parameter.Height=\"25\" DataSource=\"{FilterTierRight}\"/>",
+                        "<PartyFilterController HorizontalAlignment=\"Right\" VerticalAlignment=\"Top\" MarginTop=\"150\" MarginRight=\"!SidePanel.Width\" PositionXOffset=\"-22\" Parameter.Height=\"25\" DataSource=\"{FilterCultureRight}\" />",
                     };
                 
                     foreach (var element in inventoryVMNodes)

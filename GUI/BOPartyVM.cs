@@ -1,4 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
+﻿  // Decompiled with JetBrains decompiler
 // Type: TaleWorlds.CampaignSystem.ViewModelCollection.Party.PartyVM
 // Assembly: TaleWorlds.CampaignSystem.ViewModelCollection, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // MVID: C2B4842E-B3B8-46FE-A96B-C6CECFB63981
