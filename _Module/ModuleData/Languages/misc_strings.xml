@@ -18,5 +18,11 @@
 	  <string id="bo_open_inventory" text="Press {KEY} to open your inventory" />
 	  <string id="event" text="Event" />
 	  <string id="are_you_sure" text="Are you sure ? This is irreversible." />
+
+	  <string id="send_message" text="Send Message" />
+	  <string id="select_receiver" text="Select the receiver" />
+	  <string id="messenger_left_info" text="The messenger left your party." />
+	  <string id="messenger_reached_text" text="{MESSENGER.NAME} reached {RECEIVER.NAME}" />
+	  <string id="message_delivered" text="Message delivered" />
   </strings>
 </base>

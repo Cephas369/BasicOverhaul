@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+<tags>
+    <tag language="English" />
+</tags>
+<strings>
+    <string id="send_message_talk_1" text="I want you to send a message to someone." />
+    <string id="send_message_talk_2" text="Who should i send it ?" />
+    <string id="send_message_talk_3" text="(Select...)" />
+    <string id="send_message_talk_4" text="Forget it." />
+    <string id="send_message_talk_5" text="Unfortunately i couldn't find {RECEIVER} sir." />
+</strings>
+</base>

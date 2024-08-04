@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<base xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="string">
+<tags>
+    <tag language="Português (BR)" />
+</tags>
+<strings>
+    <string id="send_message_talk_1" text="Quero que envie uma mensagem." />
+    <string id="send_message_talk_2" text="Pra quem eu devo enviar ?" />
+    <string id="send_message_talk_3" text="(Selecionar...)" />
+    <string id="send_message_talk_4" text="Deixe pra lá." />
+    <string id="send_message_talk_5" text="Infelizmente não consegui encontrar {RECEIVER} senhor." />
+</strings>
+</base>

@@ -18,5 +18,11 @@
 	  <string id="bo_open_inventory" text="Pressione {KEY} para abrir seu inventário" />
 	  <string id="event" text="Evento" />
 	  <string id="are_you_sure" text="Tem certeza ? Isso é irreversível." />
+
+	  <string id="send_message" text="Enviar Mensagem" />
+	  <string id="select_receiver" text="Selecione o destinatário" />
+	  <string id="messenger_left_info" text="O mensageiro deixou seu grupo." />
+	  <string id="messenger_reached_text" text="{MESSENGER.NAME} chegou até {RECEIVER.NAME}" />
+	  <string id="message_delivered" text="Mensagem entregue" />
   </strings>
 </base>

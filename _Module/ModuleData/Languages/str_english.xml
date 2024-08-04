@@ -4,9 +4,9 @@
     <tag language="English" />
   </tags>
   <strings>
-    <string id="bo_introduce_slavery" text="Build plantation ({COST}{GOLD_ICON})" />
+	<string id="bo_introduce_slavery" text="Build plantation ({COST}{GOLD_ICON})" />
 	<string id="bo_not_enough_money.1" text="You don't have enough money." />
-    <string id="bo_not_enough_money.2" text="Your clan tier must be at least 3." />
+	<string id="bo_not_enough_money.2" text="Your clan tier must be at least 3." />
 	<string id="bo_manage_slavery" text="Manage plantation" />
 	<string id="bo_enslave_prisoners" text="Enslave prisoners" />
 	<string id="bo_profit_allocation" text="Profit allocation" />
@@ -20,11 +20,11 @@
 	<string id="bo_no" text="No" />
 	<string id="bo_slavery" text="Slavery" />
 	<string id="bo_town_slavery" text="{TOWN} Slavery" />
-    <string id="bo_slave_loss_title" text="Exhaustion" />
-    <string id="bo_slave_loss_description" text="{AMOUNT} slaves prisoners have died this week." />
-    <string id="slave" text="Slave" />
-	  <string id="plantation_building_finished" text="Your plantation at {SETTLEMENT} has finished being built." />
-	  <string id="confirmation" text="Confirmation" />
+	<string id="bo_slave_loss_title" text="Exhaustion" />
+	<string id="bo_slave_loss_description" text="{AMOUNT} slaves prisoners have died this week." />
+	<string id="slave" text="Slave" />
+	<string id="plantation_building_finished" text="Your plantation at {SETTLEMENT} has finished being built." />
+	<string id="confirmation" text="Confirmation" />
 	  
 	<string id="str_title_weaponry_order" text="Restrict weapon use" />
 

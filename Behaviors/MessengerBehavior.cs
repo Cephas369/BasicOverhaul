@@ -92,14 +92,14 @@ public class MessengerBehavior : CampaignBehaviorBase
     {
         //Send the message
         campaignGameStarter.AddPlayerLine("companion_send_message_1", "hero_main_options", "companion_send_message_out_1",
-            "{=d4t6oUCn}I want you to send a message to someone.", () => Hero.OneToOneConversationHero?.CompanionOf == Clan.PlayerClan,
+            "{=send_message_talk_1}I want you to send a message to someone.", () => Hero.OneToOneConversationHero?.CompanionOf == Clan.PlayerClan,
             null);
         
         campaignGameStarter.AddDialogLine("companion_send_message_2", "companion_send_message_out_1", "companion_send_message_out_2",
-            "Who should i send it ?", () => true, null);
+            "{=send_message_talk_2}Who should i send it ?", () => true, null);
         
         campaignGameStarter.AddPlayerLine("companion_send_message_3", "companion_send_message_out_2", "close_window",
-            "(Select...)", () => true,
+            "{=send_message_talk_3}(Select...)", () => true,
             () =>
             {
                 ShowReceiverHeroesInquiry(Hero.OneToOneConversationHero);
@@ -107,12 +107,12 @@ public class MessengerBehavior : CampaignBehaviorBase
 
         campaignGameStarter.AddPlayerLine("companion_send_message_4", "companion_send_message_out_2",
             "hero_main_options",
-            "Forget it.", () => true, null);
+            "{=send_message_talk_4}Forget it.", () => true, null);
             
             
         //Failed return
         campaignGameStarter.AddDialogLine("send_message_failed_1", "start", "close_window",
-            "Unfortunately i couldn't find {RECEIVER} sir.", () =>
+            "{=send_message_talk_5}Unfortunately i couldn't find {RECEIVER} sir.", () =>
             {
                 if (Hero.OneToOneConversationHero?.PartyBelongedTo?.PartyComponent is MessengerPartyComponent messengerPartyComponent 
                     && messengerPartyComponent.Objective == MessengerObjective.ReturningFailed)
@@ -128,7 +128,7 @@ public class MessengerBehavior : CampaignBehaviorBase
     private void ShowReceiverHeroesInquiry(Hero companion)
     {
         MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData(
-            new TextObject("Send Message").ToString(), new TextObject("Select the receiver").ToString(),
+            new TextObject("{=send_message}Send Message").ToString(), new TextObject("{=select_receiver}Select the receiver").ToString(),
             GetHeroElements().ToList(), false, 0, 1, GameTexts.FindText("str_done").ToString(),
             null, (selectedElements) =>
             {
@@ -166,7 +166,7 @@ public class MessengerBehavior : CampaignBehaviorBase
         
         _messengerParties.Add(mobileParty);
         
-        MBInformationManager.AddQuickInformation(new TextObject("The messenger left your party."));
+        MBInformationManager.AddQuickInformation(new TextObject("{=messenger_left_info}The messenger left your party."));
         DecideMessengerDestination(mobileParty);
     }
 
@@ -238,11 +238,11 @@ public class MessengerBehavior : CampaignBehaviorBase
     {
         if (partyComponent.Objective == MessengerObjective.Sending)
         {
-            TextObject textObject = new TextObject("{MESSENGER.NAME} reached {RECEIVER.NAME}");
+            TextObject textObject = new TextObject("{=messenger_reached_text}{MESSENGER.NAME} reached {RECEIVER.NAME}");
             textObject.SetCharacterProperties("MESSENGER", partyComponent.Owner.CharacterObject);
             textObject.SetCharacterProperties("RECEIVER", partyComponent.TargetHero.CharacterObject);
         
-            InformationManager.ShowInquiry(new InquiryData(new TextObject("Message delivered").ToString(), textObject.ToString(), true, false, 
+            InformationManager.ShowInquiry(new InquiryData(new TextObject("{=message_delivered}Message delivered").ToString(), textObject.ToString(), true, false, 
                 GameTexts.FindText("str_done").ToString(), "",
                 () =>
                 {
@@ -265,7 +265,7 @@ public class MessengerBehavior : CampaignBehaviorBase
 
     internal void ReturnAllMessengers()
     {
-        MobileParty[] parties = new MobileParty[] { };
+        MobileParty[] parties = { };
         _messengerParties.CopyTo(parties);
 
         foreach (var party in parties)

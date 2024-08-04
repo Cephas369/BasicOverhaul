@@ -4,4 +4,5 @@
   <LanguageFile xml_path="BR/misc_strings.xml" />
   <LanguageFile xml_path="BR/str_configs.xml" />
   <LanguageFile xml_path="BR/cheat_strings.xml" />
+  <LanguageFile xml_path="BR/str_dialogs.xml" />
 </LanguageData>
