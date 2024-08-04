@@ -23,6 +23,7 @@
     <string id="cheat_desc.15" text="Gerar arma" />
     <string id="cheat_desc.16" text="Ativar/desativar IA dos agentes" />
     <string id="cheat_desc.17" text="Ativar/desativar modo trapaça ({VALUE})" />
+    <string id="cheat_desc.18" text="Maximizar relações" />
 
     <string id="speed" text="Velocidade" />
     <string id="settlement_name" text="Nome do Assentamento" />

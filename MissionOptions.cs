@@ -166,7 +166,7 @@ namespace BasicOverhaul
                                         }, null), true);
                                 }
                             }, null), true);
-                    }, null), true);
+                    }, null, "", true), true);
             return GameTexts.FindText("str_done").ToString();
         }
         
@@ -193,7 +193,7 @@ namespace BasicOverhaul
                         MissionWeapon missionWeapon = new MissionWeapon(itemObject, new ItemModifier(), Banner.CreateOneColoredEmptyBanner(1));
                         MatrixFrame frame = Agent.Main.Frame;
                         Mission.Current?.SpawnWeaponWithNewEntityAux(missionWeapon, Mission.WeaponSpawnFlags.WithPhysics, frame, 0, null, false);
-                    }, null), true);
+                    }, null, "", true), true);
             
             return GameTexts.FindText("str_done").ToString();
         }

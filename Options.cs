@@ -79,28 +79,6 @@ namespace BasicOverhaul
 
             return GameTexts.FindText("str_done").ToString();
         }
-        
-        [BasicOption("{=cheat_desc.3}Remove desertion system")]
-        [CommandLineFunctionality.CommandLineArgumentFunction("destroy_desertion_system", "bo")]
-        [UsedImplicitly]
-        public static string DestroyDeserterParties(List<string> strings)
-        {
-            if (Campaign.Current == null)
-                return "Campaign was not started.";
-            
-            InformationManager.ShowInquiry(new InquiryData(new TextObject("{=are_you_sure}Are you sure ? This is irreversible.").ToString(), null, true, true,
-                new TextObject("{=bo_yes}Yes").ToString(), new TextObject("{=bo_no}No").ToString(), () =>
-                {
-                    List<MobileParty> deserterParties = MobileParty.All.Where(x => x.StringId.Contains("deserter")).ToList();
-            
-                    for(int i = deserterParties.Count() - 1; i >= 0; i--)
-                        DestroyPartyAction.Apply(PartyBase.MainParty, deserterParties[i]);
-
-                    Clan.All.Remove(Clan.FindFirst(x => x.StringId == "deserters"));
-                }, null));
-
-            return GameTexts.FindText("str_done").ToString();
-        }
 
         [BasicOption("{=cheat_desc.4}Maximize settlement walls", new []{ "{=settlement_name}Settlement name", "{=level}Level" }, isCheat: true)]
         [CommandLineFunctionality.CommandLineArgumentFunction("maximize_settlement_levels", "bo")]
@@ -180,7 +158,7 @@ namespace BasicOverhaul
                     if (list.Any() && list[0].Identifier is Hero hero)
                         MaximizeHero(hero);
                     
-                }, null));
+                }, null, "", true));
             
 
             return GameTexts.FindText("str_done").ToString();
@@ -191,8 +169,13 @@ namespace BasicOverhaul
         [UsedImplicitly]
         public static string SwitchCheatMode(List<string> strings)
         {
-            if (Campaign.Current == null || BasicOverhaulCampaignConfig.Instance == null)
+            if (Campaign.Current == null)
                 return "You must be in a campaign.";
+
+            if (BasicOverhaulCampaignConfig.Instance == null)
+            {
+                return "You must use MCM to use this option.";
+            }
 
             if (BasicOverhaulGlobalConfig.Instance?.EnableSwitchCheatMode == false)
                 return "You must activate the enable switch cheat mode in the mod config to use this.";
@@ -200,6 +183,22 @@ namespace BasicOverhaul
             bool current = (bool)Helpers.CheatModeField.GetValue(null);
             BasicOverhaulCampaignConfig.Instance.CheatModeEnabled = !current;
             Helpers.CheatModeField.SetValue(null, !current);
+
+            return GameTexts.FindText("str_done").ToString();
+        }
+        
+        [BasicOption("{=cheat_desc.18}Maximize relationships", null, true)]
+        [CommandLineFunctionality.CommandLineArgumentFunction("maximize_relationships", "bo")]
+        [UsedImplicitly]
+        public static string MaximizeRelationship(List<string> strings)
+        {
+            if (!CampaignCheats.CheckCheatUsage(ref CampaignCheats.ErrorType))
+                return CampaignCheats.ErrorType;
+
+            foreach (var hero in Hero.AllAliveHeroes)
+            {
+                ChangeRelationAction.ApplyPlayerRelation(hero, 200, true, false);
+            }
 
             return GameTexts.FindText("str_done").ToString();
         }

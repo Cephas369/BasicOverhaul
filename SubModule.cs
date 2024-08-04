@@ -144,6 +144,7 @@ namespace BasicOverhaul
             if(gameStarterObject is CampaignGameStarter campaignGameStarter)
             {
                 campaignGameStarter.AddBehavior(new MiscBehavior());
+                campaignGameStarter.AddBehavior(new MessengerBehavior());
                 
                 if(BasicOverhaulGlobalConfig.Instance?.EnableDeserterParties == true)
                     campaignGameStarter.AddBehavior(new DesertionBehavior());
@@ -213,7 +214,10 @@ namespace BasicOverhaul
             AddClassDefinition(typeof(DesertionBehavior.DeserterPartyComponent), 1);
             AddEnumDefinition(typeof(DestinationTypes), 2);
             AddClassDefinition(typeof(TownSlaveData), 3);
+            AddClassDefinition(typeof(MessengerBehavior), 4);
+            AddClassDefinition(typeof(MessengerBehavior.MessengerPartyComponent), 5);
         }
+
         protected override void DefineContainerDefinitions()
         {
             ConstructContainerDefinition(typeof(Dictionary<MobileParty, Settlement>));
