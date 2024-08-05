@@ -106,7 +106,7 @@ public class MessengerBehavior : CampaignBehaviorBase
             });
 
         campaignGameStarter.AddPlayerLine("companion_send_message_4", "companion_send_message_out_2",
-            "hero_main_options",
+            "companion_okay",
             "{=send_message_talk_4}Forget it.", () => true, null);
             
             
@@ -167,14 +167,45 @@ public class MessengerBehavior : CampaignBehaviorBase
 
     private void MakePartyReachHero(MobileParty mobileParty, Hero hero)
     {
+        bool isEnemy = hero.MapFaction.IsAtWarWith(mobileParty.MapFaction);
         if (hero.CurrentSettlement != null)
         {
-            mobileParty.Ai.SetMoveGoToSettlement(hero.CurrentSettlement);
+            if (isEnemy)
+            {
+                if (mobileParty.Position2D.DistanceSquared(hero.CurrentSettlement.GatePosition) < 30f)
+                {
+                    mobileParty.IgnoreForHours(2);
+                    mobileParty.IgnoreByOtherPartiesTill(CampaignTime.Hours(2));
+                    mobileParty.Ai.SetDoNotMakeNewDecisions(true);
+                }
+                if (mobileParty.Position2D.DistanceSquared(hero.CurrentSettlement.GatePosition) < 2f)
+                {
+                    OnPartyReachedDestination(mobileParty.PartyComponent as MessengerPartyComponent);
+                }
+                mobileParty.Ai.SetMoveGoToPoint(hero.PartyBelongedTo.Position2D);
+            }
+            else
+            {
+                mobileParty.Ai.SetMoveGoToSettlement(hero.CurrentSettlement);
+            }
             return;
         }
         if (hero.PartyBelongedTo != null)
         {
-            if (mobileParty.Position2D.DistanceSquared(hero.PartyBelongedTo.Position2D) < 12f && mobileParty.PartyComponent is MessengerPartyComponent partyComponent)
+            bool isPartyNear;
+            if (!isEnemy)
+            {
+                isPartyNear = mobileParty.Position2D.DistanceSquared(hero.PartyBelongedTo.Position2D) < 12f;
+            }
+            else
+            {
+                mobileParty.IgnoreForHours(2);
+                mobileParty.IgnoreByOtherPartiesTill(CampaignTime.Hours(2));
+                mobileParty.Ai.SetDoNotMakeNewDecisions(true);
+                isPartyNear = mobileParty.Position2D.DistanceSquared(hero.PartyBelongedTo.Position2D) < 50f;
+            }
+            
+            if (isPartyNear && mobileParty.PartyComponent is MessengerPartyComponent partyComponent)
             {
                 if(!_nearToTarget.Contains(partyComponent))
                     _nearToTarget.Add(partyComponent);
@@ -244,6 +275,7 @@ public class MessengerBehavior : CampaignBehaviorBase
                     CampaignMapConversation.OpenConversation(new ConversationCharacterData(CharacterObject.PlayerCharacter), new ConversationCharacterData(partyComponent.TargetHero.CharacterObject));
                     partyComponent.Objective = MessengerObjective.ReturningSuccess;
                     partyComponent.TargetHero = Hero.MainHero;
+                    partyComponent.MobileParty.Ai.SetDoNotMakeNewDecisions(false);
                     DecideMessengerDestination(MobileParty.MainParty);
                 }, null), true);
         }
