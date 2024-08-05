@@ -28,6 +28,7 @@
     <string id="bo_config_title.6" text="Enable more filters on inventory screen" />
     <string id="bo_config_title.7" text="Enable being possible for notables being governors" />
     <string id="bo_config_title.24" text="Disable relationship losses on executions" />
+    <string id="bo_config_title.25" text="Enable mod dialogs" />
 
     <!-- In Battle -->
     <string id="bo_config_title.8" text="Disable attack collisions for allies" />

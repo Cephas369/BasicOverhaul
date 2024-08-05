@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Helpers;
+using SandBox.View.Map;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.Conversation;
 using TaleWorlds.CampaignSystem.Extensions;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Party.PartyComponents;
-using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -26,8 +26,8 @@ public enum MessengerObjective
 
 public class MessengerBehavior : CampaignBehaviorBase
 {
-    [SaveableField(0)] private List<MobileParty> _messengerParties = new();
-
+    private List<MobileParty> _messengerParties = new();
+    
     private List<MessengerPartyComponent> _nearToTarget = new();
     private const int MaxDeliveryDays = 10;
     private const float MinimumTargetDistance = 1;
@@ -87,7 +87,7 @@ public class MessengerBehavior : CampaignBehaviorBase
             }
         }
     }
-
+    
     private void OnSessionLaunched(CampaignGameStarter campaignGameStarter)
     {
         //Send the message
@@ -142,7 +142,7 @@ public class MessengerBehavior : CampaignBehaviorBase
                 {
                     SendMessengerToHero(companion, hero);
                 }
-            }, null, "", true));
+            }, null, "", true), true);
     }
     private IEnumerable<InquiryElement> GetHeroElements()
     {
@@ -155,13 +155,8 @@ public class MessengerBehavior : CampaignBehaviorBase
     {
         messenger.PartyBelongedTo.MemberRoster.AddToCounts(messenger.CharacterObject, -1);
         
-        MobileParty mobileParty =
-            MobileParty.CreateParty("messenger", new MessengerPartyComponent(messenger, messenger, receiver));
+        MobileParty mobileParty = MessengerPartyComponent.InitializeParty(messenger, receiver);
         TeleportHeroAction.ApplyImmediateTeleportToPartyAsPartyLeader(messenger, mobileParty);
-        
-        mobileParty.SetPartyUsedByQuest(true);
-        Campaign.Current.VisualTrackerManager.RegisterObject(mobileParty);
-        
         mobileParty.Position2D = MobileParty.MainParty.Position2D;
         
         _messengerParties.Add(mobileParty);
@@ -278,10 +273,10 @@ public class MessengerBehavior : CampaignBehaviorBase
             _messengerParties.Remove(party);
         }
     }
-    
+
     public override void SyncData(IDataStore dataStore)
     {
-        
+        dataStore.SyncData("_messengerParties", ref _messengerParties);
     }
     
     public class MessengerPartyComponent : LordPartyComponent
@@ -292,9 +287,23 @@ public class MessengerBehavior : CampaignBehaviorBase
         public MessengerObjective Objective = MessengerObjective.Sending;
         [SaveableField(2)]
         public CampaignTime StartedTime;
+        
         protected internal MessengerPartyComponent(Hero owner, Hero leader, Hero targetHero) : base(owner, leader)
         {
             TargetHero = targetHero;
+        }
+
+        public static MobileParty InitializeParty(Hero messenger, Hero targetHero)
+        {
+            MobileParty mobileParty =
+                MobileParty.CreateParty("messenger_party" + messenger.StringId, new MessengerPartyComponent(messenger, messenger, targetHero));
+            
+            mobileParty.SetPartyUsedByQuest(true);
+            mobileParty.Party.SetVisualAsDirty();
+            PartyVisualManager.Current.GetVisualOfParty(mobileParty.Party).ValidateIsDirty(0,0);
+            mobileParty.ActualClan = Clan.PlayerClan;
+
+            return mobileParty;
         }
 
         protected override void OnInitialize()

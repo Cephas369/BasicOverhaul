@@ -75,6 +75,10 @@ namespace BasicOverhaul
         [SettingPropertyGroup("{=general}General", GroupOrder = 1)]
         [SettingPropertyBool("{=bo_config_title.24}Disable relationship losses on executions", RequireRestart = false, Order = 9)]
         public bool DisableExecutionRelationPenalty { get; set; } = true;
+        
+        [SettingPropertyGroup("{=general}General", GroupOrder = 1)]
+        [SettingPropertyBool("{=bo_config_title.25}Enable mod dialogs", RequireRestart = false, Order = 10)]
+        public bool EnableDialogs { get; set; } = true;
 
         [SettingPropertyGroup("{=in_battle}In Battle", GroupOrder = 2)]
         [SettingPropertyBool("{=bo_config_title.8}Disable attack collisions for allies", Order = 1, RequireRestart = false)]

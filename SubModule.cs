@@ -144,7 +144,9 @@ namespace BasicOverhaul
             if(gameStarterObject is CampaignGameStarter campaignGameStarter)
             {
                 campaignGameStarter.AddBehavior(new MiscBehavior());
-                campaignGameStarter.AddBehavior(new MessengerBehavior());
+                
+                if(BasicOverhaulGlobalConfig.Instance?.EnableDialogs == true)
+                    campaignGameStarter.AddBehavior(new MessengerBehavior());
                 
                 if(BasicOverhaulGlobalConfig.Instance?.EnableDeserterParties == true)
                     campaignGameStarter.AddBehavior(new DesertionBehavior());
@@ -223,6 +225,7 @@ namespace BasicOverhaul
             ConstructContainerDefinition(typeof(Dictionary<MobileParty, Settlement>));
             ConstructContainerDefinition(typeof(Dictionary<string, TownSlaveData>));
             ConstructContainerDefinition(typeof(Dictionary<Settlement, CampaignTime>));
+            ConstructContainerDefinition(typeof(List<MobileParty>));
         }
     }
 }
