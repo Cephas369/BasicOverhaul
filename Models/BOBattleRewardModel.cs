@@ -1,4 +1,6 @@
-﻿using TaleWorlds.CampaignSystem;
+﻿using HarmonyLib;
+using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Inventory;
 using TaleWorlds.CampaignSystem.Party;
@@ -6,24 +8,27 @@ using TaleWorlds.CampaignSystem.ViewModelCollection.Inventory;
 
 namespace BasicOverhaul.Models;
 
+[HarmonyPatch(typeof(ChangeClanInfluenceAction), "ApplyInternal")]
+public static class ChangeClanInfluenceActionPatch
+{
+    public static void Prefix(Clan clan, ref float amount)
+    {
+        if (BasicOverhaulCampaignConfig.Instance?.InfluenceGainMultiplier > 0 && amount > 0)
+            amount *= BasicOverhaulCampaignConfig.Instance.InfluenceGainMultiplier;
+    }
+}
+
+[HarmonyPatch(typeof(GainRenownAction), "ApplyInternal")]
+public static class GainRenownActionPatch
+{
+    public static void Prefix(Hero hero, ref float gainedRenown, bool doNotNotify)
+    {
+        if (BasicOverhaulCampaignConfig.Instance?.RenownGainMultiplier > 0 && gainedRenown > 0)
+            gainedRenown *= BasicOverhaulCampaignConfig.Instance.RenownGainMultiplier;
+    }
+}
 internal class BOBattleRewardModel : DefaultBattleRewardModel
 {
-    public override ExplainedNumber CalculateRenownGain(PartyBase party, float renownValueOfBattle,
-        float contributionShare)
-    {
-        ExplainedNumber baseNumber = base.CalculateRenownGain(party, renownValueOfBattle, contributionShare);
-        if (BasicOverhaulCampaignConfig.Instance?.BattleRenownGainMultiplier > 0)
-            baseNumber.AddFactor(BasicOverhaulCampaignConfig.Instance.BattleRenownGainMultiplier);
-        return baseNumber;
-    }
-    public override ExplainedNumber CalculateInfluenceGain(PartyBase party, float influenceValueOfBattle,
-        float contributionShare)
-    {
-        ExplainedNumber baseNumber = base.CalculateInfluenceGain(party, influenceValueOfBattle, contributionShare);
-        if (BasicOverhaulCampaignConfig.Instance?.BattleInfluenceGainMultiplier > 0)
-            baseNumber.AddFactor(BasicOverhaulCampaignConfig.Instance.BattleInfluenceGainMultiplier);
-        return baseNumber;
-    }
     public override ExplainedNumber CalculateMoraleGainVictory(PartyBase party, float renownValueOfBattle,
         float contributionShare)
     {

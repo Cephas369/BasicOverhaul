@@ -78,7 +78,7 @@ public static class RandomBodiesHelper
     
     public static void GetRandomBody(ref BodyProperties bodyProperties, BasicCharacterObject characterObject)
     {
-        if (BasicOverhaulGlobalConfig.Instance?.EnableRandomHumanSizes == true && !characterObject.IsHero)
+        if (Mission.Current != null && BasicOverhaulGlobalConfig.Instance?.EnableRandomHumanSizes == true && !characterObject.IsHero)
         {
             DynamicBodyProperties dynamicBodyProperties = bodyProperties.DynamicProperties;
             dynamicBodyProperties.Weight = GetRandomWeight();

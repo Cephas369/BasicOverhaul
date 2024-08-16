@@ -60,8 +60,8 @@
     <string id="bo_campaign_config_desc.1" text="OBS: Colocar um valor alto causará lag no jogo. Deixe 0 para a chance padrão do jogo." />
     <string id="bo_campaign_config_title.2" text="Chance Global de Saque" />
     <string id="bo_campaign_config_desc.2" text="Esta é a quantidade de itens que podem ser saqueados de cada vítima inimiga pós batalha. Deixe 0 para o número do jogo padrão." />
-    <string id="bo_campaign_config_title.3" text="Multiplicador de Renome em Batalha" />
-    <string id="bo_campaign_config_title.4" text="Multiplicador de Influência em Batalha" />
+    <string id="bo_campaign_config_title.3" text="Multiplicador de ganho de renome" />
+    <string id="bo_campaign_config_title.4" text="Multiplicador de ganho de influência" />
     <string id="bo_campaign_config_title.5" text="Multiplicador de Moral em Batalha" />
     <string id="bo_campaign_config_title.6" text="Multiplicador de Recrutamento para Grupos" />
     <string id="bo_campaign_config_desc.6" text="Aumenta a quantidade que grupos podem recrutar de assentamentos e produção de voluntários. Deixe 0 para a chance padrão do jogo." />

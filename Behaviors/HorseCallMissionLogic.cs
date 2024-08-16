@@ -59,11 +59,11 @@ internal class HorseCallMissionLogic : MissionLogic
 
     private void CallHorse()
     {
-        if (Agent.Main.MountAgent?.Health < 1)
+        if (Agent.Main?.MountAgent?.Health < 1)
             InformationManager.DisplayMessage(new InformationMessage(new TextObject("{=horse_call_warning.2}Your horse has died.").ToString()));
         else
         {
-            if (Agent.Main.HasMount)
+            if (Agent.Main?.HasMount == true)
                 InformationManager.DisplayMessage(new InformationMessage(new TextObject("{=horse_call_warning.1}You're already riding!").ToString()));
             else
             {
