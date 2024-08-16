@@ -16,8 +16,8 @@ public class ClanVariablesCampaignBehaviorPatch
 {
     public static bool Prefix(Clan clan)
     {
-        if (BasicOverhaulGlobalConfig.Instance?.EnableDeserterParties == true && clan.StringId=="deserters")
-            return false;
+        /*if (BasicOverhaulGlobalConfig.Instance?.EnableDeserterParties == true && clan.StringId=="deserters")
+            return false;*/
         return true;
     }
 }

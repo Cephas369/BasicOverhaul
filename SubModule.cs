@@ -171,6 +171,7 @@ namespace BasicOverhaul
                 campaignGameStarter.AddModel(new BOVolunteerModel());
                 campaignGameStarter.AddModel(new BOAgentStatCalculateModel());
                 campaignGameStarter.AddModel(new BOWorkshopModel());
+                campaignGameStarter.AddModel(new BOExecutionRelationModel());
             }
             else
             {
