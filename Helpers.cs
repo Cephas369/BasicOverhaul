@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
+using TaleWorlds.Core;
 using TaleWorlds.Engine;
 using TaleWorlds.Localization;
 
@@ -19,6 +20,11 @@ public static class Helpers
         {"cheat_desc.13", () => MissionOptions.IsPlayerDamageOp.ToString().ToLower()},
         {"cheat_desc.17", () => NativeConfig.CheatMode.ToString().ToLower()},
     };
+
+    public static TBaseModel GetExistingModel<TBaseModel>(this IGameStarter campaignGameStarter) where TBaseModel : GameModel
+    {
+        return (TBaseModel)campaignGameStarter.Models.Last(model => model.GetType().IsSubclassOf(typeof(TBaseModel)));
+    }
 }
 public class BasicOption : Attribute
 {

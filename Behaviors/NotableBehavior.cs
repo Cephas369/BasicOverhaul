@@ -1,6 +1,5 @@
 ﻿using Helpers;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Settlements;
 
 namespace BasicOverhaul.Behaviors
@@ -23,11 +22,5 @@ namespace BasicOverhaul.Behaviors
         public override void SyncData(IDataStore dataStore)
         {
         }
-    }
-
-    internal class BONotableSpawnModel : DefaultNotableSpawnModel
-    {
-        public override int GetTargetNotableCountForSettlement(Settlement settlement, Occupation occupation) =>
-            settlement.IsCastle && occupation == Occupation.Headman ? 1 : base.GetTargetNotableCountForSettlement(settlement, occupation);
     }
 }

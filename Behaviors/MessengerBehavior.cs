@@ -224,7 +224,7 @@ public class MessengerBehavior : CampaignBehaviorBase
         {
             if (messengerComponent.Objective == MessengerObjective.Sending)
             {
-                if (messengerComponent.TargetHero.IsDead || messengerComponent.StartedTime.ElapsedDaysUntilNow > MaxDeliveryDays)
+                if (messengerComponent.TargetHero == null || messengerComponent.TargetHero.IsDead || messengerComponent.StartedTime.ElapsedDaysUntilNow > MaxDeliveryDays)
                 {
                     messengerComponent.Objective = MessengerObjective.ReturningFailed;
                     DecideMessengerDestination(MobileParty.MainParty);

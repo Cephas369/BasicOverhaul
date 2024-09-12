@@ -1,5 +1,6 @@
 ﻿using BasicOverhaul.Behaviors;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Localization;
@@ -8,10 +9,15 @@ namespace BasicOverhaul.Models;
 
 internal class BOSettlementProsperityModel : DefaultSettlementProsperityModel
 {
-    
+    private SettlementProsperityModel _previousModel;
+
+    public BOSettlementProsperityModel(SettlementProsperityModel previousModel)
+    {
+        _previousModel = previousModel;
+    }
     public override ExplainedNumber CalculateProsperityChange(Town fortification, bool includeDescriptions = false)
     {
-        ExplainedNumber baseNumber = base.CalculateProsperityChange(fortification, includeDescriptions);
+        ExplainedNumber baseNumber = _previousModel.CalculateProsperityChange(fortification, includeDescriptions);
 
         if (BasicOverhaulGlobalConfig.Instance?.EnableSlaveSystem == true)
         {

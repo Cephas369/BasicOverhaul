@@ -8,6 +8,7 @@ using BasicOverhaul.Models;
 using BasicOverhaul.Patches;
 using SandBox.Tournaments.MissionLogics;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
@@ -154,30 +155,30 @@ namespace BasicOverhaul
                 if (BasicOverhaulGlobalConfig.Instance?.EnableSlaveSystem == true)
                 {
                     campaignGameStarter.AddBehavior(new SlaveBehavior());
-                    campaignGameStarter.AddModel(new BOClanFinanceModel());
-                    campaignGameStarter.AddModel(new BOBuildingConstructionModel());
+                    campaignGameStarter.AddModel(new BOClanFinanceModel(campaignGameStarter.GetExistingModel<ClanFinanceModel>()));
+                    campaignGameStarter.AddModel(new BOBuildingConstructionModel(campaignGameStarter.GetExistingModel<BuildingConstructionModel>()));
                     
                 }
 
                 if (BasicOverhaulGlobalConfig.Instance?.EnableGovernorNotables == true)
                 {
                     campaignGameStarter.AddBehavior(new NotableBehavior());
-                    campaignGameStarter.AddModel(new BONotableSpawnModel());
+                    campaignGameStarter.AddModel(new BONotableSpawnModel(campaignGameStarter.GetExistingModel<NotableSpawnModel>()));
                 }
                 
-                campaignGameStarter.AddModel(new BOSettlementProsperityModel());
-                campaignGameStarter.AddModel(new BOPartyModel());
-                campaignGameStarter.AddModel(new BOBattleRewardModel());
-                campaignGameStarter.AddModel(new BOVolunteerModel());
-                campaignGameStarter.AddModel(new BOAgentStatCalculateModel());
-                campaignGameStarter.AddModel(new BOWorkshopModel());
-                campaignGameStarter.AddModel(new BOExecutionRelationModel());
+                campaignGameStarter.AddModel(new BOSettlementProsperityModel(campaignGameStarter.GetExistingModel<SettlementProsperityModel>()));
+                campaignGameStarter.AddModel(new BOPartySizeLimitModel(campaignGameStarter.GetExistingModel<PartySizeLimitModel>()));
+                campaignGameStarter.AddModel(new BOBattleRewardModel(campaignGameStarter.GetExistingModel<BattleRewardModel>()));
+                campaignGameStarter.AddModel(new BOVolunteerModel(campaignGameStarter.GetExistingModel<VolunteerModel>()));
+                campaignGameStarter.AddModel(new BOAgentStatCalculateModel(campaignGameStarter.GetExistingModel<AgentStatCalculateModel>()));
+                campaignGameStarter.AddModel(new BOWorkshopModel(campaignGameStarter.GetExistingModel<WorkshopModel>()));
+                campaignGameStarter.AddModel(new BOExecutionRelationModel(campaignGameStarter.GetExistingModel<ExecutionRelationModel>()));
             }
             else
             {
                 try
                 {
-                    gameStarterObject.AddModel(new BOCustomAgentStatCalculateModel());
+                    gameStarterObject.AddModel(new BOCustomAgentStatCalculateModel(gameStarterObject.GetExistingModel<AgentStatCalculateModel>()));
                 }
                 catch (Exception){}
             }
