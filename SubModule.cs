@@ -178,9 +178,14 @@ namespace BasicOverhaul
             {
                 try
                 {
-                    gameStarterObject.AddModel(new BOCustomAgentStatCalculateModel(gameStarterObject.GetExistingModel<AgentStatCalculateModel>()));
+                    gameStarterObject.AddModel(
+                        new BOCustomAgentStatCalculateModel(
+                            gameStarterObject.GetExistingModel<AgentStatCalculateModel>()));
                 }
-                catch (Exception){}
+                catch (Exception)
+                {
+                    InformationManager.DisplayMessage(new InformationMessage("Basic Overhaul: Error applying models on custom battle", Colors.Red));
+                }
             }
 
             InitializeCheats();

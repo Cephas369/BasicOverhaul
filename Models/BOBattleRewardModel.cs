@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
+using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Inventory;
 using TaleWorlds.CampaignSystem.Party;
@@ -29,10 +30,16 @@ public static class GainRenownActionPatch
 }
 internal class BOBattleRewardModel : DefaultBattleRewardModel
 {
+    private BattleRewardModel _previousModel;
+
+    public BOBattleRewardModel(BattleRewardModel previousModel)
+    {
+        _previousModel = previousModel;
+    }
     public override ExplainedNumber CalculateMoraleGainVictory(PartyBase party, float renownValueOfBattle,
         float contributionShare)
     {
-        ExplainedNumber baseNumber = base.CalculateMoraleGainVictory(party, renownValueOfBattle, contributionShare);
+        ExplainedNumber baseNumber = _previousModel.CalculateMoraleGainVictory(party, renownValueOfBattle, contributionShare);
         if(BasicOverhaulCampaignConfig.Instance?.BattleMoraleGainMultiplier > 0)
             baseNumber.AddFactor((float)(BasicOverhaulCampaignConfig.Instance.BattleMoraleGainMultiplier));
         return baseNumber;

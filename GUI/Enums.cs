@@ -5,7 +5,8 @@ public enum FilterType
     Culture,
     Class,
     Tier,
-    Type
+    Type,
+    Query
 }
 
 public enum Side

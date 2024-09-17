@@ -36,7 +36,8 @@ namespace BasicOverhaul.GUI
     {
       { FilterType.Tier, null },
       { FilterType.Type, null },
-      { FilterType.Culture, null }
+      { FilterType.Culture, null },
+      { FilterType.Query, null }
     };
     public static BOInventoryVM? Instance { get; private set; }
     
@@ -77,7 +78,8 @@ namespace BasicOverhaul.GUI
       {
         { FilterType.Tier, null },
         { FilterType.Type, null },
-        { FilterType.Culture , null }
+        { FilterType.Culture, null },
+        { FilterType.Query, null },
       };
       _dataSources = null;
     }
@@ -137,6 +139,49 @@ namespace BasicOverhaul.GUI
         }
       }
 
+      foreach (var method in _filterMethods)
+        if(method.Value != null)
+          method.Value.DynamicInvoke();
+
+      RefreshValues();
+    }
+
+    public override void RefreshValues()
+    {
+      base.RefreshValues();
+      ButtonOkLabel = new TextObject("{=bo_search}Search").ToString();
+    }
+
+    private void ExecuteSearchActionLeft() => ShowSearchInquiry(Side.Left);
+    private void ExecuteSearchActionRight() => ShowSearchInquiry(Side.Right);
+
+    private void ShowSearchInquiry(Side side)
+    {
+      InformationManager.ShowTextInquiry(new TextInquiryData(new TextObject("{=bo_search_title}Search item").ToString(), 
+      new TextObject("{=bo_search_desc}Leave empty to reset the query").ToString(), true, false, 
+      new TextObject("{=bo_search}Search").ToString(), null, query => FilterByQuery(query, side), null), true);
+    }
+
+    private void FilterByQuery(string query, Side side)
+    {
+      Reset(side);
+      if (query == null || query.Length < 1)
+      {
+        _filterMethods[FilterType.Query] = null;
+      }
+      else
+      {
+        MBBindingList<SPItemVM> items = GetItemListBySide(side);
+        _filterMethods[FilterType.Query] = () =>
+        {
+          for (int i = items.Count - 1; i >= 0; i--)
+          {
+            if (items[i].ItemRosterElement.EquipmentElement.Item?.Name.ToString().ToLower().Contains(query.ToLower()) == false)
+              items[i].IsFiltered = true;
+          }
+        };
+      }
+      
       foreach (var method in _filterMethods)
         if(method.Value != null)
           method.Value.DynamicInvoke();
@@ -251,6 +296,22 @@ namespace BasicOverhaul.GUI
         if (value == _dataSources[Side.Right][FilterType.Culture])
           return;
         _dataSources[Side.Right][FilterType.Culture] = value;
+        OnPropertyChangedWithValue(value);
+      }
+    }
+    
+    private string _buttonOkLabel;
+    
+    [DataSourceProperty]
+    public string ButtonOkLabel
+    {
+      get => _buttonOkLabel;
+      set
+      {
+        if (value == _buttonOkLabel) 
+          return;
+        
+        _buttonOkLabel = value;
         OnPropertyChangedWithValue(value);
       }
     }

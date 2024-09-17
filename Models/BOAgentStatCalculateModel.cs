@@ -43,18 +43,30 @@ public static class BasicStatCalculateModel
 }
 internal class BOAgentStatCalculateModel : SandboxAgentStatCalculateModel
 {
+    private AgentStatCalculateModel _previousModel;
+
+    public BOAgentStatCalculateModel(AgentStatCalculateModel previousModel)
+    {
+        _previousModel = previousModel;
+    }
     public override void UpdateAgentStats(Agent agent, AgentDrivenProperties agentDrivenProperties)
     {
-        base.UpdateAgentStats(agent, agentDrivenProperties);
+        _previousModel.UpdateAgentStats(agent, agentDrivenProperties);
         BasicStatCalculateModel.ModifyAgentProperties(agent);
     }
 }
 
 internal class BOCustomAgentStatCalculateModel : CustomBattleAgentStatCalculateModel
 {
+    private AgentStatCalculateModel _previousModel;
+
+    public BOCustomAgentStatCalculateModel(AgentStatCalculateModel previousModel)
+    {
+        _previousModel = previousModel;
+    }
     public override void UpdateAgentStats(Agent agent, AgentDrivenProperties agentDrivenProperties)
     {
-        base.UpdateAgentStats(agent, agentDrivenProperties);
+        _previousModel.UpdateAgentStats(agent, agentDrivenProperties);
         BasicStatCalculateModel.ModifyAgentProperties(agent);
     }
 }

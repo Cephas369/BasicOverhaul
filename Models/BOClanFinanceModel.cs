@@ -2,6 +2,7 @@
 using System.Linq;
 using BasicOverhaul.Behaviors;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Localization;
@@ -10,10 +11,16 @@ namespace BasicOverhaul.Models;
 
 internal class BOClanFinanceModel : DefaultClanFinanceModel
 {
+    private ClanFinanceModel _previousModel;
+
+    public BOClanFinanceModel(ClanFinanceModel previousModel)
+    {
+        _previousModel = previousModel;
+    }
     public override ExplainedNumber CalculateClanGoldChange(Clan clan, bool includeDescriptions = false,
         bool applyWithdrawals = false, bool includeDetails = false)
     {
-        ExplainedNumber baseNumber = base.CalculateClanGoldChange(clan, includeDescriptions, applyWithdrawals, includeDetails);
+        ExplainedNumber baseNumber = _previousModel.CalculateClanGoldChange(clan, includeDescriptions, applyWithdrawals, includeDetails);
 
         
         if (clan == Clan.PlayerClan)
