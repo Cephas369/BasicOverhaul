@@ -24,5 +24,9 @@
 	  <string id="messenger_left_info" text="O mensageiro deixou seu grupo." />
 	  <string id="messenger_reached_text" text="{MESSENGER.NAME} chegou até {RECEIVER.NAME}" />
 	  <string id="message_delivered" text="Mensagem entregue" />
+
+	  <string id="search" text="Pesquisa" />
+	  <string id="bo_search_title" text="Pesquisar item" />
+	  <string id="bo_search_desc" text="Deixe vazio pra resetar a pesquisa" />
   </strings>
 </base>

@@ -24,5 +24,9 @@
 	  <string id="messenger_left_info" text="The messenger left your party." />
 	  <string id="messenger_reached_text" text="{MESSENGER.NAME} reached {RECEIVER.NAME}" />
 	  <string id="message_delivered" text="Message delivered" />
+
+	  <string id="search" text="Search" />
+	  <string id="bo_search_title" text="Search item" />
+	  <string id="bo_search_desc" text="Leave empty to reset the query" />
   </strings>
 </base>

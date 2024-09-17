@@ -149,7 +149,7 @@ namespace BasicOverhaul.GUI
     public override void RefreshValues()
     {
       base.RefreshValues();
-      ButtonOkLabel = new TextObject("{=bo_search}Search").ToString();
+      ButtonOkLabel = new TextObject("{=search}Search").ToString();
     }
 
     private void ExecuteSearchActionLeft() => ShowSearchInquiry(Side.Left);
@@ -159,7 +159,7 @@ namespace BasicOverhaul.GUI
     {
       InformationManager.ShowTextInquiry(new TextInquiryData(new TextObject("{=bo_search_title}Search item").ToString(), 
       new TextObject("{=bo_search_desc}Leave empty to reset the query").ToString(), true, false, 
-      new TextObject("{=bo_search}Search").ToString(), null, query => FilterByQuery(query, side), null), true);
+      new TextObject("{=search}Search").ToString(), null, query => FilterByQuery(query, side), null), true);
     }
 
     private void FilterByQuery(string query, Side side)
