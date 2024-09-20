@@ -30,6 +30,13 @@ public static class NativeConfigPatch
 }
 internal class MiscBehavior : CampaignBehaviorBase
 {
+    public bool DeserterConflictAppeared;
+    public static MiscBehavior? Instance { get; private set; }
+
+    public MiscBehavior()
+    {
+        Instance = this;
+    }
     public override void RegisterEvents()
     {
         CampaignEvents.OnGameLoadFinishedEvent.AddNonSerializedListener(this, OnGameLoadFinished);
@@ -42,7 +49,7 @@ internal class MiscBehavior : CampaignBehaviorBase
     
     public override void SyncData(IDataStore dataStore)
     {
-        
+        dataStore.SyncData("_deserterConflictAppeared", ref DeserterConflictAppeared);
     }
 }
 

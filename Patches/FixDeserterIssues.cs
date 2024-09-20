@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -39,9 +40,10 @@ public static class LoadXMLPatch
     }
 }
 
-[HarmonyPatch(typeof(BanditsCampaignBehavior), "SpawnAPartyInFaction")]
+[HarmonyPatch(typeof(BanditsCampaignBehavior))]
 public static class BanditsCampaignBehaviorPatch
 {
+    [HarmonyPatch("SpawnAPartyInFaction")]
     public static bool Prefix(Clan selectedFaction)
     {
         if (selectedFaction == DesertionBehavior.DesertersClan)
@@ -56,6 +58,24 @@ public static class BanditsCampaignBehaviorPatch
 [HarmonyPatch(typeof(BanditPartyComponent))]
 public static class BanditPartyComponentPatch
 {
+    private static void OnConflictFound()
+    {
+        if (MiscBehavior.Instance?.DeserterConflictAppeared == true) 
+            return;
+        
+        string stackNames = "";
+        for (int i = 0; i < 3; i++)
+        {
+            stackNames += new StackFrame(i)?.GetMethod()?.Name + "\n";
+        }
+            
+        InformationManager.ShowInquiry(new InquiryData("WARNING", 
+            "Another mod is conflicting with deserters from Basic Overhaul, this can lead to small bugs in the game. Stacktrace:\n" + stackNames, true, false, 
+            GameTexts.FindText("str_done").ToString(), null, null, null), true);
+            
+        InformationManager.DisplayMessage(new InformationMessage("Attention: deserters from Basic Overhaul is conflicting with another mod", Colors.Red));
+        MiscBehavior.Instance.DeserterConflictAppeared = true;
+    }
     [HarmonyPatch("CreateBanditParty")]
     public static void Postfix(
         string stringId,
@@ -64,10 +84,10 @@ public static class BanditPartyComponentPatch
         bool isBossParty,
         ref MobileParty __result)
     {
-        if (clan == DesertionBehavior.DesertersClan)
+        if (clan == DesertionBehavior.DesertersClan && MiscBehavior.Instance?.DeserterConflictAppeared == false)
         {
             __result = MobileParty.AllBanditParties.GetRandomElement();
-            InformationManager.DisplayMessage(new InformationMessage("Attention: deserters from Basic Overhaul is conflicting with another mod", Colors.Red));
+            OnConflictFound();
         }
     }
     
@@ -79,10 +99,10 @@ public static class BanditPartyComponentPatch
         bool isBossParty,
         ref MobileParty __result)
     {
-        if (clan == DesertionBehavior.DesertersClan)
+        if (clan == DesertionBehavior.DesertersClan && MiscBehavior.Instance?.DeserterConflictAppeared == false)
         {
             __result = MobileParty.AllBanditParties.GetRandomElement();
-            InformationManager.DisplayMessage(new InformationMessage("Attention: deserters from Basic Overhaul is conflicting with another mod", Colors.Red));
+            OnConflictFound();
         }
     }
 }
