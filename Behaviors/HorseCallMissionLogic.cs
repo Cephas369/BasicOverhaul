@@ -13,47 +13,48 @@ namespace BasicOverhaul.Behaviors;
 internal class HorseCallMissionLogic : MissionLogic
 {
     private readonly Timer keyPressTimer = new(Time.ApplicationTime, 1f, false);
-    private Agent mainHorse;
-    private readonly InputKey _callHorseKey = SubModule.PossibleKeys[BasicOverhaulGlobalConfig.Instance?.CallHorseKey?.SelectedValue ?? "X"];
+    private Agent? _mainHorse;
+    
+    public static HorseCallMissionLogic? Instance { get; private set; }
+    public HorseCallMissionLogic()
+    {
+        Instance = this;
+    }
     public override void OnAgentMount(Agent agent)
     {
         base.OnAgentMount(agent);
         if (agent.IsMainAgent)
-            mainHorse = agent.MountAgent;
+            _mainHorse = agent.MountAgent;
     }
 
     public override void OnAgentBuild(Agent agent, Banner banner)
     {
         base.OnAgentBuild(agent, banner);
         if (agent.IsMainAgent)
-            mainHorse = agent.MountAgent;
+            _mainHorse = agent.MountAgent;
     }
 
     public override void OnAgentDeleted(Agent affectedAgent)
     {
         base.OnAgentDeleted(affectedAgent);
-        if (affectedAgent == mainHorse)
-            mainHorse = null;
+        if (affectedAgent == _mainHorse)
+            _mainHorse = null;
     }
 
-    public override void OnMissionTick(float dt)
+    public void OnCallHorse()
     {
-        base.OnMissionTick(dt);
-        if (mainHorse == null || BasicOverhaulGlobalConfig.Instance.HorseCallSkill < 0)
+        if (_mainHorse == null || BasicOverhaulGlobalConfig.Instance.HorseCallSkill < 0)
             return;
-
-        if (Input.IsKeyReleased(_callHorseKey))    
+        
+        if (Agent.Main?.Controller == Agent.ControllerType.Player && Agent.Main.Character.GetSkillValue(DefaultSkills.Riding) < BasicOverhaulGlobalConfig.Instance.HorseCallSkill)
         {
-            if (Agent.Main?.Controller == Agent.ControllerType.Player && Agent.Main.Character.GetSkillValue(DefaultSkills.Riding) < BasicOverhaulGlobalConfig.Instance.HorseCallSkill)
-            {
-                InformationManager.DisplayMessage(new InformationMessage(new TextObject("{=horse_call_warning.3}You don't have the required skill to call your horse.").ToString()));
-                return;
-            }
-            if (keyPressTimer.Check(Time.ApplicationTime))
-            {
-                CallHorse();
-                keyPressTimer.Reset(Time.ApplicationTime, 5f);
-            }
+            InformationManager.DisplayMessage(new InformationMessage(new TextObject("{=horse_call_warning.3}You don't have the required skill to call your horse.").ToString()));
+            return;
+        }
+        if (keyPressTimer.Check(Time.ApplicationTime))
+        {
+            CallHorse();
+            keyPressTimer.Reset(Time.ApplicationTime, 5f);
         }
     }
 
@@ -67,10 +68,10 @@ internal class HorseCallMissionLogic : MissionLogic
                 InformationManager.DisplayMessage(new InformationMessage(new TextObject("{=horse_call_warning.1}You're already riding!").ToString()));
             else
             {
-                Mission.MakeSound(SoundEvent.GetEventIdFromString("event:/voice/combat/whistle"), Agent.Main.Position, false, false, Agent.Main.Index, mainHorse.Index);
+                Mission.MakeSound(SoundEvent.GetEventIdFromString("event:/voice/combat/whistle"), Agent.Main.Position, false, false, Agent.Main.Index, _mainHorse.Index);
                 //InformationManager.DisplayMessage(new InformationMessage(new TextObject("{=mount_heard_call}Your mount has heard your call...").ToString(), Colors.Blue));
                 WorldPosition worldPosition = Agent.Main.GetWorldPosition();
-                mainHorse.SetScriptedPosition(ref worldPosition, false);
+                _mainHorse.SetScriptedPosition(ref worldPosition, false);
             }
         }
     }

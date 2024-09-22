@@ -1,20 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using BasicOverhaul.Models;
+﻿using BasicOverhaul.Models;
 using HarmonyLib;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.Actions;
-using TaleWorlds.CampaignSystem.Party;
-using TaleWorlds.CampaignSystem.Party.PartyComponents;
-using TaleWorlds.CampaignSystem.Roster;
-using TaleWorlds.CampaignSystem.Settlements;
-using TaleWorlds.Core;
 using TaleWorlds.Engine;
-using TaleWorlds.InputSystem;
-using TaleWorlds.Library;
-using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 
 namespace BasicOverhaul.Behaviors;
@@ -55,7 +42,6 @@ internal class MiscBehavior : CampaignBehaviorBase
 
 internal class MiscMissionLogic : MissionLogic
 {
-    private InputKey _fastForwardKey = InputKey.Numpad9;
     public override void OnAgentHit(Agent affectedAgent, Agent affectorAgent, in MissionWeapon affectorWeapon, in Blow blow,
         in AttackCollisionData attackCollisionData)
     {
@@ -69,21 +55,6 @@ internal class MiscMissionLogic : MissionLogic
     public override void OnCreated()
     {
         base.OnCreated();
-        _fastForwardKey = (InputKey)Enum.Parse(typeof(InputKey),
-            BasicOverhaulGlobalConfig.Instance?.FastForwardMissionKey?.SelectedValue ?? "Numpad9");
-        
         BasicStatCalculateModel.ModifiedAgents.Clear();
-    }
-
-    public override void OnMissionTick(float dt)
-    {
-        base.OnMissionTick(dt);
-        if (Input.IsKeyReleased(_fastForwardKey))
-        {
-            if (Mission.Current == null)
-                return;
-            
-            Mission.Current.SetFastForwardingFromUI(!Mission.Current.IsFastForward);
-        }
     }
 }

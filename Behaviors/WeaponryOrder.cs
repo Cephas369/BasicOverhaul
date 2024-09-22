@@ -28,6 +28,13 @@ namespace BasicOverhaul.Behaviors
         private static readonly TextObject Done = GameTexts.FindText("str_done");
         private static readonly TextObject Cancel = GameTexts.FindText("str_cancel");
         
+        public static WeaponryOrderMissionBehavior? Instance { get; private set; }
+
+        internal WeaponryOrderMissionBehavior()
+        {
+            Instance = this;
+        }
+        
         public override MissionBehaviorType BehaviorType => MissionBehaviorType.Other;
 
         private readonly Dictionary<Agent, AgentWeaponryData> _agentsProperties = new();
@@ -36,15 +43,7 @@ namespace BasicOverhaul.Behaviors
 
         private readonly WeaponClass[] _weaponClasses = { WeaponClass.OneHandedAxe, WeaponClass.OneHandedPolearm, WeaponClass.OneHandedSword, WeaponClass.TwoHandedAxe, WeaponClass.TwoHandedMace,
             WeaponClass.TwoHandedPolearm, WeaponClass.TwoHandedSword, WeaponClass.Mace };
-
-        private InputKey _weaponryOrderKey = InputKey.Numpad5;
-
-        public override void OnCreated()
-        {
-            base.OnCreated();
-            _weaponryOrderKey = (InputKey)Enum.Parse(typeof(InputKey),
-                BasicOverhaulGlobalConfig.Instance?.WeaponryOrderKey?.SelectedValue ?? "Numpad5");
-        }
+        
         private void ShowWeaponClassInquiry()
         {
             List<InquiryElement> elements = new List<InquiryElement>();
@@ -57,7 +56,7 @@ namespace BasicOverhaul.Behaviors
                 {
                     WeaponClass selected = (WeaponClass)inquiryElements[0].Identifier;
                     ChangeFormationWeapon(WeaponryOrderTypes.WeaponClass, selected);
-                }, inquiryElements => isInquiryOpen = false));
+                }, inquiryElements => isInquiryOpen = false), true);
         }
         public override void OnAgentBuild(Agent agent, Banner banner)
         {
@@ -86,12 +85,12 @@ namespace BasicOverhaul.Behaviors
                 {
                     DamageTypes selected = (DamageTypes)inquiryElements[0].Identifier;
                     ChangeFormationWeapon(WeaponryOrderTypes.DamageType, default, default, selected);
-                }, inquiryElements=>isInquiryOpen = false));
+                }, inquiryElements=>isInquiryOpen = false), true);
         }
         
-        public override void OnMissionTick(float dt)
+        public void OnWeaponryOrderKeyReleased()
         {
-            if (!isInquiryOpen && Input.IsKeyReleased(_weaponryOrderKey) && _selectedFormations?.Any() == true)
+            if (!isInquiryOpen && _selectedFormations?.Any() == true)
             {
                 List<InquiryElement> elements = new List<InquiryElement>();
 
@@ -117,7 +116,7 @@ namespace BasicOverhaul.Behaviors
                             ChangeFormationWeapon(WeaponryOrderTypes.WeaponType, default, (ItemTypeEnum)selected);
                         else if(selected == 5)
                             ChangeFormationWeapon(WeaponryOrderTypes.DismissOrder);
-                    }, inquiryElements => isInquiryOpen = false));
+                    }, inquiryElements => isInquiryOpen = false), true);
             }
         }
         private void ResetAgentEquipment(Agent agent)
