@@ -38,6 +38,7 @@
     <string id="bo_config_title.11" text="Enable spawn pack animal in battles for accessing inventory" />
     <string id="bo_config_description.11" text="Campaign only." />
     <string id="bo_config_title.12" text="Enable weaponry order" />
+    <string id="bo_config_title.26" text="Enable dropping every weapon on death" />
 
     <!-- Miscellaneous -->
     <string id="bo_config_title.13" text="Disable intro" />

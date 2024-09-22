@@ -1,7 +1,9 @@
 ﻿using BasicOverhaul.Models;
 using HarmonyLib;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.Core;
 using TaleWorlds.Engine;
+using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
 namespace BasicOverhaul.Behaviors;
@@ -51,7 +53,7 @@ internal class MiscMissionLogic : MissionLogic
         else if (MissionOptions.MountInvincible && affectedAgent.IsMount && affectedAgent.RiderAgent?.IsMainAgent == true)
             affectedAgent.Health = affectedAgent.HealthLimit;
     }
-
+    
     public override void OnCreated()
     {
         base.OnCreated();

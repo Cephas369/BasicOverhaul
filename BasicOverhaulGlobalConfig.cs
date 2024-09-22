@@ -107,6 +107,10 @@ namespace BasicOverhaul
         [SettingPropertyGroup("{=in_battle}In Battle", GroupOrder = 2)]
         [SettingPropertyBool("{=bo_config_title.22}Enable random sizes for mounts", HintText = "", Order = 7, RequireRestart = false)]
         public bool EnableRandomMountSizes { get; set; } = true;
+        
+        [SettingPropertyGroup("{=in_battle}In Battle", GroupOrder = 2)]
+        [SettingPropertyBool("{=bo_config_title.22}Enable dropping every weapon on death", HintText = "", Order = 7, RequireRestart = false)]
+        public bool EnableDeathDropEveryWeapon { get; set; } = true;
 
         [SettingPropertyBool("{=bo_config_title.13}Disable intro", Order = 1, RequireRestart = false)]
         [SettingPropertyGroup("{=miscellaneous}Miscellaneous", GroupOrder = 3)]

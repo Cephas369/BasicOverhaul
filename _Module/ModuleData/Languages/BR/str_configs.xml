@@ -36,6 +36,7 @@
     <string id="bo_config_title.11" text="Ativar animal de carga em batalhas para acessar inventário" />
     <string id="bo_config_description.11" text="Apenas na campanha." />
     <string id="bo_config_title.12" text="Ativar ordem de armamento" />
+    <string id="bo_config_title.26" text="Ativar drop de todas as armas ao morrer" />
 
     <!-- Miscellaneous -->
     <string id="bo_config_title.13" text="Desativar vídeo de introdução" />
