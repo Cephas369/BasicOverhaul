@@ -8,10 +8,6 @@ namespace BasicOverhaul.Patches;
 [HarmonyPatch(typeof(Mission), "SpawnWeaponAsDropFromAgentAux")]
 public static class SpawnWeaponAsDropFromAgentAuxPatch
 {
-    private static bool HaveHolster(MissionWeapon missionWeapon) =>
-        missionWeapon.Item.Type == ItemObject.ItemTypeEnum.Arrows ||
-        missionWeapon.Item.Type == ItemObject.ItemTypeEnum.Bolts ||
-        missionWeapon.Item.Type == ItemObject.ItemTypeEnum.Bullets;
     public static void Postfix(
         Agent agent,
         EquipmentIndex equipmentIndex,
@@ -26,7 +22,8 @@ public static class SpawnWeaponAsDropFromAgentAuxPatch
         for (EquipmentIndex index = EquipmentIndex.Weapon0; index <= EquipmentIndex.Weapon3; index++)
         {
             if (index != equipmentIndex && agent.Equipment[index].Item != null)
-                Mission.Current.SpawnWeaponAsDropFromAgentAux(agent, index, ref velocity, ref angularVelocity, agent.Equipment[index].IsAnyAmmo() ? spawnFlags | Mission.WeaponSpawnFlags.WithHolster : spawnFlags, forcedSpawnIndex);
+                Mission.Current.SpawnWeaponAsDropFromAgentAux(agent, index, ref velocity, ref angularVelocity, 
+                    agent.Equipment[index].IsAnyAmmo() && agent.Equipment[index].Item.HolsterMeshName != null ? spawnFlags | Mission.WeaponSpawnFlags.WithHolster : spawnFlags, forcedSpawnIndex);
         }
     }
 }
