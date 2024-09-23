@@ -153,17 +153,16 @@ namespace BasicOverhaul
                             {
                                 if (int.TryParse(s, out int number))
                                 {
-                                    InformationManager.ShowTextInquiry(new TextInquiryData("Ally or Enemy ?", "", true, false, "Spawn",
-                                        "", s =>
+                                    InformationManager.ShowInquiry(new InquiryData("Enemy or ally ?", "", true, true, "Ally",
+                                        "Enemy", () =>
                                         {
-                                            s = s.ToLower();
-                                            if(s == "ally" || s == "enemy")
-                                                for (int i = 0; i < number; i++)
-                                                    SpawnCharacterAgent(characterObject, s == "ally");
-                                            else
-                                                InformationManager.DisplayMessage(new InformationMessage("Value must be 'ally' or 'enemy'."));
-                                            
-                                        }, null), true);
+                                            for (int i = 0; i < number; i++)
+                                                SpawnCharacterAgent(characterObject, true);
+                                        }, () =>
+                                        {
+                                            for (int i = 0; i < number; i++)
+                                                SpawnCharacterAgent(characterObject, false);
+                                        }), true);
                                 }
                             }, null), true);
                     }, null, "", true), true);

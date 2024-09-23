@@ -13,21 +13,42 @@ public static class GetAttackCollisionResultsPatch
         Agent attackerAgent,
         Agent victimAgent,
         GameEntity hitObject,
-        float momentumRemaining,
+        ref float momentumRemaining,
         in MissionWeapon attackerWeapon,
         ref bool crushedThrough,
-        bool cancelDamage,
-        bool crushedThroughWithoutAgentCollision,
+        ref bool cancelDamage,
+        ref bool crushedThroughWithoutAgentCollision,
         ref AttackCollisionData attackCollisionData,
         ref WeaponComponentData shieldOnBack,
         ref CombatLogData combatLog)
     {
-        if (MissionOptions.IsPlayerDamageOp && attackerAgent.IsMainAgent && victimAgent?.IsMainAgent == false)
+        if (MissionOptions.IsPlayerDamageOp && attackerAgent.IsMainAgent)
         {
-            crushedThrough = true;
-            attackCollisionData.InflictedDamage = 1000;
-            combatLog.InflictedDamage = 1000;
-        }   
+            if (victimAgent?.IsMainAgent == false)
+            {
+                crushedThrough = true;
+                if (attackCollisionData.AttackBlockedWithShield)
+                {
+                    attackCollisionData.IsShieldBroken = true;
+                    attackCollisionData.InflictedDamage = victimAgent.WieldedOffhandWeapon.HitPoints + 10;
+                }
+                else
+                    attackCollisionData.InflictedDamage = (int)victimAgent.HealthLimit + 10;
+            
+                combatLog.InflictedDamage = (int)victimAgent.HealthLimit + 10;
+            }
+            else if (victimAgent == null && hitObject != null)
+            {
+                attackCollisionData.InflictedDamage = combatLog.InflictedDamage = 1000;
+            }
+        }
+        else if (MissionOptions.PlayerInvincible && victimAgent?.IsMainAgent == true)
+        {
+            momentumRemaining = 0;
+            cancelDamage = false;
+            attackCollisionData.InflictedDamage = 0;
+            combatLog.InflictedDamage = 0;
+        }
     }
 }
 
