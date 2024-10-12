@@ -13,7 +13,7 @@ public static class ShowItemId
     {
         if (BasicOverhaulGlobalConfig.Instance?.EnableSeeIds == true)
         {
-            __result.Value += $" ({__instance.StringId})";
+            __result = new TextObject(__result.ToString().Replace("=", string.Empty) + $"({__instance.StringId})");
         }
     }
 }

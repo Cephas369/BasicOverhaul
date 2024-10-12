@@ -33,9 +33,9 @@ public static class LoadXMLPatch
     
     public static void Postfix(CampaignGameStarter gameInitializer, GameManagerBase gameManager, bool isSavedCampaign)
     {
-        if (DesertionBehavior.DesertersClan?.IsBanditFaction == false)
+        if (BanditPartyComponentPatch.DesertersClan?.IsBanditFaction == false)
         {
-            IsBanditFaction.SetValue(DesertionBehavior.DesertersClan, true);
+            IsBanditFaction.SetValue(BanditPartyComponentPatch.DesertersClan, true);
         }
     }
 }
@@ -46,7 +46,7 @@ public static class BanditsCampaignBehaviorPatch
     [HarmonyPatch("SpawnAPartyInFaction")]
     public static bool Prefix(Clan selectedFaction)
     {
-        if (selectedFaction == DesertionBehavior.DesertersClan)
+        if (selectedFaction == BanditPartyComponentPatch.DesertersClan)
         {
             return false;
         }
@@ -58,6 +58,7 @@ public static class BanditsCampaignBehaviorPatch
 [HarmonyPatch(typeof(BanditPartyComponent))]
 public static class BanditPartyComponentPatch
 {
+    public static Clan DesertersClan => Clan.FindFirst(x => x.StringId == "deserters");
     private static void OnConflictFound()
     {
         if (MiscBehavior.Instance?.DeserterConflictAppeared == true) 
@@ -84,7 +85,7 @@ public static class BanditPartyComponentPatch
         bool isBossParty,
         ref MobileParty __result)
     {
-        if (clan == DesertionBehavior.DesertersClan && MiscBehavior.Instance?.DeserterConflictAppeared == false)
+        if (clan == BanditPartyComponentPatch.DesertersClan && MiscBehavior.Instance?.DeserterConflictAppeared == false)
         {
             __result = MobileParty.AllBanditParties.GetRandomElement();
             OnConflictFound();
@@ -99,7 +100,7 @@ public static class BanditPartyComponentPatch
         bool isBossParty,
         ref MobileParty __result)
     {
-        if (clan == DesertionBehavior.DesertersClan && MiscBehavior.Instance?.DeserterConflictAppeared == false)
+        if (clan == BanditPartyComponentPatch.DesertersClan && MiscBehavior.Instance?.DeserterConflictAppeared == false)
         {
             __result = MobileParty.AllBanditParties.GetRandomElement();
             OnConflictFound();

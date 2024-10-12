@@ -39,10 +39,11 @@ namespace BasicOverhaul.Behaviors
 
         private readonly Dictionary<Agent, AgentWeaponryData> _agentsProperties = new();
 
-        private static List<Formation>? _selectedFormations;
+        private OrderController _orderController;
 
         private readonly WeaponClass[] _weaponClasses = { WeaponClass.OneHandedAxe, WeaponClass.OneHandedPolearm, WeaponClass.OneHandedSword, WeaponClass.TwoHandedAxe, WeaponClass.TwoHandedMace,
             WeaponClass.TwoHandedPolearm, WeaponClass.TwoHandedSword, WeaponClass.Mace };
+        
         
         private void ShowWeaponClassInquiry()
         {
@@ -73,7 +74,6 @@ namespace BasicOverhaul.Behaviors
         private bool isInquiryOpen = false;
         private void ShowDamageTypeInquiry()
         {
-
             List<InquiryElement> elements = new List<InquiryElement>();
             List<TextObject> damageTypesText = GameTexts.FindAllTextVariations("str_inventory_dmg_type").ToList();
 
@@ -90,34 +90,43 @@ namespace BasicOverhaul.Behaviors
         
         public void OnWeaponryOrderKeyReleased()
         {
-            if (!isInquiryOpen && _selectedFormations?.Any() == true)
+            if (Agent.Main == null || isInquiryOpen)
+                return;
+
+            _orderController = Agent.Main.Team.PlayerOrderController;
+
+            if (_orderController.SelectedFormations?.Any() == false || !Mission.IsOrderMenuOpen)
             {
-                List<InquiryElement> elements = new List<InquiryElement>();
-
-                elements.Add(new InquiryElement(0, WeaponClassesText.ToString(), null));
-                elements.Add(new InquiryElement(1, DamageTypesText.ToString(), null));
-                
-                for (ItemTypeEnum weaponType = ItemTypeEnum.OneHandedWeapon; weaponType <= ItemTypeEnum.Polearm; weaponType++)
-                    elements.Add(new InquiryElement(weaponType, GameTexts.FindText("str_inventory_type_"+(int)weaponType).ToString(), null));
-
-                elements.Add(new InquiryElement(5, DismissOrderText.ToString(), null));
-
-                isInquiryOpen = true;
-                MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData(WeaponryOrderTitle.ToString(), 
-                    new TextObject("{=str_weaponry_order_description_1}Choose which weapon you want to restrict for this formation").ToString(), elements, true, 1, 1, Done.ToString(), Cancel.ToString(),
-                    inquiryElements => 
-                    {
-                        int selected = (int)inquiryElements[0].Identifier;
-                        if(selected == 0)
-                            ShowWeaponClassInquiry();
-                        else if(selected == 1)
-                            ShowDamageTypeInquiry();
-                        else if(selected > 1 && selected < 5)
-                            ChangeFormationWeapon(WeaponryOrderTypes.WeaponType, default, (ItemTypeEnum)selected);
-                        else if(selected == 5)
-                            ChangeFormationWeapon(WeaponryOrderTypes.DismissOrder);
-                    }, inquiryElements => isInquiryOpen = false), true);
+                MBInformationManager.AddQuickInformation(new TextObject("{=no_formations_selected}No formations selected to give order!"));
+                return;
             }
+            
+            List<InquiryElement> elements = new List<InquiryElement>();
+
+            elements.Add(new InquiryElement(0, WeaponClassesText.ToString(), null));
+            elements.Add(new InquiryElement(1, DamageTypesText.ToString(), null));
+            
+            for (ItemTypeEnum weaponType = ItemTypeEnum.OneHandedWeapon; weaponType <= ItemTypeEnum.Polearm; weaponType++)
+                elements.Add(new InquiryElement(weaponType, GameTexts.FindText("str_inventory_type_"+(int)weaponType).ToString(), null));
+
+            elements.Add(new InquiryElement(5, DismissOrderText.ToString(), null));
+
+            isInquiryOpen = true;
+            MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData(WeaponryOrderTitle.ToString(), 
+                new TextObject("{=str_weaponry_order_description_1}Choose which weapon you want to restrict for this formation").ToString(), elements, true, 1, 1, Done.ToString(), Cancel.ToString(),
+                inquiryElements => 
+                {
+                    int selected = (int)inquiryElements[0].Identifier;
+                    if(selected == 0)
+                        ShowWeaponClassInquiry();
+                    else if(selected == 1)
+                        ShowDamageTypeInquiry();
+                    else if(selected > 1 && selected < 5)
+                        ChangeFormationWeapon(WeaponryOrderTypes.WeaponType, default, (ItemTypeEnum)selected);
+                    else if(selected == 5)
+                        ChangeFormationWeapon(WeaponryOrderTypes.DismissOrder);
+                }, inquiryElements => isInquiryOpen = false), true);
+            
         }
         private void ResetAgentEquipment(Agent agent)
         {
@@ -132,7 +141,7 @@ namespace BasicOverhaul.Behaviors
         private bool DoDamageTypeResearch(WeaponComponentData weapon, DamageTypes damageType) => (damageType == DamageTypes.Pierce && weapon.IsPolearm) || weapon.SwingDamageType == damageType;
         private void ChangeFormationWeapon(WeaponryOrderTypes type, WeaponClass weaponClass = WeaponClass.Undefined, ItemTypeEnum itemType = ItemTypeEnum.Invalid, DamageTypes damageType = DamageTypes.Invalid)
         {
-            foreach(Formation formation in _selectedFormations)
+            foreach(Formation formation in _orderController.SelectedFormations)
                 foreach (Agent agent in formation.GetUnitsWithoutDetachedOnes())
                 {
                     if (agent == null || !agent.IsActive() || agent.IsMount || !_agentsProperties.ContainsKey(agent))
@@ -194,17 +203,6 @@ namespace BasicOverhaul.Behaviors
                     }
                 }
             isInquiryOpen = false;
-        }
-
-       
-        [HarmonyPatch(typeof(OrderController), "OnSelectedFormationsCollectionChanged")]
-        private class SelectFormation
-        {
-            [HarmonyPrefix]
-            static void Prefix(OrderController __instance)
-            {
-                _selectedFormations = __instance.SelectedFormations.Where(x => x.PlayerOwner == Main).ToList();
-            }
         }
     }
 
