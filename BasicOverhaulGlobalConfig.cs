@@ -70,7 +70,7 @@ namespace BasicOverhaul
         
         [SettingPropertyGroup("{=general}General", GroupOrder = 1)]
         [SettingPropertyBool("{=bo_config_title.16}Enable limit max skill levels at 300", RequireRestart = false, Order = 8)]
-        public bool EnableLimitSkill { get; set; } = true;
+        public bool EnableLimitSkill { get; set; } = false;
         
         [SettingPropertyGroup("{=general}General", GroupOrder = 1)]
         [SettingPropertyBool("{=bo_config_title.24}Disable relationship losses on executions", RequireRestart = false, Order = 9)]

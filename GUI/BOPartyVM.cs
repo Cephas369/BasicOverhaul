@@ -94,7 +94,7 @@ namespace BasicOverhaul.GUI
                     case FilterType.Culture:
                         string cultureId = (string)keyValuePair.Value;
                         results.Add(keyValuePair.Key, false);
-                        if (partyTroops[index].Character.Culture.StringId == cultureId)
+                        if (partyTroops[index].Character.Culture?.StringId == cultureId)
                             results[keyValuePair.Key] = true;
                         break;
 

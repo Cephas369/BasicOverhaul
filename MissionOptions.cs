@@ -92,11 +92,7 @@ namespace BasicOverhaul
             if (Agent.Main.MountAgent == null)
                 return "You must be mounting a horse!";
 
-            Agent horseAgent = Agent.Main.MountAgent;
-            horseAgent.OnAgentHealthChanged += (agent, health, newHealth) =>
-            {
-                agent.Health = agent.HealthLimit;
-            };
+            MountInvincible = !MountInvincible;
 
             return GameTexts.FindText("str_done").ToString();
         }
