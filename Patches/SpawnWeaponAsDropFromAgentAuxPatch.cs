@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using System;
+using HarmonyLib;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -21,9 +22,14 @@ public static class SpawnWeaponAsDropFromAgentAuxPatch
         
         for (EquipmentIndex index = EquipmentIndex.Weapon0; index <= EquipmentIndex.Weapon3; index++)
         {
-            if (index != equipmentIndex && agent.Equipment[index].Item != null)
-                Mission.Current.SpawnWeaponAsDropFromAgentAux(agent, index, ref velocity, ref angularVelocity, 
-                    agent.Equipment[index].IsAnyAmmo() && agent.Equipment[index].Item.HolsterMeshName != null ? spawnFlags | Mission.WeaponSpawnFlags.WithHolster : spawnFlags, forcedSpawnIndex);
+            try
+            {
+                if (index != equipmentIndex && agent.Equipment[index].Item != null)
+                    Mission.Current.SpawnWeaponAsDropFromAgentAux(agent, index, ref velocity, ref angularVelocity, 
+                        agent.Equipment[index].IsAnyAmmo() && agent.Equipment[index].Item.HolsterMeshName != null ? spawnFlags | Mission.WeaponSpawnFlags.WithHolster : spawnFlags, forcedSpawnIndex);
+            }
+            catch (Exception e)
+            {}
         }
-    }
+    }   
 }

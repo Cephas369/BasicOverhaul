@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Reflection;
 using Bannerlord.ButterLib.HotKeys;
 using BasicOverhaul.Behaviors;
 using BasicOverhaul.Manager;
+using HarmonyLib;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
@@ -10,13 +12,13 @@ namespace BasicOverhaul;
 
 public class BasicOverhaulHotkeyManager : HotKeyBase    
 {
-    private readonly InputKey _defaultKey;
+    private InputKey _defaultKey;
     protected override InputKey DefaultKey => _defaultKey;
 
-    private readonly string _displayName;
+    private string _displayName;
     protected override string DisplayName => _displayName;
 
-    private readonly Action _onReleased;
+    private Action _onReleased;
 
     private static bool _initialized;
 
@@ -44,17 +46,17 @@ public class BasicOverhaulHotkeyManager : HotKeyBase
         
         InputKey fastForwardKey = (InputKey)Enum.Parse(typeof(InputKey),
             BasicOverhaulGlobalConfig.Instance?.FastForwardMissionKey?.SelectedValue ?? "Numpad9");
-        hotKeyManager.Add(new BasicOverhaulHotkeyManager("BasicOverhaulSpeedUpHotkey", "Basic Overhaul Speed Up", fastForwardKey, OnSpeedUp));
+        hotKeyManager.Add(new BasicOverhaulHotkeyManager("BasicOverhaulSpeedUpHotkey" + fastForwardKey.ToString(), "Basic Overhaul Speed Up", fastForwardKey, OnSpeedUp));
         
         InputKey callHorseKey = SubModule.PossibleKeys[BasicOverhaulGlobalConfig.Instance?.CallHorseKey?.SelectedValue ?? "X"];
-        hotKeyManager.Add(new BasicOverhaulHotkeyManager("BasicOverhaulHorseCallHotkey", "Basic Overhaul Horse Call", callHorseKey, OnHorseCall));
+        hotKeyManager.Add(new BasicOverhaulHotkeyManager("BasicOverhaulHorseCallHotkey" + callHorseKey.ToString(), "Basic Overhaul Horse Call", callHorseKey, OnHorseCall));
         
         InputKey weaponryOrderKey = (InputKey)Enum.Parse(typeof(InputKey),
             BasicOverhaulGlobalConfig.Instance?.WeaponryOrderKey?.SelectedValue ?? "Numpad5");
-        hotKeyManager.Add(new BasicOverhaulHotkeyManager("BasicOverhaulWeaponryOrderHotkey", "Basic Overhaul Weaponry Order", weaponryOrderKey, OnWeaponryOrder));
+        hotKeyManager.Add(new BasicOverhaulHotkeyManager("BasicOverhaulWeaponryOrderHotkey" + weaponryOrderKey.ToString(), "Basic Overhaul Weaponry Order", weaponryOrderKey, OnWeaponryOrder));
         
         InputKey openMenuKey = SubModule.PossibleKeys[BasicOverhaulGlobalConfig.Instance?.MenuHotKey?.SelectedValue ?? "U"];
-        hotKeyManager.Add(new BasicOverhaulHotkeyManager("BasicOverhaulMenuHotkey", "Basic Overhaul Menu", openMenuKey, MenuManager.OnMenuHotkeyReleased));
+        hotKeyManager.Add(new BasicOverhaulHotkeyManager("BasicOverhaulMenuHotkey" + openMenuKey.ToString(), "Basic Overhaul Menu", openMenuKey, MenuManager.OnMenuHotkeyReleased));
         
         hotKeyManager.Build();
 
